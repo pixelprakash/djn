@@ -1,0 +1,125 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Geist+Mono:wght@300;400&display=swap');
+
+:root {
+  --bg: #f7f5f0; --ink: #1a1814; --muted: #8a8478;
+  --rule: #d8d4cc; --accent: #2d4a3e;
+  --mono: 'Geist Mono', monospace; --serif: 'Cormorant Garamond', Georgia, serif;
+}
+
+.contact-page {
+  min-height: 100vh;
+  background: var(--bg);
+  display: flex;
+  align-items: flex-start;
+  padding: 80px 48px 120px;
+  font-family: var(--serif);
+}
+
+.contact-inner {
+  max-width: 640px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.contact-header {
+  margin-bottom: 56px;
+  animation: fadeUp 0.5s ease both;
+}
+
+.contact-eyebrow {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 12px;
+}
+
+.contact-heading {
+  font-size: clamp(52px, 8vw, 88px);
+  font-weight: 300;
+  font-style: italic;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  color: var(--ink);
+  margin-bottom: 16px;
+}
+
+.contact-sub {
+  font-size: 17px;
+  color: var(--muted);
+  font-style: italic;
+  line-height: 1.6;
+}
+
+.contact-list {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 56px;
+  animation: fadeUp 0.5s ease 0.1s both;
+}
+
+.contact-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--rule);
+  gap: 16px;
+}
+
+.contact-row:first-child { border-top: 1px solid var(--rule); }
+
+.contact-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.contact-value {
+  font-size: 16px;
+  color: var(--ink);
+}
+
+.contact-value.link {
+  text-decoration: none;
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 12px;
+  transition: color 0.2s;
+}
+
+.contact-value.link:hover { color: var(--accent); }
+
+.contact-value.muted {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--muted);
+  font-style: italic;
+}
+
+.contact-location {
+  animation: fadeUp 0.5s ease 0.2s both;
+}
+
+.contact-place {
+  font-size: 17px;
+  line-height: 1.7;
+  color: var(--ink);
+}
+
+.contact-place span {
+  color: var(--muted);
+  font-style: italic;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 640px) {
+  .contact-page { padding: 48px 20px 100px; }
+}

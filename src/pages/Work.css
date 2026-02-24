@@ -1,0 +1,133 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Geist+Mono:wght@300;400&display=swap');
+
+:root {
+  --bg: #f7f5f0;
+  --ink: #1a1814;
+  --muted: #8a8478;
+  --rule: #d8d4cc;
+  --accent: #2d4a3e;
+  --mono: 'Geist Mono', monospace;
+  --serif: 'Cormorant Garamond', Georgia, serif;
+}
+
+.work-page {
+  min-height: 100vh;
+  background: var(--bg);
+  padding: 80px 48px 120px;
+  max-width: 1100px;
+  margin: 0 auto;
+  font-family: var(--serif);
+}
+
+.work-header {
+  margin-bottom: 64px;
+  animation: fadeUp 0.5s ease both;
+}
+
+.work-eyebrow {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 12px;
+}
+
+.work-heading {
+  font-size: clamp(52px, 8vw, 96px);
+  font-weight: 300;
+  font-style: italic;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  color: var(--ink);
+  margin-bottom: 16px;
+}
+
+.work-sub {
+  font-size: 18px;
+  color: var(--muted);
+  font-style: italic;
+  max-width: 480px;
+}
+
+.work-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2px;
+}
+
+.work-card {
+  background: #fff;
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  transition: background 0.2s;
+  animation: fadeUp 0.5s ease both;
+}
+
+.work-card:hover {
+  background: #f0ede6;
+}
+
+.work-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.work-card-year {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.work-card-cat {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.work-card-title {
+  font-size: 22px;
+  font-weight: 400;
+  line-height: 1.3;
+  color: var(--ink);
+}
+
+.work-card-desc {
+  font-size: 15px;
+  color: var(--muted);
+  line-height: 1.65;
+  font-style: italic;
+  flex: 1;
+}
+
+.work-card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.work-tag {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  padding: 4px 10px;
+  border: 1px solid var(--rule);
+  border-radius: 100px;
+  color: var(--ink);
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 640px) {
+  .work-page { padding: 48px 20px 100px; }
+  .work-grid { grid-template-columns: 1fr; }
+}
