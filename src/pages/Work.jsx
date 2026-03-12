@@ -1,73 +1,86 @@
+import { Link } from 'react-router-dom'
+import { PROJECTS } from './projectData'
+import { SPONSORED, SOLO_SHOWS, EXHIBITIONS } from './exhibitionData'
+import { useState } from 'react'
 import './Work.css'
 
-const projects = [
-  {
-    year: "2023",
-    title: "Digital Heritage Preservation",
-    category: "Research Project",
-    desc: "Archiving the Qutb Shahi monuments through photogrammetry and immersive digital reconstruction for historical education and cultural memory.",
-    tags: ["Heritage", "Digital Archiving", "3D Reconstruction"],
-  },
-  {
-    year: "2022",
-    title: "Autonomous Passenger Drone UX",
-    category: "Design Research",
-    desc: "Exploring interior and exterior design parameters for urban air mobility vehicles — form, color, ergonomics, and passenger psychology.",
-    tags: ["UAM", "Industrial Design", "User Research"],
-  },
-  {
-    year: "2021",
-    title: "VR for Design Education",
-    category: "Pedagogy & Research",
-    desc: "Developing immersive virtual reality tools to scaffold creative learning in design classrooms. Pilot studies across IIT Hyderabad.",
-    tags: ["VR/AR", "Education", "Interaction Design"],
-  },
-  {
-    year: "2020",
-    title: "Bio-Brick Research",
-    category: "Sustainable Design",
-    desc: "Designing cost-effective, sustainable building materials using biological processes. Exploring circular economy applications in construction.",
-    tags: ["Sustainability", "Materials", "Circular Economy"],
-  },
-  {
-    year: "2019",
-    title: "Green Fashion Awareness Study",
-    category: "Consumer Research",
-    desc: "Understanding consumer attitudes toward sustainable fashion in India. Mapping awareness, ethical ideologies, and purchasing behaviour.",
-    tags: ["Fashion", "Consumer Research", "Sustainability"],
-  },
-  {
-    year: "2018",
-    title: "Furniture for Pre-Primary Children",
-    category: "Product Design",
-    desc: "Ergonomic and developmental furniture design tailored for children aged 3–6, considering anthropometric data and play-based learning.",
-    tags: ["Ergonomics", "Product Design", "Children"],
-  },
-]
-
 export default function Work() {
-  return (
-    <div className="work-page">
-      <header className="work-header">
-        <p className="work-eyebrow">Selected Projects</p>
-        <h1 className="work-heading">Work</h1>
-        <p className="work-sub">Design research, pedagogy, and practice spanning two decades.</p>
-      </header>
+  const [tab, setTab] = useState('projects')
 
-      <div className="work-grid">
-        {projects.map((p, i) => (
-          <div key={i} className="work-card">
-            <div className="work-card-top">
-              <span className="work-card-year">{p.year}</span>
-              <span className="work-card-cat">{p.category}</span>
+  return (
+    <div className="wp">
+      <div className="wp-inner">
+        <header className="wp-head">
+          <h1 className="wp-heading"><span>Selected</span><em>Work</em></h1>
+          <p className="wp-sub">Photography, research projects, and exhibitions spanning three decades.</p>
+        </header>
+
+        <nav className="tab-nav">
+          {[['projects','Photography Projects'],['sponsored','Sponsored Projects'],['exhibitions','Exhibitions']].map(([id,label])=>(
+            <button key={id} className={`tab-btn${tab===id?' active':''}`} onClick={()=>setTab(id)}>{label}</button>
+          ))}
+        </nav>
+
+        {tab === 'projects' && (
+          <div className="proj-list">
+            {PROJECTS.map((p, i) => (
+              <Link key={p.id} to={`/work/${p.slug}`} className="proj-card" style={{animationDelay:`${i*0.07}s`}}>
+                <div className="proj-img-wrap">
+                  <img src={p.cover} alt={p.title} loading="lazy" decoding="async" />
+                  <div className="proj-overlay"><span>View project →</span></div>
+                </div>
+                <div className="proj-info">
+                  <div className="proj-meta-row">
+                    <span className="proj-cat">{p.category}</span>
+                    <span className="proj-year">{p.year}</span>
+                  </div>
+                  <h2 className="proj-title">{p.title}</h2>
+                  <p className="proj-venue">{p.venue}</p>
+                  <span className="proj-cta">Open project →</span>
+                </div>
+              </Link>
+            ))}
+          </div>
+        )}
+
+        {tab === 'sponsored' && (
+          <div className="sp-list">
+            {SPONSORED.map((s,i)=>(
+              <div key={i} className="sp-row" style={{animationDelay:`${i*0.05}s`}}>
+                <div className="sp-left"><span className="sp-year">{s.year}</span><span className="sp-role">{s.role}</span></div>
+                <div className="sp-right"><p className="sp-title">{s.title}</p><p className="sp-funder">{s.funder}</p></div>
+                <div className="sp-amount">{s.amount}</div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {tab === 'exhibitions' && (
+          <div className="ex-wrap">
+            <div className="ex-section">
+              <p className="seg-lbl">Solo Shows</p>
+              <div className="solo-list">
+                {SOLO_SHOWS.map((s,i)=>(
+                  <div key={i} className="solo-row" style={{animationDelay:`${i*0.05}s`}}>
+                    <span className="solo-year">{s.year}</span>
+                    <div className="solo-info"><span className="solo-title">{s.title}</span><span className="solo-venue">{s.venue}</span></div>
+                  </div>
+                ))}
+              </div>
             </div>
-            <h2 className="work-card-title">{p.title}</h2>
-            <p className="work-card-desc">{p.desc}</p>
-            <div className="work-card-tags">
-              {p.tags.map(t => <span key={t} className="work-tag">{t}</span>)}
+            <div className="ex-section">
+              <p className="seg-lbl">Selected Exhibitions</p>
+              <div className="ex-list">
+                {EXHIBITIONS.map((e,i)=>(
+                  <div key={i} className="ex-row" style={{animationDelay:`${i*0.03}s`}}>
+                    <span className="ex-year">{e.year}</span>
+                    <div className="ex-info"><span className="ex-title">{e.title}</span><span className="ex-venue">{e.venue}</span></div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
-        ))}
+        )}
       </div>
     </div>
   )
