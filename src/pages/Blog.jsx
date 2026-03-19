@@ -1,61 +1,170 @@
+import { useState } from 'react'
 import './Blog.css'
 
-const posts = [
+const POSTS = [
   {
-    date: "Jan 2025",
-    title: "Why Design Education Needs VR — Now",
-    tag: "Education",
-    desc: "A reflection on three years of immersive classroom experiments and what we've learned about embodied learning in design studios.",
+    date: 'Aug 2021',
+    tag: 'Academic',
+    title: '9th and 10th Convocation -- IIT Hyderabad',
+    desc: 'Photographs and reflections from the 9th and 10th Convocation ceremony at IIT Hyderabad -- a celebration of students, mentors, and the years of work behind every degree.',
+    href: 'http://djmphotography.blogspot.com/2021/08/9th-and-10th-convocation-iith.html',
+    img: 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=700&h=440&fit=crop&q=80',
+    featured: true,
   },
   {
-    date: "Oct 2024",
-    title: "Heritage as a Design Problem",
-    tag: "Research",
-    desc: "Preserving the Qutb Shahi monuments raised questions I hadn't expected about authorship, fidelity, and what it means to keep something alive.",
+    date: 'Aug 2021',
+    tag: 'Talk',
+    title: 'WDO Education Forum -- Talk by Prof. Deepak John Mathew',
+    desc: 'A talk at the World Design Organisation Research and Education Forum -- exploring the role of design education in shaping a sustainable and equitable future.',
+    href: 'http://djmphotography.blogspot.com/2021/08/wdo-education-forum-talk-by-prof-deepak.html',
+    img: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=700&h=440&fit=crop&q=80',
   },
   {
-    date: "Jun 2024",
-    title: "The Brief is the Design",
-    tag: "Practice",
-    desc: "After years of studying how design briefs evolve in professional practice, I've come to believe that the way we frame problems is itself a design act.",
+    date: 'Apr 2021',
+    tag: 'Talk',
+    title: 'UX India 2017 -- Keynote Talk',
+    desc: 'Notes and photographs from the UX India 2017 conference talk -- on bridging user research, visual communication, and design thinking in the Indian context.',
+    href: 'http://djmphotography.blogspot.com/2021/04/ux-india-talk.html',
+    img: 'https://images.unsplash.com/photo-1475721027785-f74eccf877e2?w=700&h=440&fit=crop&q=80',
   },
   {
-    date: "Feb 2024",
-    title: "Photographing to Think",
-    tag: "Photography",
-    desc: "Photography was my first design education. How the discipline of the frame taught me more about composition, light, and observation than any formal course.",
+    date: 'Oct 2016',
+    tag: 'Education',
+    title: 'Department of Design Offers Minor in Design at IIT Hyderabad',
+    desc: 'The Department of Design at IIT Hyderabad now offers a Minor in Design for B.Tech students -- an opportunity to develop design thinking and creative problem-solving alongside engineering.',
+    href: 'http://djmphotography.blogspot.com/2016/10/department-of-design-offers-minor-in.html',
+    img: 'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=700&h=440&fit=crop&q=80',
   },
   {
-    date: "Nov 2023",
-    title: "Drones, Interiors, and the Future Passenger",
-    tag: "Research",
-    desc: "Urban air mobility is coming. What will it feel like inside? Notes from our ongoing study into passenger comfort in autonomous aerial vehicles.",
+    date: 'Feb 2014',
+    tag: 'Announcement',
+    title: 'IIT Hyderabad Launches New MDes and PhD Programs',
+    desc: 'IIT Hyderabad is launching a two-year full-time M.Des. programme offering broad-based design understanding with student-driven specialisation, alongside a new PhD in Design.',
+    href: 'http://djmphotography.blogspot.com/2014/02/iit-hyderabad-is-starting-new-mdes-and.html',
+    img: 'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=700&h=440&fit=crop&q=80',
+  },
+  {
+    date: 'Jan 2025',
+    tag: 'Research',
+    title: 'Why Design Education Needs VR -- Now',
+    desc: 'A reflection on three years of immersive classroom experiments and what we have learned about embodied learning in design studios.',
+    href: 'http://djmphotography.blogspot.com',
+    img: 'https://images.unsplash.com/photo-1593508512255-86ab42a8e620?w=700&h=440&fit=crop&q=80',
   },
 ]
 
+const ALL_TAGS = ['All', ...Array.from(new Set(POSTS.map(function(p) { return p.tag })))]
+
 export default function Blog() {
+  const [active, setActive] = useState('All')
+
+  const visible  = active === 'All' ? POSTS : POSTS.filter(function(p) { return p.tag === active })
+  const featured = visible.find(function(p) { return p.featured })
+  const rest     = visible.filter(function(p) { return !p.featured || active !== 'All' })
+
   return (
-    <div className="blog-page">
-      <header className="blog-header">
-        <p className="blog-eyebrow">Thoughts & Writing</p>
-        <h1 className="blog-heading">Blog</h1>
-        <p className="blog-sub">Notes on design, research, and education.</p>
+    <div className="bl">
+
+      <header className="bl-head">
+        <div className="bl-head-left">
+          <p className="bl-eyebrow">Thoughts &amp; Writing</p>
+          <h1 className="bl-title">Blog &amp; <em>Notes</em></h1>
+        </div>
+        <p className="bl-sub">
+          Photography, design research,<br />
+          education, and everything in between.
+        </p>
       </header>
 
-      <div className="blog-list">
-        {posts.map((p, i) => (
-          <article key={i} className="blog-post">
-            <div className="blog-post-left">
-              <span className="blog-date">{p.date}</span>
-              <span className="blog-tag">{p.tag}</span>
+      <div className="bl-filters">
+        {ALL_TAGS.map(function(t) {
+          return (
+            <button
+              key={t}
+              className={active === t ? 'bl-filter-btn bl-filter-btn--on' : 'bl-filter-btn'}
+              onClick={function() { setActive(t) }}
+            >
+              {t}
+            </button>
+          )
+        })}
+        <a
+          href="http://djmphotography.blogspot.com"
+          target="_blank"
+          rel="noreferrer"
+          className="bl-external"
+        >
+          Full archive &#8599;
+        </a>
+      </div>
+
+      <div className="bl-body">
+
+        {active === 'All' && featured && (
+          <a
+            href={featured.href}
+            target="_blank"
+            rel="noreferrer"
+            className="bl-featured"
+          >
+            <div className="bl-featured-img">
+              <img src={featured.img} alt={featured.title} loading="eager" />
+              <div className="bl-featured-overlay" />
             </div>
-            <div className="blog-post-right">
-              <h2 className="blog-title">{p.title}</h2>
-              <p className="blog-desc">{p.desc}</p>
-              <span className="blog-read">Read more →</span>
+            <div className="bl-featured-info">
+              <div className="bl-featured-meta">
+                <span className="bl-tag">{featured.tag}</span>
+                <span className="bl-date">{featured.date}</span>
+              </div>
+              <h2 className="bl-featured-title">{featured.title}</h2>
+              <p className="bl-featured-desc">{featured.desc}</p>
+              <span className="bl-read-cta">Read post &#8594;</span>
             </div>
-          </article>
-        ))}
+          </a>
+        )}
+
+        <div className="bl-grid">
+          {(active === 'All' ? rest : visible).map(function(p, i) {
+            return (
+              <a
+                key={i}
+                href={p.href}
+                target="_blank"
+                rel="noreferrer"
+                className="bl-card"
+                style={{ animationDelay: (i * 0.06) + 's' }}
+              >
+                <div className="bl-card-img">
+                  <img src={p.img} alt={p.title} loading="lazy" />
+                </div>
+                <div className="bl-card-body">
+                  <div className="bl-card-meta">
+                    <span className="bl-tag">{p.tag}</span>
+                    <span className="bl-date">{p.date}</span>
+                  </div>
+                  <h2 className="bl-card-title">{p.title}</h2>
+                  <p className="bl-card-desc">{p.desc}</p>
+                  <span className="bl-read">Read post &#8594;</span>
+                </div>
+              </a>
+            )
+          })}
+        </div>
+
+        <a
+          href="http://djmphotography.blogspot.com"
+          target="_blank"
+          rel="noreferrer"
+          className="bl-banner"
+        >
+          <div className="bl-banner-text">
+            <p className="bl-banner-label">Full blog archive</p>
+            <p className="bl-banner-title">Read all posts on DJM Photography &#8599;</p>
+            <p className="bl-banner-sub">Photographs, talks, academic updates, and more at djmphotography.blogspot.com</p>
+          </div>
+          <div className="bl-banner-arrow">&#8599;</div>
+        </a>
+
       </div>
     </div>
   )

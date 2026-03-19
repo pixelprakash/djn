@@ -1,15 +1,21 @@
-@import url('https://fonts.googleapis.com/css2?family=Bree+Serif&family=Rubik:wght@300;400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bree+Serif&family=Rubik:ital,wght@0,300;0,400;0,500;1,300&display=swap');
 
+/* ══════════════════════════════════════════
+   TOKENS  — identical to About page
+══════════════════════════════════════════ */
 :root {
-  --bg:     #f7f5f0;
-  --ink:    #1a1814;
-  --sub:    #4a4640;
-  --muted:  #8a8478;
-  --rule:   #dedad3;
-  --accent: #FF5E2E;
-  --white:  #ffffff;
-  --serif:  'Bree Serif', serif;
-  --body:   'Rubik', sans-serif;
+  --bg:       #f5f3ee;
+  --ink:      #1a1814;
+  --sub:      #4a4540;
+  --muted:    #8a8478;
+  --rule:     #dbd6ce;
+  --accent:   #FF5E2E;
+  --green:    #024F46;
+  --white:    #ffffff;
+  --serif:    'Bree Serif', serif;
+  --body:     'Rubik', sans-serif;
+  --g:        120px;
+  --nav-safe: 110px;
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -17,108 +23,139 @@
 .wp {
   min-height: 100vh;
   background: var(--bg);
-  padding: 72px 48px 140px;
   font-family: var(--body);
   color: var(--ink);
   -webkit-font-smoothing: antialiased;
+  padding-bottom: var(--nav-safe);
 }
 
-.wp-inner { max-width: 1040px; margin: 0 auto; }
-
+/* ══════════════════════════════════════════
+   HEADER  — matches About page header style
+══════════════════════════════════════════ */
 .wp-head {
-  padding-bottom: 36px;
+  padding: clamp(28px, 4vw, 44px) var(--g) clamp(20px, 3vw, 32px);
   border-bottom: 1.5px solid var(--ink);
-  margin-bottom: 44px;
   animation: fadeUp .5s ease both;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
 }
 
+/* Page title — Bree Serif display size, matches ap-title */
 .wp-heading {
   font-family: var(--serif);
-  font-size: clamp(52px, 7vw, 92px);
+  font-size: clamp(28px, 4.5vw, 52px);
   font-weight: 400;
   line-height: 1.0;
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 14px;
+  letter-spacing: -0.01em;
   color: var(--ink);
+  display: flex;
+  align-items: baseline;
+  gap: 0.2em;
+  flex-wrap: wrap;
 }
-.wp-heading em { font-style: italic; color: var(--accent); }
+.wp-heading em {
+  font-style: italic;
+  color: var(--accent);
+}
 
+/* Subtitle — 1.5rem Rubik 300, matches ap-sub */
 .wp-sub {
   font-family: var(--body);
-  font-size: 0.92rem;
+  font-size: 1.5rem;
   font-weight: 300;
   color: var(--muted);
-  line-height: 1.6;
+  line-height: 1.4;
+  max-width: 480px;
+  text-align: right;
+  flex-shrink: 0;
 }
 
-/* Tabs */
+/* ══════════════════════════════════════════
+   TAB NAV  — same section-rule style as About
+══════════════════════════════════════════ */
 .tab-nav {
   display: flex;
   gap: 0;
-  margin-bottom: 52px;
-  border-bottom: 1.5px solid var(--rule);
+  padding: 0 var(--g);
+  border-bottom: 1px solid var(--rule);
   animation: fadeUp .5s ease .07s both;
+  margin-top: 0;
 }
 
 .tab-btn {
   font-family: var(--body);
-  font-size: 0.8rem;
-  font-weight: 500;
+  /* 3rem like sec-head but tabs can be a step down */
+  font-size: clamp(1rem, 1.5vw, 1.25rem);
+  font-weight: 400;
   color: var(--muted);
   background: none;
   border: none;
-  padding: 12px 24px 12px 0;
+  padding: clamp(16px, 2.5vw, 28px) clamp(20px, 3vw, 40px) clamp(16px, 2.5vw, 28px) 0;
   cursor: pointer;
   position: relative;
   transition: color .2s;
+  white-space: nowrap;
 }
 .tab-btn::after {
   content: '';
   position: absolute;
-  bottom: -1.5px; left: 0; right: 0;
-  height: 2px;
+  bottom: -1px; left: 0; right: 0;
+  height: 2.5px;
   background: var(--accent);
   transform: scaleX(0);
-  transition: transform .25s ease;
+  transform-origin: left;
+  transition: transform .28s ease;
 }
 .tab-btn:hover { color: var(--ink); }
-.tab-btn.active { color: var(--ink); }
+.tab-btn:hover::after { transform: scaleX(1); }
+.tab-btn.active { color: var(--ink); font-weight: 500; }
 .tab-btn.active::after { transform: scaleX(1); }
 
-/* Project cards */
+/* ══════════════════════════════════════════
+   TAB CONTENT WRAPPER
+══════════════════════════════════════════ */
+.wp-body {
+  padding: clamp(48px, 6vw, 80px) var(--g);
+}
+
+/* ══════════════════════════════════════════
+   PHOTOGRAPHY PROJECTS
+   Card: image left (fixed width) | info right
+══════════════════════════════════════════ */
 .proj-list {
   display: flex;
   flex-direction: column;
-  gap: 2px;
-  background: var(--rule);
-  border-radius: 14px;
+  gap: 3px;
+  border-radius: 16px;
   overflow: hidden;
+  background: var(--rule);
 }
 
 .proj-card {
   display: grid;
-  grid-template-columns: 460px 1fr;
+  grid-template-columns: clamp(280px, 36vw, 500px) 1fr;
   background: var(--white);
   text-decoration: none;
   animation: fadeUp .4s ease both;
-  transition: background .2s;
+  transition: background .25s;
 }
-.proj-card:hover { background: #faf8f4; }
+.proj-card:hover { background: #faf8f3; }
 
+/* Image */
 .proj-img-wrap {
   position: relative;
-  height: 280px;
+  height: clamp(240px, 26vw, 340px);
   overflow: hidden;
   background: var(--rule);
 }
 .proj-img-wrap img {
   width: 100%; height: 100%;
-  object-fit: cover;
-  display: block;
-  transition: transform .6s ease;
+  object-fit: cover; display: block;
+  transition: transform .65s ease;
 }
-.proj-card:hover .proj-img-wrap img { transform: scale(1.04); }
+.proj-card:hover .proj-img-wrap img { transform: scale(1.05); }
 
 .proj-overlay {
   position: absolute; inset: 0;
@@ -126,134 +163,280 @@
   display: flex; align-items: center; justify-content: center;
   transition: background .3s;
 }
-.proj-img-wrap:hover .proj-overlay { background: rgba(26,24,20,.4); }
+.proj-img-wrap:hover .proj-overlay { background: rgba(26,24,20,.38); }
 .proj-overlay span {
   font-family: var(--body);
-  font-size: 0.85rem;
-  font-weight: 500;
+  font-size: 0.9rem; font-weight: 500;
   color: var(--white);
-  opacity: 0;
-  transition: opacity .3s;
+  opacity: 0; transition: opacity .3s;
+  border: 1px solid rgba(255,255,255,.5);
+  padding: 8px 20px; border-radius: 100px;
 }
 .proj-img-wrap:hover .proj-overlay span { opacity: 1; }
 
+/* Info panel */
 .proj-info {
-  padding: 36px 40px;
+  padding: clamp(28px, 3.5vw, 48px) clamp(28px, 3.5vw, 48px);
   display: flex;
   flex-direction: column;
+  gap: 14px;
+  justify-content: center;
+}
+
+.proj-meta-row {
+  display: flex;
+  align-items: center;
   gap: 12px;
 }
 
-.proj-meta-row { display: flex; align-items: center; gap: 12px; }
-
+/* Category — small uppercase label, accent */
 .proj-cat {
   font-family: var(--body);
-  font-size: 0.62rem;
-  font-weight: 500;
-  letter-spacing: 0.1em;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: .12em;
   text-transform: uppercase;
   color: var(--accent);
 }
 
+/* Year — small muted */
 .proj-year {
   font-family: var(--body);
-  font-size: 0.72rem;
+  font-size: 0.78rem;
+  font-weight: 300;
   color: var(--muted);
 }
 
+/* Title — 3rem Bree Serif like sec-head */
 .proj-title {
   font-family: var(--serif);
-  font-size: clamp(1.2rem, 2vw, 1.65rem);
+  font-size: clamp(1.5rem, 2.5vw, 2.2rem);
   font-weight: 400;
-  line-height: 1.25;
+  line-height: 1.2;
   color: var(--ink);
+  letter-spacing: -0.01em;
 }
 
+/* Venue — 1.5rem Rubik 300 like about-body */
 .proj-venue {
   font-family: var(--body);
-  font-size: 0.88rem;
+  font-size: clamp(1rem, 1.5vw, 1.2rem);
   font-weight: 300;
   color: var(--sub);
   line-height: 1.6;
 }
 
+/* CTA pill */
 .proj-cta {
-  margin-top: auto;
+  margin-top: 8px;
   align-self: flex-start;
+  font-family: var(--body);
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--ink);
+  border: 1.5px solid var(--rule);
+  border-radius: 100px;
+  padding: 9px 22px;
+  transition: background .22s, color .22s, border-color .22s,
+              transform .22s cubic-bezier(.34,1.56,.64,1);
+}
+.proj-card:hover .proj-cta {
+  background: var(--accent);
+  color: var(--white);
+  border-color: var(--accent);
+  transform: translateY(-2px);
+}
+
+/* ══════════════════════════════════════════
+   SPONSORED PROJECTS  — no amount column
+══════════════════════════════════════════ */
+.sp-list { display: flex; flex-direction: column; }
+
+.sp-row {
+  display: grid;
+  /* year+role | title+funder  — NO amount column */
+  grid-template-columns: clamp(100px, 12vw, 150px) 1fr;
+  gap: clamp(20px, 3vw, 40px);
+  padding: clamp(20px, 2.5vw, 32px) 0;
+  border-bottom: 1px solid var(--rule);
+  align-items: start;
+  animation: fadeUp .4s ease both;
+  transition: padding-left .25s;
+}
+.sp-row:first-child { border-top: 1px solid var(--rule); }
+.sp-row:hover { padding-left: 8px; }
+
+.sp-left {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-top: 4px;
+}
+
+/* Year — small muted */
+.sp-year {
   font-family: var(--body);
   font-size: 0.78rem;
   font-weight: 500;
-  color: var(--accent);
-  border: 1px solid var(--rule);
-  border-radius: 100px;
-  padding: 7px 18px;
-  transition: background .2s, color .2s, border-color .2s;
-}
-.proj-card:hover .proj-cta { background: var(--accent); color: var(--white); border-color: var(--accent); }
-
-/* Sponsored */
-.sp-list { display: flex; flex-direction: column; }
-.sp-row {
-  display: grid;
-  grid-template-columns: 130px 1fr 110px;
-  gap: 28px;
-  padding: 22px 0;
-  border-bottom: 1px solid var(--rule);
-  align-items: start;
-  animation: fadeUp .4s ease both;
-  transition: padding-left .2s;
-}
-.sp-row:first-child { border-top: 1px solid var(--rule); }
-.sp-row:hover { padding-left: 6px; }
-.sp-left { display: flex; flex-direction: column; gap: 5px; padding-top: 3px; }
-.sp-year { font-size: 0.72rem; font-weight: 500; color: var(--muted); }
-.sp-role { font-size: 0.65rem; font-style: italic; color: var(--muted); }
-.sp-title { font-family: var(--serif); font-size: 1.05rem; color: var(--ink); margin-bottom: 5px; line-height: 1.4; }
-.sp-funder { font-size: 0.82rem; font-weight: 300; color: var(--sub); }
-.sp-amount { font-size: 0.82rem; font-weight: 500; color: var(--accent); text-align: right; padding-top: 3px; white-space: nowrap; }
-
-/* Exhibitions */
-.ex-wrap { display: flex; flex-direction: column; gap: 56px; }
-.seg-lbl {
-  font-family: var(--body);
-  font-size: 0.62rem; font-weight: 500;
-  letter-spacing: 0.12em; text-transform: uppercase;
   color: var(--muted);
-  margin-bottom: 20px;
-  display: flex; align-items: center; gap: 12px;
 }
-.seg-lbl::after { content: ''; flex: 1; height: 1px; background: var(--rule); }
 
+/* Role — italic small */
+.sp-role {
+  font-family: var(--body);
+  font-size: 0.72rem;
+  font-style: italic;
+  color: var(--muted);
+}
+
+/* Title — Bree Serif, clearly bigger */
+.sp-title {
+  font-family: var(--serif);
+  font-size: clamp(1.1rem, 1.8vw, 1.5rem);
+  font-weight: 400;
+  color: var(--ink);
+  line-height: 1.35;
+  margin-bottom: 6px;
+  letter-spacing: -0.01em;
+}
+
+/* Funder — Rubik 300 */
+.sp-funder {
+  font-family: var(--body);
+  font-size: clamp(0.9rem, 1.3vw, 1.1rem);
+  font-weight: 300;
+  color: var(--sub);
+  line-height: 1.5;
+}
+
+/* ══════════════════════════════════════════
+   EXHIBITIONS
+══════════════════════════════════════════ */
+.ex-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(48px, 6vw, 72px);
+}
+
+/* Section label — matches About's SectionRule */
+.seg-lbl {
+  font-family: var(--serif);
+  font-size: 3rem;           /* 48px — matches sec-head */
+  font-weight: 400;
+  color: var(--ink);
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  margin-bottom: clamp(24px, 3.5vw, 40px);
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+.seg-lbl::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--rule);
+}
+
+/* Solo shows */
 .solo-list, .ex-list { display: flex; flex-direction: column; }
+
 .solo-row, .ex-row {
   display: grid;
-  gap: 24px;
-  padding: 16px 0;
+  gap: clamp(20px, 3vw, 36px);
+  padding: clamp(16px, 2vw, 24px) 0;
   border-bottom: 1px solid var(--rule);
   align-items: start;
   animation: fadeUp .4s ease both;
-  transition: padding-left .2s;
+  transition: padding-left .25s;
 }
 .solo-row:first-child, .ex-row:first-child { border-top: 1px solid var(--rule); }
-.solo-row:hover, .ex-row:hover { padding-left: 6px; }
-.solo-row { grid-template-columns: 64px 1fr; }
-.ex-row { grid-template-columns: 52px 1fr; }
-.solo-year, .ex-year { font-size: 0.72rem; font-weight: 500; color: var(--muted); padding-top: 2px; }
-.solo-info, .ex-info { display: flex; flex-direction: column; gap: 3px; }
-.solo-title { font-family: var(--serif); font-size: 1.05rem; color: var(--ink); line-height: 1.3; }
-.solo-venue, .ex-venue { font-size: 0.82rem; font-weight: 300; color: var(--sub); }
-.ex-title { font-size: 0.88rem; font-weight: 400; color: var(--ink); line-height: 1.4; }
+.solo-row:hover, .ex-row:hover { padding-left: 8px; }
 
+.solo-row { grid-template-columns: clamp(60px, 8vw, 90px) 1fr; }
+.ex-row   { grid-template-columns: clamp(52px, 7vw, 80px) 1fr; }
+
+/* Year labels */
+.solo-year, .ex-year {
+  font-family: var(--body);
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--muted);
+  padding-top: 3px;
+  white-space: nowrap;
+}
+
+.solo-info, .ex-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* Solo title — Bree Serif prominent */
+.solo-title {
+  font-family: var(--serif);
+  font-size: clamp(1.1rem, 1.8vw, 1.5rem);
+  font-weight: 400;
+  color: var(--ink);
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+}
+
+/* Exhibition title — Rubik, slightly smaller */
+.ex-title {
+  font-family: var(--body);
+  font-size: clamp(0.95rem, 1.4vw, 1.2rem);
+  font-weight: 400;
+  color: var(--ink);
+  line-height: 1.4;
+}
+
+/* Venue — Rubik 300 muted */
+.solo-venue, .ex-venue {
+  font-family: var(--body);
+  font-size: clamp(0.82rem, 1.2vw, 1rem);
+  font-weight: 300;
+  color: var(--sub);
+  line-height: 1.5;
+}
+
+/* ══════════════════════════════════════════
+   ANIMATION
+══════════════════════════════════════════ */
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(12px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
-@media (max-width: 800px) {
-  .wp { padding: 40px 20px 100px; }
+/* ══════════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════════ */
+@media (max-width: 1100px) {
+  :root { --g: 64px; }
+}
+
+@media (max-width: 900px) {
+  .wp-head { flex-direction: column; align-items: flex-start; }
+  .wp-sub { text-align: left; }
   .proj-card { grid-template-columns: 1fr; }
-  .proj-img-wrap { height: 240px; }
-  .proj-info { padding: 24px; }
-  .sp-row { grid-template-columns: 1fr; gap: 8px; }
-  .sp-amount { text-align: left; }
+  .proj-img-wrap { height: clamp(220px, 40vw, 320px); }
+  .proj-info { padding: 24px 28px; }
+  .seg-lbl { font-size: 2rem; }
+}
+
+@media (max-width: 640px) {
+  :root { --g: 24px; }
+  .wp-heading { font-size: clamp(22px, 7vw, 34px); }
+  .wp-sub { font-size: 1.1rem; }
+  .tab-btn { font-size: 0.88rem; padding-right: 16px; }
+  .sp-row { grid-template-columns: 1fr; gap: 6px; }
+  .seg-lbl { font-size: 1.6rem; }
+  .proj-title { font-size: 1.3rem; }
+  .proj-venue { font-size: 0.95rem; }
+}
+
+@media (max-width: 420px) {
+  :root { --g: 16px; }
+  .solo-row { grid-template-columns: 48px 1fr; }
+  .ex-row   { grid-template-columns: 40px 1fr; }
 }
