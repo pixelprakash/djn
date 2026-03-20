@@ -78,11 +78,24 @@ function MenuItem({ link, text, image, speed, textColor, marqueeBgColor, marquee
       .to(marqueeInnerRef.current, { y: edge === 'top' ? '101%' : '-101%' }, 0);
   };
 
+  // Touch support for mobile — trigger marquee on touchstart/touchend
+  const onTouchStart = ev => onEnter(ev.touches[0]);
+  const onTouchEnd   = ev => onLeave(ev.changedTouches[0]);
+
   return (
     <div className="menu__item" ref={itemRef} style={{ borderColor }}>
-      <a className="menu__item-link" href={link || '#'} onMouseEnter={onEnter} onMouseLeave={onLeave} style={{ color: textColor }}>
+      <div
+        className="menu__item-link"
+        role="button"
+        tabIndex={0}
+        onMouseEnter={onEnter}
+        onMouseLeave={onLeave}
+        onTouchStart={onTouchStart}
+        onTouchEnd={onTouchEnd}
+        style={{ color: textColor }}
+      >
         {text}
-      </a>
+      </div>
       <div className="marquee" ref={marqueeRef} style={{ backgroundColor: marqueeBgColor }}>
         <div className="marquee__inner-wrap">
           <div className="marquee__inner" ref={marqueeInnerRef} aria-hidden>

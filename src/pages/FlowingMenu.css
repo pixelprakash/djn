@@ -36,6 +36,10 @@
   letter-spacing: 0.06em;
   font-family: 'Bree Serif', serif;
   transition: letter-spacing .3s ease;
+  /* Prevent text selection on tap, stop any browser tap highlight */
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
 }
 .menu__item:hover .menu__item-link { letter-spacing: 0.12em; }
 .menu__item-link:hover { color: inherit; }
