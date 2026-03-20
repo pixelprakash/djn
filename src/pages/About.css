@@ -23,11 +23,10 @@
 .ap { background: var(--bg) !important; }
 
 .ap {
-  min-height: 100vh;
+  min-height: 100%;
   font-family: var(--body);
   color: var(--ink);
   -webkit-font-smoothing: antialiased;
-  padding-bottom: var(--nav-safe); /* space for floating nav */
   display: flex;
   flex-direction: column;
 }
@@ -632,8 +631,7 @@
 .ap-sec--dark {
   background: #0d2820 !important;
   border-bottom: none;
-  padding-bottom: calc(var(--nav-safe) + 64px);
-  /* removed flex:1 -- was covering floating nav */
+  padding-bottom: clamp(56px, 8vw, 100px); /* same as other sections */
 }
 
 .contact-box { display: flex; flex-direction: column; gap: 12px; }
