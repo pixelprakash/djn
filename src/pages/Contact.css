@@ -1,8 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Bree+Serif&family=Rubik:ital,wght@0,300;0,400;0,500;1,300&display=swap');
 
-/* ══════════════════════════════════════════
-   TOKENS  — identical to all other pages
-══════════════════════════════════════════ */
+/* ==========================================
+   TOKENS  -- identical to all other pages
+========================================== */
 :root {
   --bg:       #f5f3ee;
   --ink:      #1a1814;
@@ -26,23 +26,35 @@
   color: var(--ink);
   -webkit-font-smoothing: antialiased;
   padding-bottom: var(--nav-safe);
+  width: 100%;
+  overflow-x: hidden;
 }
 
-/* ══════════════════════════════════════════
-   HEADER  — same pattern as About / Work / Resume
-══════════════════════════════════════════ */
+/* =============================================
+   HEADER -- flex row: left text | right sticker
+   Compact, matches all other pages
+============================================= */
 .contact-header {
-  padding: clamp(28px, 4vw, 44px) var(--g) clamp(20px, 3vw, 32px);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: clamp(20px, 3vw, 40px);
+  padding: clamp(14px, 2vw, 24px) var(--g);
   border-bottom: 1.5px solid var(--ink);
   animation: fadeUp .5s ease both;
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 24px;
-  flex-wrap: wrap;
+  position: relative;
+  overflow: visible;
 }
 
-/* Eyebrow label */
+/* Left: eyebrow + heading + subtitle */
+.contact-header-left {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
 .contact-eyebrow {
   font-family: var(--body);
   font-size: 0.7rem;
@@ -50,10 +62,9 @@
   letter-spacing: .14em;
   text-transform: uppercase;
   color: var(--muted);
-  margin-bottom: 10px;
 }
 
-/* Heading — Bree Serif display, italic em in SAME ink */
+/* Heading -- clean, no italic accent */
 .contact-heading {
   font-family: var(--serif);
   font-size: clamp(28px, 4.5vw, 52px);
@@ -62,25 +73,98 @@
   letter-spacing: -0.01em;
   color: var(--ink);
 }
-.contact-heading em {
-  font-style: italic;
-  color: var(--accent);   /* "Talk" keeps accent — it's a playful word, not a name */
-}
 
-/* Subtitle — 1.5rem Rubik 300 */
+/* Subtitle -- single line */
 .contact-sub {
   font-family: var(--body);
-  font-size: 1.5rem;
+  font-size: 1rem;
   font-weight: 300;
   color: var(--muted);
-  line-height: 1.5;
-  max-width: 420px;
-  text-align: right;
+  line-height: 1.4;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-/* ══════════════════════════════════════════
-   BODY LAYOUT  — form left | info right
-══════════════════════════════════════════ */
+/* Right: phone illustration sticker */
+.contact-sticker {
+  flex-shrink: 0;
+  width: clamp(90px, 11vw, 150px);
+  align-self: center;
+  cursor: pointer;
+  z-index: 10;
+  position: relative;
+}
+
+/* Bubble -- hover only */
+.contact-sticker-bubble {
+  position: absolute;
+  top: 0;
+  right: -4px;
+  transform: translateX(100%) scale(0.88);
+  background: #1a1814;
+  color: #fff;
+  font-family: var(--body);
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 12px 12px 12px 0;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 11;
+  opacity: 0;
+  transition:
+    opacity .25s cubic-bezier(.34,1.56,.64,1),
+    transform .25s cubic-bezier(.34,1.56,.64,1);
+}
+.contact-sticker-bubble::before {
+  content: '';
+  position: absolute;
+  bottom: 7px;
+  left: -6px;
+  width: 0; height: 0;
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+  border-right: 7px solid #1a1814;
+}
+.contact-sticker:hover .contact-sticker-bubble {
+  opacity: 1;
+  transform: translateX(100%) scale(1);
+}
+
+.contact-sticker-img {
+  width: 100%;
+  height: auto;
+  display: block;
+  mix-blend-mode: multiply;
+  filter: drop-shadow(0 4px 12px rgba(0,0,0,.12));
+  animation: sticker-float 3.5s ease-in-out infinite;
+  transform-origin: bottom center;
+  pointer-events: none;
+}
+.contact-sticker:hover .contact-sticker-img {
+  animation: contact-listen 1.8s ease-in-out infinite;
+}
+
+@keyframes sticker-float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  40%       { transform: translateY(-5px) rotate(1deg); }
+  70%       { transform: translateY(-2px) rotate(-0.5deg); }
+}
+
+/* Gentle listening motion: slow head-tilt + soft bob, like nodding on a call */
+@keyframes contact-listen {
+  0%   { transform: translateY(0) rotate(0deg); }
+  20%  { transform: translateY(-4px) rotate(-3deg); }
+  45%  { transform: translateY(-6px) rotate(2deg); }
+  65%  { transform: translateY(-3px) rotate(-1.5deg); }
+  85%  { transform: translateY(-5px) rotate(1deg); }
+  100% { transform: translateY(0) rotate(0deg); }
+}
+
+/* ==========================================
+   BODY LAYOUT  -- form left | info right
+========================================== */
 .contact-body {
   padding: clamp(48px, 6vw, 80px) var(--g);
   display: grid;
@@ -90,9 +174,9 @@
   animation: fadeUp .5s ease .1s both;
 }
 
-/* ══════════════════════════════════════════
+/* ==========================================
    FORM
-══════════════════════════════════════════ */
+========================================== */
 .contact-form {
   display: flex;
   flex-direction: column;
@@ -111,7 +195,7 @@
   gap: 8px;
 }
 
-/* Label — small uppercase, Rubik */
+/* Label -- small uppercase, Rubik */
 .form-label {
   font-family: var(--body);
   font-size: 0.72rem;
@@ -226,9 +310,9 @@
   line-height: 1.65;
 }
 
-/* ══════════════════════════════════════════
+/* ==========================================
    RIGHT INFO PANEL
-══════════════════════════════════════════ */
+========================================== */
 .contact-info {
   display: flex;
   flex-direction: column;
@@ -250,7 +334,7 @@
 .contact-row:first-child { border-top: 1px solid var(--rule); }
 .contact-row:hover { padding-left: 6px; }
 
-/* Label — small caps */
+/* Label -- small caps */
 .contact-label {
   font-family: var(--body);
   font-size: 0.7rem;
@@ -293,17 +377,17 @@
   line-height: 1.65;
 }
 
-/* ══════════════════════════════════════════
+/* ==========================================
    ANIMATION
-══════════════════════════════════════════ */
+========================================== */
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(14px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* ══════════════════════════════════════════
+/* ==========================================
    RESPONSIVE
-══════════════════════════════════════════ */
+========================================== */
 @media (max-width: 1100px) {
   :root { --g: 64px; }
 }
@@ -313,8 +397,8 @@
     grid-template-columns: 1fr;
     gap: clamp(40px, 6vw, 60px);
   }
-  .contact-header { flex-direction: column; align-items: flex-start; }
-  .contact-sub { text-align: left; font-size: 1.2rem; }
+  .contact-sticker { width: clamp(80px, 14vw, 120px); }
+  .contact-sub { white-space: normal; font-size: 0.9rem; }
 }
 
 @media (max-width: 640px) {

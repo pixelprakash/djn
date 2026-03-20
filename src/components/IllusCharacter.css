@@ -1,0 +1,176 @@
+/* ===================================================
+   IllusCharacter — fixed bottom-right mascot
+=================================================== */
+.illus-wrap {
+  position: fixed;
+  bottom: 130px;
+  right: 24px;
+  z-index: 900;
+  cursor: pointer;
+  opacity: 0;
+  transform: translateX(30px) scale(0.88);
+  transition:
+    opacity .5s cubic-bezier(.34,1.56,.64,1),
+    transform .5s cubic-bezier(.34,1.56,.64,1);
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+.illus-wrap--visible {
+  opacity: 1;
+  transform: translateX(0) scale(1);
+}
+
+.illus-wrap--hovered {
+  transform: translateX(0) scale(1.05) translateY(-4px);
+}
+
+/* ── Outer wrapper: position context for bubble ── */
+.illus-inner {
+  position: relative;
+  display: inline-block;
+}
+
+/* ── Image wrapper ── */
+.illus-img-wrap {
+  width: clamp(80px, 10vw, 130px);
+  display: block;
+  animation: illus-float 3.5s ease-in-out infinite;
+  transform-origin: bottom center;
+}
+
+.illus-img {
+  width: 100%;
+  height: auto;
+  display: block;
+  mix-blend-mode: multiply;
+  filter: drop-shadow(0 6px 18px rgba(0,0,0,.16));
+  pointer-events: none;
+}
+
+/* ── Speech bubble — absolute TOP-RIGHT, hover only ── */
+.illus-bubble {
+  position: absolute;
+  top: 0;
+  right: -4px;
+  transform: translateX(100%) scale(0.88);
+  background: #1a1814;
+  color: #ffffff;
+  font-family: 'Rubik', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 12px 12px 12px 0px;
+  white-space: nowrap;
+  opacity: 0;
+  transition:
+    opacity .22s cubic-bezier(.34,1.56,.64,1),
+    transform .22s cubic-bezier(.34,1.56,.64,1);
+  pointer-events: none;
+}
+
+/* Tail points LEFT (toward illustration) */
+.illus-bubble::before {
+  content: '';
+  position: absolute;
+  bottom: 7px;
+  left: -6px;
+  width: 0; height: 0;
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+  border-right: 7px solid #1a1814;
+}
+
+/* Shown on hover */
+.illus-bubble--show {
+  opacity: 1;
+  transform: translateX(100%) scale(1);
+}
+
+/* =====================================================
+   IDLE + HOVER ANIMATIONS
+===================================================== */
+@keyframes illus-float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  33%       { transform: translateY(-7px) rotate(1deg); }
+  66%       { transform: translateY(-3px) rotate(-0.5deg); }
+}
+
+.illus--wave {
+  animation: illus-wave 0.5s ease-in-out infinite alternate !important;
+  transform-origin: bottom center;
+}
+@keyframes illus-wave {
+  0%   { transform: rotate(-8deg) translateY(-4px); }
+  100% { transform: rotate(8deg) translateY(-8px); }
+}
+
+.illus--click {
+  animation: illus-click 0.4s ease-in-out infinite !important;
+}
+@keyframes illus-click {
+  0%   { transform: scale(1); }
+  25%  { transform: scale(1.08) translateY(-6px); }
+  50%  { transform: scale(0.97) translateY(-2px) rotate(-2deg); }
+  75%  { transform: scale(1.05) translateY(-5px) rotate(1deg); }
+  100% { transform: scale(1); }
+}
+
+.illus--tip {
+  animation: illus-tip 1.2s cubic-bezier(.34,1.56,.64,1) infinite !important;
+  transform-origin: bottom center;
+}
+@keyframes illus-tip {
+  0%   { transform: rotate(0deg) translateY(0); }
+  20%  { transform: rotate(-5deg) translateY(-4px); }
+  45%  { transform: rotate(3deg) translateY(-8px); }
+  70%  { transform: rotate(-2deg) translateY(-5px); }
+  100% { transform: rotate(0deg) translateY(0); }
+}
+
+.illus--scan {
+  animation: illus-scan 0.7s ease-in-out infinite alternate !important;
+  transform-origin: bottom center;
+}
+@keyframes illus-scan {
+  0%   { transform: translateX(-10px) translateY(-4px) rotate(-4deg); }
+  100% { transform: translateX(10px) translateY(-8px) rotate(4deg); }
+}
+
+.illus--write {
+  animation: illus-write 0.35s ease-in-out infinite !important;
+}
+@keyframes illus-write {
+  0%   { transform: translateY(0) rotate(0deg); }
+  30%  { transform: translateY(-5px) rotate(-1.5deg); }
+  60%  { transform: translateY(-2px) rotate(1deg); }
+  100% { transform: translateY(-4px) rotate(-0.5deg); }
+}
+
+.illus--ring {
+  animation: illus-ring 0.3s ease-in-out infinite !important;
+}
+@keyframes illus-ring {
+  0%   { transform: rotate(0deg); }
+  15%  { transform: rotate(-6deg) translateY(-3px); }
+  30%  { transform: rotate(6deg) translateY(-5px); }
+  45%  { transform: rotate(-4deg) translateY(-3px); }
+  60%  { transform: rotate(4deg) translateY(-4px); }
+  80%  { transform: rotate(-2deg) translateY(-2px); }
+  100% { transform: rotate(0deg); }
+}
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+@media (max-width: 768px) {
+  .illus-wrap { bottom: 120px; right: 12px; }
+  .illus-img-wrap { width: clamp(64px, 16vw, 100px); }
+  .illus-bubble { font-size: 0.74rem; padding: 5px 10px; }
+}
+
+@media (max-width: 420px) {
+  .illus-wrap { bottom: 110px; right: 8px; }
+  .illus-img-wrap { width: 64px; }
+  .illus-bubble { display: none; }
+}

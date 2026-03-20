@@ -24,20 +24,33 @@
   color: var(--ink);
   -webkit-font-smoothing: antialiased;
   padding-bottom: var(--nav-safe);
+  width: 100%;
+  overflow-x: hidden;
 }
 
-/* ══════════════════════════════════════════
-   HEADER
-══════════════════════════════════════════ */
+/* =============================================
+   HEADER -- 2-col flex: left text | right sticker
+   Compact, matches About/Work/Resume pattern
+============================================= */
 .lab-head {
   display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 24px;
-  flex-wrap: wrap;
-  padding: clamp(28px, 4vw, 44px) var(--g) clamp(20px, 3vw, 32px);
+  flex-direction: row;
+  align-items: center;
+  gap: clamp(20px, 3vw, 40px);
+  padding: clamp(14px, 2vw, 24px) var(--g);
   border-bottom: 1.5px solid var(--ink);
   animation: fadeUp .5s ease both;
+  position: relative;
+  overflow: visible;
+}
+
+/* Left: eyebrow + title + subtitle */
+.lab-head-left {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 
 .lab-eyebrow {
@@ -47,7 +60,6 @@
   letter-spacing: .14em;
   text-transform: uppercase;
   color: var(--muted);
-  margin-bottom: 10px;
 }
 
 .lab-title {
@@ -58,28 +70,98 @@
   letter-spacing: -0.01em;
   color: var(--ink);
 }
-.lab-title em { font-style: italic; color: var(--accent); }
 
 .lab-sub {
   font-family: var(--body);
-  font-size: 1.5rem;
+  font-size: 1rem;
   font-weight: 300;
   color: var(--muted);
-  line-height: 1.5;
-  text-align: right;
-  max-width: 360px;
+  line-height: 1.4;
+  white-space: nowrap;
 }
 
-/* ══════════════════════════════════════════
+/* Right: VR illustration sticker */
+.lab-sticker {
+  flex-shrink: 0;
+  width: clamp(90px, 11vw, 150px);
+  align-self: center;
+  cursor: pointer;
+  z-index: 10;
+  position: relative;
+}
+
+/* Bubble -- hover only */
+.lab-sticker-bubble {
+  position: absolute;
+  top: 0;
+  right: -4px;
+  transform: translateX(100%) scale(0.88);
+  background: #1a1814;
+  color: #fff;
+  font-family: var(--body);
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 12px 12px 12px 0;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 11;
+  opacity: 0;
+  transition:
+    opacity .25s cubic-bezier(.34,1.56,.64,1),
+    transform .25s cubic-bezier(.34,1.56,.64,1);
+}
+.lab-sticker-bubble::before {
+  content: '';
+  position: absolute;
+  bottom: 7px;
+  left: -6px;
+  width: 0; height: 0;
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+  border-right: 7px solid #1a1814;
+}
+.lab-sticker:hover .lab-sticker-bubble {
+  opacity: 1;
+  transform: translateX(100%) scale(1);
+}
+
+.lab-sticker-img {
+  width: 100%;
+  height: auto;
+  display: block;
+  mix-blend-mode: multiply;
+  filter: drop-shadow(0 4px 12px rgba(0,0,0,.12));
+  animation: sticker-float 3.5s ease-in-out infinite;
+  transform-origin: bottom center;
+  pointer-events: none;
+}
+.lab-sticker:hover .lab-sticker-img {
+  animation: lab-scan 0.7s ease-in-out infinite alternate;
+}
+
+@keyframes sticker-float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  40%       { transform: translateY(-5px) rotate(1deg); }
+  70%       { transform: translateY(-2px) rotate(-0.5deg); }
+}
+
+/* VR head scan: sway side to side */
+@keyframes lab-scan {
+  0%   { transform: translateX(-8px) translateY(-4px) rotate(-3deg); }
+  100% { transform: translateX(8px) translateY(-7px) rotate(3deg); }
+}
+
+/* ==========================================
    BODY
-══════════════════════════════════════════ */
+========================================== */
 .lab-body {
   padding: clamp(48px, 6vw, 80px) var(--g);
 }
 
-/* ══════════════════════════════════════════
+/* ==========================================
    EXPERIMENT LIST
-══════════════════════════════════════════ */
+========================================== */
 .lab-list { display: flex; flex-direction: column; }
 
 .lab-item {
@@ -96,7 +178,7 @@
 .lab-item:first-child { border-top: 1px solid var(--rule); }
 .lab-item:hover { padding-left: 8px; }
 
-/* Number — large, faded, purely decorative */
+/* Number -- large, faded, purely decorative */
 .lab-num {
   font-family: var(--serif);
   font-size: clamp(1.8rem, 3vw, 2.8rem);
@@ -174,26 +256,26 @@
   max-width: 680px;
 }
 
-/* ══════════════════════════════════════════
+/* ==========================================
    ANIMATION
-══════════════════════════════════════════ */
+========================================== */
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(14px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* ══════════════════════════════════════════
+/* ==========================================
    RESPONSIVE
-══════════════════════════════════════════ */
+========================================== */
 @media (max-width: 1100px) {
   :root { --g: 64px; }
 }
 
 @media (max-width: 768px) {
   :root { --g: 32px; }
-  .lab-head { flex-direction: column; align-items: flex-start; }
-  .lab-sub { text-align: left; font-size: 1.2rem; }
+  .lab-sticker { width: clamp(80px, 14vw, 120px); }
   .lab-title { font-size: clamp(22px, 7vw, 34px); }
+  .lab-sub { white-space: normal; font-size: 0.95rem; }
   .lab-item-title { font-size: 1.1rem; }
   .lab-desc { font-size: 0.95rem; }
 }

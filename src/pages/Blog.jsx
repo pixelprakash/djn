@@ -8,7 +8,7 @@ const POSTS = [
     title: '9th and 10th Convocation -- IIT Hyderabad',
     desc: 'Photographs and reflections from the 9th and 10th Convocation ceremony at IIT Hyderabad -- a celebration of students, mentors, and the years of work behind every degree.',
     href: 'http://djmphotography.blogspot.com/2021/08/9th-and-10th-convocation-iith.html',
-    img: 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=700&h=440&fit=crop&q=80',
+    img: 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=900&h=600&fit=crop&q=85',
     featured: true,
   },
   {
@@ -65,17 +65,29 @@ export default function Blog() {
   return (
     <div className="bl">
 
+      {/* -- HEADER -- same pattern: left text | right sticker -- */}
       <header className="bl-head">
+
         <div className="bl-head-left">
           <p className="bl-eyebrow">Thoughts &amp; Writing</p>
-          <h1 className="bl-title">Blog &amp; <em>Notes</em></h1>
+          <h1 className="bl-title">Blog &amp; Notes</h1>
+          <p className="bl-sub">Photography, design research, education, and everything in between.</p>
         </div>
-        <p className="bl-sub">
-          Photography, design research,<br />
-          education, and everything in between.
-        </p>
+
+        {/* Writing illustration sticker */}
+        <div className="bl-sticker">
+          <div className="bl-sticker-bubble">Writing...</div>
+          <img
+            src="/illustrations/illus-blog.png"
+            alt="Deepak John Mathew writing"
+            className="bl-sticker-img"
+            draggable="false"
+          />
+        </div>
+
       </header>
 
+      {/* -- TAG FILTERS -- */}
       <div className="bl-filters">
         {ALL_TAGS.map(function(t) {
           return (
@@ -100,15 +112,16 @@ export default function Blog() {
 
       <div className="bl-body">
 
+        {/* -- FEATURED POST -- */}
         {active === 'All' && featured && (
-          <a
-            href={featured.href}
-            target="_blank"
-            rel="noreferrer"
-            className="bl-featured"
-          >
+          <a href={featured.href} target="_blank" rel="noreferrer" className="bl-featured">
             <div className="bl-featured-img">
-              <img src={featured.img} alt={featured.title} loading="eager" />
+              <img
+                src={featured.img}
+                alt={featured.title}
+                loading="eager"
+                onError={function(e) { e.currentTarget.src = 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=900&h=600&fit=crop&q=85' }}
+              />
               <div className="bl-featured-overlay" />
             </div>
             <div className="bl-featured-info">
@@ -123,6 +136,7 @@ export default function Blog() {
           </a>
         )}
 
+        {/* -- POST GRID -- */}
         <div className="bl-grid">
           {(active === 'All' ? rest : visible).map(function(p, i) {
             return (
@@ -151,6 +165,7 @@ export default function Blog() {
           })}
         </div>
 
+        {/* -- ARCHIVE BANNER -- */}
         <a
           href="http://djmphotography.blogspot.com"
           target="_blank"

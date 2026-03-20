@@ -4,16 +4,33 @@
   padding: 0;
 }
 
-html, body, #root {
-  min-height: 100%;
+/* KEY FIX: html and body must NOT scroll.
+   position:fixed is relative to the viewport ONLY when
+   html/body are not the scroll container.
+   Make #root scroll instead. */
+html {
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  height: 100%;
+  overflow: hidden;
+  font-family: 'Rubik', sans-serif;
   background: #f7f5f0;
   color: #1a1814;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-body {
-  font-family: 'Rubik', sans-serif;
+#root {
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  /* Enable momentum scrolling on iOS */
+  -webkit-overflow-scrolling: touch;
+  background: #f7f5f0;
+  color: #1a1814;
 }
 
 a {

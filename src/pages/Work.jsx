@@ -10,16 +10,30 @@ export default function Work() {
   return (
     <div className="wp">
 
-      {/* ── HEADER ── */}
+      {/* -- HEADER -- 3-col grid: title+sub | spacer | sticker -- */}
       <header className="wp-head">
-        <h1 className="wp-heading">
-          <span>Selected</span>
-          <em>Work</em>
-        </h1>
-        <p className="wp-sub">Photography, research projects,<br/>and exhibitions spanning three decades.</p>
+
+        {/* Left: eyebrow + title + subtitle stacked */}
+        <div className="wp-head-left">
+          <p className="wp-eyebrow">Portfolio</p>
+          <h1 className="wp-heading">Selected Work</h1>
+          <p className="wp-sub">Photography, research projects, and exhibitions spanning three decades.</p>
+        </div>
+
+        {/* Right: sticker illustration */}
+        <div className="wp-sticker">
+          <div className="wp-sticker-bubble">Click!</div>
+          <img
+            src="/illustrations/illus-work.png"
+            alt="Deepak John Mathew with camera"
+            className="wp-sticker-img"
+            draggable="false"
+          />
+        </div>
+
       </header>
 
-      {/* ── TABS ── */}
+      {/* -- TABS -- */}
       <nav className="tab-nav" aria-label="Work sections">
         {[
           ['projects',    'Photography Projects'],
@@ -37,10 +51,9 @@ export default function Work() {
         ))}
       </nav>
 
-      {/* ── TAB BODY ── */}
+      {/* -- TAB BODY -- */}
       <div className="wp-body">
 
-        {/* ══ PHOTOGRAPHY PROJECTS ══ */}
         {tab === 'projects' && (
           <div className="proj-list">
             {PROJECTS.map((p, i) => (
@@ -50,13 +63,10 @@ export default function Work() {
                 className="proj-card"
                 style={{ animationDelay: `${i * 0.07}s` }}
               >
-                {/* Cover image */}
                 <div className="proj-img-wrap">
                   <img src={p.cover} alt={p.title} loading="lazy" decoding="async" />
-                  <div className="proj-overlay"><span>View project →</span></div>
+                  <div className="proj-overlay"><span>View project &#8594;</span></div>
                 </div>
-
-                {/* Info */}
                 <div className="proj-info">
                   <div className="proj-meta-row">
                     <span className="proj-cat">{p.category}</span>
@@ -64,29 +74,21 @@ export default function Work() {
                   </div>
                   <h2 className="proj-title">{p.title}</h2>
                   <p className="proj-venue">{p.venue}</p>
-                  <span className="proj-cta">Open project →</span>
+                  <span className="proj-cta">Open project &#8594;</span>
                 </div>
               </Link>
             ))}
           </div>
         )}
 
-        {/* ══ SPONSORED PROJECTS — no amount ══ */}
         {tab === 'sponsored' && (
           <div className="sp-list">
             {SPONSORED.map((s, i) => (
-              <div
-                key={i}
-                className="sp-row"
-                style={{ animationDelay: `${i * 0.05}s` }}
-              >
-                {/* Left: year + role */}
+              <div key={i} className="sp-row" style={{ animationDelay: `${i * 0.05}s` }}>
                 <div className="sp-left">
                   <span className="sp-year">{s.year}</span>
                   <span className="sp-role">{s.role}</span>
                 </div>
-
-                {/* Right: title + funder — NO amount */}
                 <div className="sp-right">
                   <p className="sp-title">{s.title}</p>
                   <p className="sp-funder">{s.funder}</p>
@@ -96,20 +98,13 @@ export default function Work() {
           </div>
         )}
 
-        {/* ══ EXHIBITIONS ══ */}
         {tab === 'exhibitions' && (
           <div className="ex-wrap">
-
-            {/* Solo Shows */}
             <div className="ex-section">
               <p className="seg-lbl">Solo Shows</p>
               <div className="solo-list">
                 {SOLO_SHOWS.map((s, i) => (
-                  <div
-                    key={i}
-                    className="solo-row"
-                    style={{ animationDelay: `${i * 0.05}s` }}
-                  >
+                  <div key={i} className="solo-row" style={{ animationDelay: `${i * 0.05}s` }}>
                     <span className="solo-year">{s.year}</span>
                     <div className="solo-info">
                       <span className="solo-title">{s.title}</span>
@@ -119,17 +114,11 @@ export default function Work() {
                 ))}
               </div>
             </div>
-
-            {/* Selected Exhibitions */}
             <div className="ex-section">
               <p className="seg-lbl">Selected Exhibitions</p>
               <div className="ex-list">
                 {EXHIBITIONS.map((e, i) => (
-                  <div
-                    key={i}
-                    className="ex-row"
-                    style={{ animationDelay: `${i * 0.03}s` }}
-                  >
+                  <div key={i} className="ex-row" style={{ animationDelay: `${i * 0.03}s` }}>
                     <span className="ex-year">{e.year}</span>
                     <div className="ex-info">
                       <span className="ex-title">{e.title}</span>
@@ -139,9 +128,9 @@ export default function Work() {
                 ))}
               </div>
             </div>
-
           </div>
         )}
+
       </div>
     </div>
   )

@@ -1,8 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Bree+Serif&family=Rubik:ital,wght@0,300;0,400;0,500;1,300&display=swap');
 
-/* ══════════════════════════════════════════
+/* ==========================================
    TOKENS
-══════════════════════════════════════════ */
+========================================== */
 :root {
   --bg:       #f5f3ee;
   --ink:      #1a1814;
@@ -26,20 +26,33 @@
   color: var(--ink);
   -webkit-font-smoothing: antialiased;
   padding-bottom: var(--nav-safe);
+  width: 100%;
+  overflow-x: hidden;
 }
 
-/* ══════════════════════════════════════════
-   HEADER
-══════════════════════════════════════════ */
+/* =============================================
+   HEADER -- flex row: left text | right sticker
+   Compact, matches all other pages
+============================================= */
 .bl-head {
   display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 24px;
-  flex-wrap: wrap;
-  padding: clamp(28px, 4vw, 44px) var(--g) clamp(20px, 3vw, 32px);
+  flex-direction: row;
+  align-items: center;
+  gap: clamp(20px, 3vw, 40px);
+  padding: clamp(14px, 2vw, 24px) var(--g);
   border-bottom: 1.5px solid var(--ink);
   animation: fadeUp .5s ease both;
+  position: relative;
+  overflow: visible;
+}
+
+/* Left: eyebrow + title + subtitle */
+.bl-head-left {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 
 .bl-eyebrow {
@@ -49,10 +62,9 @@
   letter-spacing: .14em;
   text-transform: uppercase;
   color: var(--muted);
-  margin-bottom: 10px;
 }
 
-/* Main title — Bree Serif clamp, matches site */
+/* Title -- no italic, no accent, clean */
 .bl-title {
   font-family: var(--serif);
   font-size: clamp(28px, 4.5vw, 52px);
@@ -61,22 +73,96 @@
   letter-spacing: -0.01em;
   color: var(--ink);
 }
-.bl-title em { font-style: italic; color: var(--accent); }
 
-/* Subtitle — 1.5rem Rubik 300 */
+/* Subtitle -- single line */
 .bl-sub {
   font-family: var(--body);
-  font-size: 1.5rem;
+  font-size: 1rem;
   font-weight: 300;
   color: var(--muted);
-  line-height: 1.5;
-  text-align: right;
-  max-width: 380px;
+  line-height: 1.4;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-/* ══════════════════════════════════════════
+/* Right: writing illustration sticker */
+.bl-sticker {
+  flex-shrink: 0;
+  width: clamp(90px, 11vw, 150px);
+  align-self: center;
+  cursor: pointer;
+  z-index: 10;
+  position: relative;
+}
+
+/* Bubble -- hover only */
+.bl-sticker-bubble {
+  position: absolute;
+  top: 0;
+  right: -4px;
+  transform: translateX(100%) scale(0.88);
+  background: #1a1814;
+  color: #fff;
+  font-family: var(--body);
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 12px 12px 12px 0;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 11;
+  opacity: 0;
+  transition:
+    opacity .25s cubic-bezier(.34,1.56,.64,1),
+    transform .25s cubic-bezier(.34,1.56,.64,1);
+}
+.bl-sticker-bubble::before {
+  content: '';
+  position: absolute;
+  bottom: 7px;
+  left: -6px;
+  width: 0; height: 0;
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+  border-right: 7px solid #1a1814;
+}
+.bl-sticker:hover .bl-sticker-bubble {
+  opacity: 1;
+  transform: translateX(100%) scale(1);
+}
+
+.bl-sticker-img {
+  width: 100%;
+  height: auto;
+  display: block;
+  mix-blend-mode: multiply;
+  filter: drop-shadow(0 4px 12px rgba(0,0,0,.12));
+  animation: sticker-float 3.5s ease-in-out infinite;
+  transform-origin: bottom center;
+  pointer-events: none;
+}
+.bl-sticker:hover .bl-sticker-img {
+  animation: blog-write 0.35s ease-in-out infinite;
+}
+
+@keyframes sticker-float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  40%       { transform: translateY(-5px) rotate(1deg); }
+  70%       { transform: translateY(-2px) rotate(-0.5deg); }
+}
+
+/* Pen-scribble bob animation */
+@keyframes blog-write {
+  0%   { transform: translateY(0) rotate(0deg); }
+  30%  { transform: translateY(-5px) rotate(-1.5deg); }
+  60%  { transform: translateY(-2px) rotate(1deg); }
+  100% { transform: translateY(-4px) rotate(-0.5deg); }
+}
+
+/* ==========================================
    TAG FILTERS
-══════════════════════════════════════════ */
+========================================== */
 .bl-filters {
   display: flex;
   align-items: center;
@@ -131,9 +217,9 @@
   border-color: var(--accent);
 }
 
-/* ══════════════════════════════════════════
+/* ==========================================
    BODY WRAPPER
-══════════════════════════════════════════ */
+========================================== */
 .bl-body {
   padding: clamp(40px, 5vw, 72px) var(--g);
   display: flex;
@@ -141,10 +227,10 @@
   gap: clamp(40px, 5vw, 64px);
 }
 
-/* ══════════════════════════════════════════
-   FEATURED POST — full-width horizontal card
+/* ==========================================
+   FEATURED POST -- full-width horizontal card
    image left (60%) | text right (40%)
-══════════════════════════════════════════ */
+========================================== */
 .bl-featured {
   display: grid;
   grid-template-columns: 1fr clamp(280px, 38%, 480px);
@@ -163,14 +249,19 @@
 
 .bl-featured-img {
   position: relative;
-  min-height: clamp(260px, 32vw, 440px);
+  min-height: clamp(300px, 36vw, 500px);
   overflow: hidden;
   background: var(--rule);
 }
 .bl-featured-img img {
-  width: 100%; height: 100%;
-  object-fit: cover; display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
   transition: transform .7s ease;
+  /* Force fill even if image loads slowly */
+  min-height: 300px;
 }
 .bl-featured:hover .bl-featured-img img { transform: scale(1.05); }
 
@@ -194,7 +285,7 @@
   gap: 10px;
 }
 
-/* Featured title — big Bree Serif */
+/* Featured title -- big Bree Serif */
 .bl-featured-title {
   font-family: var(--serif);
   font-size: clamp(1.4rem, 2.5vw, 2rem);
@@ -232,9 +323,9 @@
   transform: translateX(3px);
 }
 
-/* ══════════════════════════════════════════
-   POST GRID  — 3-col cards
-══════════════════════════════════════════ */
+/* ==========================================
+   POST GRID  -- 3-col cards
+========================================== */
 .bl-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -280,7 +371,7 @@
 
 .bl-card-meta { display: flex; align-items: center; gap: 8px; }
 
-/* Card title — Bree Serif, prominent */
+/* Card title -- Bree Serif, prominent */
 .bl-card-title {
   font-family: var(--serif);
   font-size: clamp(1rem, 1.6vw, 1.3rem);
@@ -290,7 +381,7 @@
   letter-spacing: -0.01em;
 }
 
-/* Card desc — Rubik 300 */
+/* Card desc -- Rubik 300 */
 .bl-card-desc {
   font-family: var(--body);
   font-size: clamp(0.85rem, 1.2vw, 0.95rem);
@@ -310,9 +401,9 @@
 }
 .bl-card:hover .bl-read { letter-spacing: .04em; }
 
-/* ══════════════════════════════════════════
+/* ==========================================
    SHARED META ELEMENTS
-══════════════════════════════════════════ */
+========================================== */
 .bl-tag {
   font-family: var(--body);
   font-size: 0.65rem;
@@ -333,9 +424,9 @@
   color: var(--muted);
 }
 
-/* ══════════════════════════════════════════
+/* ==========================================
    EXTERNAL BLOG BANNER
-══════════════════════════════════════════ */
+========================================== */
 .bl-banner {
   display: flex;
   align-items: center;
@@ -394,17 +485,17 @@
   transform: translate(4px, -4px);
 }
 
-/* ══════════════════════════════════════════
+/* ==========================================
    ANIMATION
-══════════════════════════════════════════ */
+========================================== */
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(14px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* ══════════════════════════════════════════
+/* ==========================================
    RESPONSIVE
-══════════════════════════════════════════ */
+========================================== */
 @media (max-width: 1100px) {
   :root { --g: 64px; }
   .bl-grid { grid-template-columns: repeat(2, 1fr); }
@@ -415,8 +506,8 @@
     grid-template-columns: 1fr;
   }
   .bl-featured-img { min-height: clamp(220px, 40vw, 320px); }
-  .bl-head { flex-direction: column; align-items: flex-start; }
-  .bl-sub { text-align: left; font-size: 1.2rem; }
+  .bl-sticker { width: clamp(80px, 14vw, 120px); }
+  .bl-sub { white-space: normal; font-size: 0.9rem; }
 }
 
 @media (max-width: 640px) {

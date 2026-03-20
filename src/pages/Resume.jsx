@@ -1,17 +1,17 @@
 import './Resume.css'
 
-/* ── DATA ── */
+/* -- DATA -- */
 const positions = [
-  { period: '2023 – present', role: 'Professor HAG, Department of Design',                          org: 'IIT Hyderabad' },
-  { period: '2017 – present', role: 'Professor, Department of Design',                              org: 'IIT Hyderabad' },
-  { period: '2023 – present', role: 'Adjunct Professor',                                            org: 'IIT Jodhpur' },
-  { period: '2023 – present', role: 'Adjunct Professor',                                            org: 'IIT Roorkee' },
-  { period: '2022 – present', role: 'Adjunct Professor, Dept. of Mech. & Product Design Eng.',      org: 'Swinburne University, Melbourne' },
-  { period: '2014 – Oct 2022',role: 'Head of Department, Department of Design',                     org: 'IIT Hyderabad' },
-  { period: '2014 – 2017',    role: 'Associate Professor, Department of Design',                    org: 'IIT Hyderabad' },
-  { period: '2007 – 2013',    role: 'Associate Senior Faculty',                                     org: 'National Institute of Design, Ahmedabad' },
-  { period: '2004 – 2007',    role: 'Faculty',                                                      org: 'National Institute of Design, Ahmedabad' },
-  { period: '2002 – 2013',    role: 'Head of Photography Department',                               org: 'NID Ahmedabad' },
+  { period: '2023 - present', role: 'Professor HAG, Department of Design',                          org: 'IIT Hyderabad' },
+  { period: '2017 - present', role: 'Professor, Department of Design',                              org: 'IIT Hyderabad' },
+  { period: '2023 - present', role: 'Adjunct Professor',                                            org: 'IIT Jodhpur' },
+  { period: '2023 - present', role: 'Adjunct Professor',                                            org: 'IIT Roorkee' },
+  { period: '2022 - present', role: 'Adjunct Professor, Dept. of Mech. & Product Design Eng.',      org: 'Swinburne University, Melbourne' },
+  { period: '2014 - Oct 2022',role: 'Head of Department, Department of Design',                     org: 'IIT Hyderabad' },
+  { period: '2014 - 2017',    role: 'Associate Professor, Department of Design',                    org: 'IIT Hyderabad' },
+  { period: '2007 - 2013',    role: 'Associate Senior Faculty',                                     org: 'National Institute of Design, Ahmedabad' },
+  { period: '2004 - 2007',    role: 'Faculty',                                                      org: 'National Institute of Design, Ahmedabad' },
+  { period: '2002 - 2013',    role: 'Head of Photography Department',                               org: 'NID Ahmedabad' },
 ]
 
 const education = [
@@ -23,16 +23,16 @@ const education = [
 ]
 
 const awards = [
-  { year: '2025', text: 'Lifetime Achievement Award for Design Research — Design Research Council of India' },
-  { year: '2012', text: 'Partnership Development Seed Grant — Shastri Foundation, with OCAD University Canada' },
-  { year: '2011', text: 'UKIERI India UK Study Mission Grant (16,000 GBP) — British Council' },
+  { year: '2025', text: 'Lifetime Achievement Award for Design Research -- Design Research Council of India' },
+  { year: '2012', text: 'Partnership Development Seed Grant -- Shastri Foundation, with OCAD University Canada' },
+  { year: '2011', text: 'UKIERI India UK Study Mission Grant (16,000 GBP) -- British Council' },
   { year: '2011', text: 'Commonwealth Fellowship for practice-based Ph.D. in Photography' },
-  { year: '2008', text: '50,000 GBP Grant from UKIERI — Photography Design twin program, NID & UCA' },
-  { year: '2006', text: 'Photography Award — India Habitat Centre' },
-  { year: '1999', text: 'Young Artist of the Year — Alliance Française, New Delhi' },
-  { year: '1997', text: 'Kanoria Scholarship — Kanoria Art Centre, Ahmedabad' },
+  { year: '2008', text: '50,000 GBP Grant from UKIERI -- Photography Design twin program, NID & UCA' },
+  { year: '2006', text: 'Photography Award -- India Habitat Centre' },
+  { year: '1999', text: 'Young Artist of the Year -- Alliance Française, New Delhi' },
+  { year: '1997', text: 'Kanoria Scholarship -- Kanoria Art Centre, Ahmedabad' },
   { year: '1996', text: 'Inlaks Fine Arts Award' },
-  { year: '1994', text: 'National Scholarship for Young Artists — Ministry of Human Resources, Govt. of India' },
+  { year: '1994', text: 'National Scholarship for Young Artists -- Ministry of Human Resources, Govt. of India' },
 ]
 
 const papers = [
@@ -43,12 +43,12 @@ const papers = [
   { year: 2022, title: 'A critical review of national education policy 2020: role of twenty-first-century skills and scope of design education', venue: 'Int. Journal of Design Education', cite: 3 },
   { year: 2022, title: 'Factors Influencing the Exterior Design of Autonomous Passenger Drones: Literature Review',                          venue: 'Proceedings of the Design Society', cite: 2 },
   { year: 2022, title: 'Design Briefs: Review, Reframing Briefs, and Analysis of a Study',                                                   venue: 'Int. Journal of Design Education', cite: 1 },
-  { year: 2022, title: 'Table for Two — A parallel interactive narrative in VR (PIN VR)',                                                    venue: 'The Changing Face of VR', cite: 1 },
+  { year: 2022, title: 'Table for Two -- A parallel interactive narrative in VR (PIN VR)',                                                    venue: 'The Changing Face of VR', cite: 1 },
   { year: 2021, title: 'Enhancing creative learning methods by immersive virtual reality: A pilot study',                                    venue: 'ICoRD 2021', cite: 4 },
   { year: 2021, title: 'Bio-bricks: Circular economy and new products',                                                                      venue: 'ICoRD 2021', cite: 6 },
   { year: 2021, title: 'Digital preservation of the Qutb Shahi monuments: Archiving architecture for historical education',                  venue: 'ICoRD 2021', cite: 1 },
   { year: 2020, title: 'Users Survey for Development of Passenger Drones',                                                                   venue: 'Proceedings of the Design Society: DESIGN Conference', cite: 12 },
-  { year: 2019, title: 'Bio-Brick — Development of sustainable and cost effective building material',                                        venue: 'ICED 2019', cite: 16 },
+  { year: 2019, title: 'Bio-Brick -- Development of sustainable and cost effective building material',                                        venue: 'ICED 2019', cite: 16 },
   { year: 2019, title: 'A study on consumer awareness towards green fashion in India',                                                        venue: 'ICoRD 2019', cite: 12 },
   { year: 2017, title: 'Evolution of design briefs: Expressions from professional design practice',                                          venue: 'ICoRD 2017', cite: 4 },
 ]
@@ -61,27 +61,24 @@ const researchAreas = [
 ]
 
 const links = [
-  { label: 'Website',       href: 'https://deepakjohnmathew.net',                                          text: 'deepakjohnmathew.net ↗' },
-  { label: 'IIT Hyderabad', href: 'https://design.iith.ac.in/iitdesign_peoples/deepak-john-mathew-phd/',   text: 'IIT Profile ↗' },
-  { label: 'Google Scholar',href: 'https://scholar.google.com/citations?hl=en&user=UBODlvYAAAAJ',          text: 'Scholar ↗' },
-  { label: 'LinkedIn',      href: 'https://www.linkedin.com/in/deepak-john-mathew',                        text: 'LinkedIn ↗' },
+  { label: 'Website',       href: 'https://deepakjohnmathew.net',                                          text: 'deepakjohnmathew.net' },
+  { label: 'IIT Hyderabad', href: 'https://design.iith.ac.in/iitdesign_peoples/deepak-john-mathew-phd/',   text: 'IIT Profile' },
+  { label: 'Google Scholar',href: 'https://scholar.google.com/citations?hl=en&user=UBODlvYAAAAJ',          text: 'Scholar' },
+  { label: 'LinkedIn',      href: 'https://www.linkedin.com/in/deepak-john-mathew',                        text: 'LinkedIn' },
 ]
 
-/* ── COMPONENT ── */
+/* -- COMPONENT -- */
 export default function Resume() {
   return (
     <div className="resume">
 
-      {/* ── HEADER ── */}
+      {/* -- HEADER -- same pattern as About/Work: left text | right sticker -- */}
       <header className="r-header">
-        <img
-          src="/djm-profile.jpg"
-          alt="Deepak John Mathew"
-          className="r-photo"
-        />
-        <div className="r-header-text">
+
+        {/* Left: eyebrow + name + role + links */}
+        <div className="r-header-left">
           <p className="r-eyebrow">Curriculum Vitae</p>
-          <h1 className="r-name">Deepak John <em>Mathew</em></h1>
+          <h1 className="r-name">Deepak John Mathew</h1>
           <p className="r-role">Professor of Design · IIT Hyderabad</p>
           <p className="r-nodal">
             Principal Investigator &amp; Nodal Coordinator, Design Innovation Centre<br />
@@ -93,9 +90,21 @@ export default function Resume() {
             ))}
           </div>
         </div>
+
+        {/* Right: graduation illustration */}
+        <div className="r-sticker">
+          <div className="r-sticker-bubble">My CV!</div>
+          <img
+            src="/illustrations/illus-resume.png"
+            alt="Deepak John Mathew illustration"
+            className="r-sticker-img"
+            draggable="false"
+          />
+        </div>
+
       </header>
 
-      {/* ── RESEARCH AREAS ── */}
+      {/* -- RESEARCH AREAS -- */}
       <section className="r-section">
         <h2 className="r-section-title">Research Areas</h2>
         <div className="r-tags">
@@ -103,7 +112,7 @@ export default function Resume() {
         </div>
       </section>
 
-      {/* ── ACADEMIC POSITIONS ── */}
+      {/* -- ACADEMIC POSITIONS -- */}
       <section className="r-section">
         <h2 className="r-section-title">Academic Positions</h2>
         <div className="r-entries">
@@ -119,7 +128,7 @@ export default function Resume() {
         </div>
       </section>
 
-      {/* ── EDUCATION ── */}
+      {/* -- EDUCATION -- */}
       <section className="r-section">
         <h2 className="r-section-title">Education</h2>
         <div className="r-entries">
@@ -135,7 +144,7 @@ export default function Resume() {
         </div>
       </section>
 
-      {/* ── AWARDS ── */}
+      {/* -- AWARDS -- */}
       <section className="r-section">
         <h2 className="r-section-title">Awards &amp; Scholarships</h2>
         <div className="r-awards">
@@ -148,7 +157,7 @@ export default function Resume() {
         </div>
       </section>
 
-      {/* ── PUBLICATIONS ── */}
+      {/* -- PUBLICATIONS -- */}
       <section className="r-section">
         <h2 className="r-section-title">Selected Publications</h2>
         <div className="r-papers">
@@ -169,28 +178,28 @@ export default function Resume() {
         </div>
       </section>
 
-      {/* ── PROFILES ── */}
+      {/* -- PROFILES -- */}
       <section className="r-section">
         <h2 className="r-section-title">Profiles &amp; Gallery</h2>
         <div className="r-entries">
           <div className="r-entry">
             <span className="r-period">Academic</span>
             <div className="r-profile-links">
-              <a href="https://www.researchgate.net/profile/Deepak-Mathew-3" target="_blank" rel="noreferrer">ResearchGate ↗</a>
-              <a href="https://nid.academia.edu/DeepakMathew" target="_blank" rel="noreferrer">Academia.edu ↗</a>
+              <a href="https://www.researchgate.net/profile/Deepak-Mathew-3" target="_blank" rel="noreferrer">ResearchGate &#8594;</a>
+              <a href="https://nid.academia.edu/DeepakMathew" target="_blank" rel="noreferrer">Academia.edu &#8594;</a>
             </div>
           </div>
           <div className="r-entry">
             <span className="r-period">Gallery</span>
             <div className="r-profile-links">
-              <a href="https://galleryragini.com/deepak-john-mathew/" target="_blank" rel="noreferrer">Gallery Ragini ↗</a>
+              <a href="https://galleryragini.com/deepak-john-mathew/" target="_blank" rel="noreferrer">Gallery Ragini &#8594;</a>
             </div>
           </div>
           <div className="r-entry">
             <span className="r-period">Social</span>
             <div className="r-profile-links">
-              <a href="https://www.instagram.com/deepakjohnmathew/" target="_blank" rel="noreferrer">Instagram ↗</a>
-              <a href="https://www.facebook.com/deepakjohnmathew/" target="_blank" rel="noreferrer">Facebook ↗</a>
+              <a href="https://www.instagram.com/deepakjohnmathew/" target="_blank" rel="noreferrer">Instagram &#8594;</a>
+              <a href="https://www.facebook.com/deepakjohnmathew/" target="_blank" rel="noreferrer">Facebook &#8594;</a>
             </div>
           </div>
         </div>

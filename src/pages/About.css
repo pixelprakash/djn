@@ -27,13 +27,12 @@
   font-family: var(--body);
   color: var(--ink);
   -webkit-font-smoothing: antialiased;
-  padding-bottom: 0;      /* footer handles its own bottom padding */
+  padding-bottom: var(--nav-safe); /* space for floating nav */
   display: flex;
   flex-direction: column;
 }
-/* panel takes up all remaining space so footer always reaches bottom */
+/* panel no longer flex:1 since .ap now has nav padding */
 .ap-panel {
-  flex: 1;
   display: flex;
   flex-direction: column;
   animation: fadeUp .3s ease both;
@@ -41,86 +40,220 @@
 
 /* ══════════════════════════════════════════
    HEADER
+   3-col grid: [name+sub] [toggle] [sticker]
+   All vertically centred
 ══════════════════════════════════════════ */
 .ap-top {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr auto auto;
   align-items: center;
-  gap: clamp(16px, 3vw, 40px);
-  padding: clamp(28px, 4vw, 44px) var(--g) clamp(20px, 3vw, 32px);
+  column-gap: clamp(20px, 3vw, 40px);
+  padding: clamp(14px, 2vw, 24px) var(--g);
+  position: relative;
+  overflow: visible;
 }
-.ap-top-name { flex: 1; min-width: 0; }
 
-/* ── NAME — display size, Bree Serif ── */
+/* Left: name + subtitle stacked */
+.ap-top-left {
+  grid-column: 1;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(8px, 1.2vw, 14px);
+  min-width: 0;
+}
+
+/* Toggle: col 2, centred */
+.tog {
+  grid-column: 2;
+  align-self: center;
+}
+
+
+
+
+/* ── NAME — Bree Serif display ── */
 .ap-title {
   font-family: var(--serif);
   font-size: clamp(28px, 4.5vw, 52px);
   font-weight: 400;
   line-height: 1.0;
   color: var(--ink);
-  margin-bottom: 8px;
   letter-spacing: -0.01em;
 }
 
 /* ── Subtitle — Rubik 300 ── */
 .ap-sub {
   font-family: var(--body);
-  font-size: 1.5rem;      /* 24px */
+  font-size: 1.5rem;
   font-weight: 300;
   color: var(--sub);
   line-height: 1.4;
 }
 
-/* ── Toggle ── */
-.tog { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+/* ── Toggle — icon + big thumb style ── */
+.tog {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
 
+/* Each label is clickable */
 .tog-lbl {
   font-family: var(--body);
-  font-size: 1rem;
-  font-weight: 400;
+  font-size: 1.1rem;
+  font-weight: 500;
   color: var(--muted);
   cursor: pointer;
   transition: color .2s;
   user-select: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 2px;
+  border: none;
+  background: none;
+  outline: none;
 }
-.tog-lbl--on { color: var(--ink); font-weight: 500; }
+.tog-lbl:hover { color: var(--ink); }
+.tog-lbl--on { color: var(--ink); }
 
+/* Icons inside labels */
+.tog-lbl svg {
+  width: 20px; height: 20px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  flex-shrink: 0;
+  transition: stroke .2s;
+}
+.tog-lbl--on svg { stroke: var(--accent); }
+
+/* The pill track — larger, matching wireframe */
 .tog-track {
   position: relative;
-  width: 58px; height: 32px;
-  background: #ccc8c0;
+  width: 76px; height: 42px;
+  background: #dbd6ce;
   border-radius: 100px;
-  border: none; cursor: pointer; padding: 0;
+  border: none;
+  cursor: pointer;
+  padding: 0;
   flex-shrink: 0;
   transition: background .3s;
+  box-shadow: inset 0 2px 6px rgba(0,0,0,.08);
 }
-.tog-track--life { background: var(--accent); }
-.tog-track:hover { filter: brightness(.93); }
-.tog-track:active { transform: scale(.96); }
+.tog-track--life { background: #dbd6ce; }
+.tog-track:hover { filter: brightness(.96); }
+.tog-track:active { transform: scale(.97); }
 
+/* Large coloured thumb */
 .tog-thumb {
   position: absolute;
-  top: 4px; left: 4px;
-  width: 24px; height: 24px;
+  top: 5px; left: 5px;
+  width: 32px; height: 32px;
   background: var(--white);
   border-radius: 50%;
-  box-shadow: 0 2px 7px rgba(0,0,0,.2);
-  transition: transform .32s cubic-bezier(.34,1.56,.64,1);
-  display: block; pointer-events: none;
+  box-shadow: 0 2px 8px rgba(0,0,0,.18);
+  transition: transform .32s cubic-bezier(.34,1.56,.64,1),
+              background .3s;
+  display: block;
+  pointer-events: none;
 }
-.tog-track--life .tog-thumb { transform: translateX(26px); }
+/* Life mode: thumb turns accent orange and slides right */
+.tog-track--life .tog-thumb {
+  transform: translateX(34px);
+  background: var(--accent);
+}
 
-/* ── Avatar ── */
-.ap-avatar {
-  width: clamp(52px, 7vw, 80px);
-  height: clamp(52px, 7vw, 80px);
-  border-radius: 50%; overflow: hidden;
+/* ── Sticker — col3, centred vertically ── */
+.ap-sticker {
+  grid-column: 3;
+  align-self: center;
   flex-shrink: 0;
-  background: var(--rule);
-  border: 2px solid rgba(0,0,0,.08);
+  width: clamp(90px, 11vw, 150px);
+  cursor: pointer;
+  z-index: 10;
+  position: relative;
 }
-.ap-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
-/* ── Divider ── */
+/* "Hi there!" bubble — top-right of sticker, hover only */
+.ap-sticker-bubble {
+  position: absolute;
+  top: 0;
+  right: -4px;
+  transform: translateX(100%) scale(0.88);
+  background: #1a1814;
+  color: #fff;
+  font-family: 'Rubik', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 12px 12px 12px 0;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 11;
+  opacity: 0;
+  transition:
+    opacity .25s cubic-bezier(.34,1.56,.64,1),
+    transform .25s cubic-bezier(.34,1.56,.64,1);
+}
+
+/* Tail pointing left */
+.ap-sticker-bubble::before {
+  content: '';
+  position: absolute;
+  bottom: 7px;
+  left: -6px;
+  width: 0; height: 0;
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+  border-right: 7px solid #1a1814;
+}
+
+/* Show bubble only on hover */
+.ap-sticker:hover .ap-sticker-bubble {
+  opacity: 1;
+  transform: translateX(100%) scale(1);
+}
+
+@keyframes bubble-in {
+  from { opacity: 0; transform: translateX(calc(100% - 8px)) scale(0.85); }
+  to   { opacity: 1; transform: translateX(100%) scale(1); }
+}
+
+.ap-sticker-img {
+  width: 100%;
+  height: auto;
+  display: block;
+  mix-blend-mode: multiply;
+  filter: drop-shadow(0 4px 12px rgba(0,0,0,.12));
+  animation: sticker-float 3.5s ease-in-out infinite;
+  transform-origin: bottom center;
+  pointer-events: none;
+}
+
+.ap-sticker:hover .ap-sticker-img {
+  animation: sticker-wave 0.45s ease-in-out infinite alternate;
+}
+
+@keyframes sticker-float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  40%       { transform: translateY(-5px) rotate(1deg); }
+  70%       { transform: translateY(-2px) rotate(-0.5deg); }
+}
+
+@keyframes sticker-wave {
+  0%   { transform: rotate(-8deg) translateY(-4px); }
+  100% { transform: rotate(8deg) translateY(-9px); }
+}
+
+
+/* Mobile toggle hidden by default (shown on mobile only) */
+.tog--mobile { display: none; }
+/* Desktop toggle shown by default */
+.tog--desktop { display: flex; }
 .ap-div { height: 1.5px; background: var(--ink); }
 
 /* ══════════════════════════════════════════
@@ -140,7 +273,6 @@
 .sl-track {
   display: flex; gap: 0; width: max-content;
   animation: scrollL var(--spd,40s) linear infinite;
-  will-change: transform;
 }
 .sl-wrap:hover .sl-track { animation-play-state: paused; }
 
@@ -501,8 +633,7 @@
   background: #0d2820 !important;
   border-bottom: none;
   padding-bottom: calc(var(--nav-safe) + 64px);
-  /* push down to fill any remaining space */
-  flex: 1;
+  /* removed flex:1 -- was covering floating nav */
 }
 
 .contact-box { display: flex; flex-direction: column; gap: 12px; }
@@ -558,27 +689,50 @@
 
 @media (max-width: 1100px) {
   :root { --g: 64px; }
+  .ap-sticker { width: clamp(90px, 11vw, 140px); }
 }
+
 @media (max-width: 768px) {
   :root { --g: 32px; }
   .frames { grid-template-columns: 1fr 1fr; }
   .news-row { grid-template-columns: 1fr 1fr; }
   .testi-top { grid-template-columns: 1fr; }
   .testi-photo { width: 100%; max-width: 100%; aspect-ratio: 16/9; }
-  .ap-title { font-size: clamp(22px, 5vw, 38px); }
-  .ap-sub { font-size: 1.1rem; }
+  /* Header: 2-col — text+toggle LEFT, sticker RIGHT */
+  .ap-top { grid-template-columns: 1fr auto; align-items: center; }
+  /* Hide desktop toggle, show mobile toggle inside ap-top-left */
+  .tog--desktop { display: none; }
+  .tog--mobile {
+    display: flex;
+    margin-top: 12px;
+    margin-left: 0;
+    padding: 0;
+    align-self: flex-start;  /* don't stretch full width */
+  }
+  /* Sticker: single column, centred */
+  .ap-sticker { grid-column: 2; grid-row: 1; width: clamp(80px, 16vw, 120px); align-self: center; }
+  .ap-title { font-size: clamp(20px, 5vw, 34px); }
+  .ap-sub { font-size: 1rem; }
   .sec-head { font-size: 2rem; }
   .about-body { font-size: 1.15rem; }
   .contact-h { font-size: 2rem; }
   .contact-p { font-size: 1.1rem; }
 }
+
 @media (max-width: 540px) {
   :root { --g: 20px; }
   .frames { grid-template-columns: 1fr; }
   .news-row { grid-template-columns: 1fr; }
   .testi-q { font-size: 3rem; }
-  .ap-avatar { width: 44px; height: 44px; }
-  .ap-sub { font-size: 0.95rem; }
+  .ap-sticker { width: clamp(65px, 18vw, 95px); }
+  /* Smaller toggle on tiny phones */
+  .tog-track { width: 52px; height: 28px; }
+  .tog-thumb { width: 20px; height: 20px; }
+  .tog-track--life .tog-thumb { transform: translateX(24px); }
+  .tog-lbl { font-size: 0.85rem; }
+  .tog-lbl svg { width: 16px; height: 16px; }
+  .ap-title { font-size: clamp(18px, 6vw, 28px); }
+  .ap-sub { font-size: 0.88rem; }
   .sec-head { font-size: 1.6rem; }
   .about-body, .testi-text, .news-card-title, .contact-p { font-size: 1rem; }
   .contact-h { font-size: 1.8rem; }

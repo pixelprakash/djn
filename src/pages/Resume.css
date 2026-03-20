@@ -1,8 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Bree+Serif&family=Rubik:ital,wght@0,300;0,400;0,500;1,300&display=swap');
 
-/* ══════════════════════════════════════════
-   TOKENS  — identical to About / Work pages
-══════════════════════════════════════════ */
+/* ==========================================
+   TOKENS  -- identical to About / Work pages
+========================================== */
 :root {
   --bg:       #f5f3ee;
   --ink:      #1a1814;
@@ -26,34 +26,35 @@
   color: var(--ink);
   -webkit-font-smoothing: antialiased;
   padding-bottom: var(--nav-safe);
+  width: 100%;
+  overflow-x: hidden;
 }
 
-/* ══════════════════════════════════════════
-   HEADER  — same structure as About / Work
-══════════════════════════════════════════ */
+/* ==========================================
+   HEADER  -- same structure as About / Work
+========================================== */
 .r-header {
   display: flex;
-  align-items: flex-start;
-  gap: clamp(24px, 4vw, 52px);
-  padding: clamp(28px, 4vw, 44px) var(--g) clamp(20px, 3vw, 36px);
+  flex-direction: row;
+  align-items: center;
+  gap: clamp(20px, 3vw, 40px);
+  padding: clamp(14px, 2vw, 24px) var(--g);
   border-bottom: 1.5px solid var(--ink);
   animation: fadeUp .5s ease both;
+  position: relative;
+  overflow: visible;
 }
 
-/* Profile photo */
-.r-photo {
-  width: clamp(80px, 10vw, 140px);
-  height: clamp(80px, 10vw, 140px);
-  border-radius: 14px;
-  object-fit: cover;
-  object-position: center top;
-  flex-shrink: 0;
-  border: 1px solid var(--rule);
-  /* subtle greyscale tint to keep visual hierarchy */
-  filter: grayscale(15%);
+/* Left text block -- fills remaining space */
+.r-header-left {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 
-.r-header-text { flex: 1; min-width: 0; }
+/* r-photo removed -- illustration sticker used instead */
 
 /* Small label above name */
 .r-eyebrow {
@@ -66,7 +67,7 @@
   margin-bottom: 10px;
 }
 
-/* Name — Bree Serif display, matches ap-title sizing */
+/* Name -- Bree Serif display, matches ap-title sizing */
 .r-name {
   font-family: var(--serif);
   font-size: clamp(28px, 4.5vw, 52px);
@@ -74,32 +75,29 @@
   line-height: 1.0;
   letter-spacing: -0.01em;
   color: var(--ink);
-  margin-bottom: 10px;
 }
-/* "Mathew" — italic but SAME ink colour, no accent */
+/* "Mathew" -- italic but SAME ink colour, no accent */
 .r-name em {
   font-style: italic;
   color: var(--ink);
 }
 
-/* Role — 1.5rem Rubik 500, matches about-body weight */
+/* Role -- 1.5rem Rubik 500, matches about-body weight */
 .r-role {
   font-family: var(--body);
   font-size: 1.5rem;
   font-weight: 500;
   color: var(--ink);
   line-height: 1.3;
-  margin-bottom: 6px;
 }
 
-/* Secondary role line — lighter */
+/* Secondary role line -- lighter */
 .r-nodal {
   font-family: var(--body);
   font-size: clamp(0.85rem, 1.3vw, 1rem);
   font-weight: 300;
   color: var(--sub);
   line-height: 1.6;
-  margin-bottom: 18px;
 }
 
 /* Profile links row */
@@ -127,9 +125,85 @@
   transform: translateY(-2px);
 }
 
-/* ══════════════════════════════════════════
+/* -- Sticker illustration in header -- */
+.r-sticker {
+  flex-shrink: 0;
+  width: clamp(90px, 11vw, 150px);
+  align-self: center;
+  cursor: pointer;
+  z-index: 10;
+  position: relative;
+  margin-left: auto;
+}
+
+.r-sticker-bubble {
+  position: absolute;
+  top: 0;
+  right: -4px;
+  transform: translateX(100%) scale(0.88);
+  background: #1a1814;
+  color: #fff;
+  font-family: var(--body);
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 12px 12px 12px 0;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 11;
+  opacity: 0;
+  transition:
+    opacity .25s cubic-bezier(.34,1.56,.64,1),
+    transform .25s cubic-bezier(.34,1.56,.64,1);
+}
+.r-sticker-bubble::before {
+  content: '';
+  position: absolute;
+  bottom: 7px;
+  left: -6px;
+  width: 0; height: 0;
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+  border-right: 7px solid #1a1814;
+}
+.r-sticker:hover .r-sticker-bubble {
+  opacity: 1;
+  transform: translateX(100%) scale(1);
+}
+
+.r-sticker-img {
+  width: 100%;
+  height: auto;
+  display: block;
+  mix-blend-mode: multiply;
+  filter: drop-shadow(0 4px 12px rgba(0,0,0,.12));
+  animation: sticker-float 3.5s ease-in-out infinite;
+  transform-origin: bottom center;
+  pointer-events: none;
+}
+.r-sticker:hover .r-sticker-img {
+  animation: resume-tip 1.2s cubic-bezier(.34,1.56,.64,1) infinite;
+}
+
+@keyframes sticker-float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  40%       { transform: translateY(-5px) rotate(1deg); }
+  70%       { transform: translateY(-2px) rotate(-0.5deg); }
+}
+/* Proud bow / glasses tip on hover */
+@keyframes resume-tip {
+  0%   { transform: rotate(0deg) translateY(0); }
+  20%  { transform: rotate(-4deg) translateY(-4px); }
+  45%  { transform: rotate(3deg) translateY(-7px); }
+  70%  { transform: rotate(-2deg) translateY(-4px); }
+  100% { transform: rotate(0deg) translateY(0); }
+}
+
+
+
+/* ==========================================
    SECTION SHELL
-══════════════════════════════════════════ */
+========================================== */
 .r-section {
   padding: clamp(40px, 5.5vw, 72px) var(--g);
   border-bottom: 1px solid var(--rule);
@@ -145,7 +219,7 @@
 .r-section:nth-child(6) { animation-delay: .30s; }
 .r-section:nth-child(7) { animation-delay: .36s; }
 
-/* Section heading — 3rem Bree Serif with trailing rule, matches sec-head */
+/* Section heading -- 3rem Bree Serif with trailing rule, matches sec-head */
 .r-section-title {
   font-family: var(--serif);
   font-size: 3rem;
@@ -165,9 +239,9 @@
   background: var(--rule);
 }
 
-/* ══════════════════════════════════════════
+/* ==========================================
    RESEARCH AREA TAGS
-══════════════════════════════════════════ */
+========================================== */
 .r-tags { display: flex; flex-wrap: wrap; gap: 10px; }
 
 .r-tag {
@@ -189,10 +263,10 @@
   transform: translateY(-2px);
 }
 
-/* ══════════════════════════════════════════
+/* ==========================================
    ENTRY ROWS  (positions, education)
    period  |  title + sub
-══════════════════════════════════════════ */
+========================================== */
 .r-entries { display: flex; flex-direction: column; }
 
 .r-entry {
@@ -207,7 +281,7 @@
 .r-entry:first-child { border-top: 1px solid var(--rule); }
 .r-entry:hover { padding-left: 8px; }
 
-/* Period / year label — small mono-style */
+/* Period / year label -- small mono-style */
 .r-period {
   font-family: var(--body);
   font-size: 0.78rem;
@@ -218,7 +292,7 @@
   white-space: nowrap;
 }
 
-/* Entry title — 1.5rem Rubik 500, matches about-body / work title */
+/* Entry title -- 1.5rem Rubik 500, matches about-body / work title */
 .r-entry-title {
   font-family: var(--body);
   font-size: 1.5rem;
@@ -228,7 +302,7 @@
   margin-bottom: 4px;
 }
 
-/* Entry sub — lighter muted */
+/* Entry sub -- lighter muted */
 .r-entry-sub {
   font-family: var(--body);
   font-size: 1rem;
@@ -237,9 +311,9 @@
   line-height: 1.5;
 }
 
-/* ══════════════════════════════════════════
+/* ==========================================
    AWARDS
-══════════════════════════════════════════ */
+========================================== */
 .r-awards { display: flex; flex-direction: column; }
 
 .r-award {
@@ -257,8 +331,8 @@
 .r-award-year {
   font-family: var(--body);
   font-size: 0.82rem;
-  font-weight: 600;
-  color: var(--accent);
+  font-weight: 500;
+  color: var(--muted);
   white-space: nowrap;
 }
 
@@ -270,9 +344,9 @@
   line-height: 1.55;
 }
 
-/* ══════════════════════════════════════════
+/* ==========================================
    PUBLICATIONS
-══════════════════════════════════════════ */
+========================================== */
 .r-papers { display: flex; flex-direction: column; }
 
 .r-paper {
@@ -317,17 +391,17 @@
   align-items: center;
   gap: 4px;
   font-size: 0.72rem;
-  font-weight: 600;
-  color: var(--accent);
-  background: rgba(255,94,46,.08);
-  border: 1px solid rgba(255,94,46,.2);
+  font-weight: 500;
+  color: var(--sub);
+  background: rgba(74,69,64,.06);
+  border: 1px solid var(--rule);
   border-radius: 100px;
   padding: 2px 10px;
 }
 
-/* ══════════════════════════════════════════
+/* ==========================================
    PROFILE LINKS  (academic / social)
-══════════════════════════════════════════ */
+========================================== */
 .r-profile-links {
   display: flex;
   flex-wrap: wrap;
@@ -352,47 +426,48 @@
   transform: translateY(-2px);
 }
 
-/* ══════════════════════════════════════════
+/* ==========================================
    ANIMATION
-══════════════════════════════════════════ */
+========================================== */
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(14px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* ══════════════════════════════════════════
+/* ==========================================
    RESPONSIVE
-══════════════════════════════════════════ */
+========================================== */
 @media (max-width: 1100px) {
   :root { --g: 64px; }
+  .r-sticker { width: clamp(90px, 11vw, 130px); }
 }
 
 @media (max-width: 768px) {
   :root { --g: 32px; }
+  /* Header: text left, sticker right — keep side by side but smaller */
+  .r-header { align-items: center; gap: 16px; padding: 16px var(--g); }
+  .r-sticker { width: clamp(70px, 14vw, 110px); }
   .r-section-title { font-size: 2rem; }
   .r-entry-title { font-size: 1.2rem; }
   .r-award-text { font-size: 1rem; }
   .r-paper-title { font-size: 1rem; }
   .r-role { font-size: 1.2rem; }
+  .r-name { font-size: clamp(20px, 5vw, 36px); }
 }
 
 @media (max-width: 580px) {
   :root { --g: 20px; }
-  .r-header { flex-direction: column; gap: 20px; }
-  .r-photo { width: 80px; height: 80px; }
-  .r-name { font-size: clamp(22px, 7vw, 34px); }
-  .r-role { font-size: 1rem; }
+  /* On small phones: sticker shrinks further, sits right of text */
+  .r-header { align-items: center; gap: 12px; }
+  .r-sticker { width: clamp(60px, 18vw, 90px); flex-shrink: 0; }
+  .r-name { font-size: clamp(18px, 6vw, 28px); }
+  .r-role { font-size: 0.95rem; }
+  .r-nodal { font-size: 0.82rem; }
   .r-section-title { font-size: 1.6rem; }
-  .r-entry {
-    grid-template-columns: 1fr;
-    gap: 4px;
-  }
+  .r-entry { grid-template-columns: 1fr; gap: 4px; }
   .r-entry:hover { padding-left: 0; }
   .r-period { padding-top: 0; }
-  .r-award {
-    grid-template-columns: 1fr;
-    gap: 4px;
-  }
+  .r-award { grid-template-columns: 1fr; gap: 4px; }
   .r-award:hover { padding-left: 0; }
   .r-entry-title { font-size: 1rem; }
   .r-award-text { font-size: 0.95rem; }

@@ -49,15 +49,27 @@ export default function Lab() {
   return (
     <div className="lab">
 
+      {/* -- HEADER -- same 3-col pattern: eyebrow+title+sub | sticker -- */}
       <header className="lab-head">
-        <div>
+
+        {/* Left: eyebrow + title + subtitle */}
+        <div className="lab-head-left">
           <p className="lab-eyebrow">Experiments &amp; Prototypes</p>
-          <h1 className="lab-title">DIC <em>Lab</em></h1>
+          <h1 className="lab-title">DIC Lab</h1>
+          <p className="lab-sub">Ongoing explorations at the edge of design research.</p>
         </div>
-        <p className="lab-sub">
-          Ongoing explorations at the<br />
-          edge of design research.
-        </p>
+
+        {/* Right: VR headset illustration */}
+        <div className="lab-sticker">
+          <div className="lab-sticker-bubble">Explore XR!</div>
+          <img
+            src="/illustrations/illus-lab.png"
+            alt="Deepak John Mathew in VR"
+            className="lab-sticker-img"
+            draggable="false"
+          />
+        </div>
+
       </header>
 
       <div className="lab-body">
@@ -70,7 +82,6 @@ export default function Lab() {
                 style={{ animationDelay: (i * 0.07) + 's' }}
               >
                 <span className="lab-num">{e.id}</span>
-
                 <div className="lab-content">
                   <div className="lab-item-top">
                     <h2 className="lab-item-title">{e.title}</h2>

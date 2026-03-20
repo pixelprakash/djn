@@ -24,7 +24,7 @@ const INTERESTS = [
 
 const NEWS = [
   { tag:'Event',       title:'Summer Internships 2026 Opened!',                          img:'https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=400&h=220&fit=crop&q=80' },
-  { tag:'Award',       title:'Lifetime Achievement Award — Design Research Council 2025', img:'https://images.unsplash.com/photo-1567427017947-545c5f8d16ad?w=400&h=220&fit=crop&q=80' },
+  { tag:'Award',       title:'Lifetime Achievement Award -- Design Research Council 2025', img:'https://images.unsplash.com/photo-1567427017947-545c5f8d16ad?w=400&h=220&fit=crop&q=80' },
   { tag:'Publication', title:'New paper on Sustainable Design pedagogy published',        img:'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=400&h=220&fit=crop&q=80' },
 ]
 
@@ -34,7 +34,7 @@ const TESTI = [
   { name:'Dr. Sarah Ellis', role:'Swinburne University, Melbourne',     quote:'A genuinely interdisciplinary thinker. His work bridging heritage, VR, and design education is unlike anything else I have encountered in the field.', img:'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300&h=400&fit=crop' },
 ]
 
-/* ── Slider ── */
+/* -- Slider -- */
 function Slider({ images, speed = 40 }) {
   const trackRef = useRef(null)
   const all = [...images, ...images]
@@ -83,32 +83,55 @@ export default function About() {
   return (
     <div className="ap">
 
-      {/* ── HEADER ── */}
+      {/* -- HEADER -- */}
       <header className="ap-top">
-        <div className="ap-top-name">
+
+        {/* Left: name + subtitle -- on mobile, toggle moves here too */}
+        <div className="ap-top-left">
           <h1 className="ap-title">Deepak John Mathew</h1>
           <p className="ap-sub">Professor &amp; Founding head of Design at IIT Hyderabad</p>
+          {/* Toggle shown only on mobile, tucked below subtitle */}
+          <div className="tog tog--mobile" role="group" aria-label="View toggle">
+            <button className={`tog-lbl${mode==='work'?' tog-lbl--on':''}`} onClick={() => go('work')} aria-pressed={mode==='work'}>
+              <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+              work
+            </button>
+            <button className={`tog-track${mode==='life'?' tog-track--life':''}`} onClick={() => go(mode==='work'?'life':'work')} role="switch" aria-checked={mode==='life'} aria-label="Toggle work/life">
+              <span className="tog-thumb" />
+            </button>
+            <button className={`tog-lbl${mode==='life'?' tog-lbl--on':''}`} onClick={() => go('life')} aria-pressed={mode==='life'}>
+              <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+              Life
+            </button>
+          </div>
         </div>
-        <div className="tog" role="group">
-          <span className={`tog-lbl${mode==='work'?' tog-lbl--on':''}`}>work</span>
-          <button
-            className={`tog-track${mode==='life'?' tog-track--life':''}`}
-            onClick={() => go(mode==='work'?'life':'work')}
-            role="switch" aria-checked={mode==='life'}
-          >
+
+        {/* Toggle -- desktop only (hidden on mobile, shown in ap-top-left instead) */}
+        <div className="tog tog--desktop" role="group" aria-label="View toggle">
+          <button className={`tog-lbl${mode==='work'?' tog-lbl--on':''}`} onClick={() => go('work')} aria-pressed={mode==='work'}>
+            <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+            work
+          </button>
+          <button className={`tog-track${mode==='life'?' tog-track--life':''}`} onClick={() => go(mode==='work'?'life':'work')} role="switch" aria-checked={mode==='life'} aria-label="Toggle work/life">
             <span className="tog-thumb" />
           </button>
-          <span className={`tog-lbl${mode==='life'?' tog-lbl--on':''}`}>Life</span>
+          <button className={`tog-lbl${mode==='life'?' tog-lbl--on':''}`} onClick={() => go('life')} aria-pressed={mode==='life'}>
+            <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            Life
+          </button>
         </div>
-        <div className="ap-avatar">
-          <img src="/djm-profile.jpg" alt="Prof. Deepak John Mathew"
-            onError={e => e.currentTarget.style.display='none'} />
+
+        {/* Sticker illustration */}
+        <div className="ap-sticker">
+          <div className="ap-sticker-bubble">Hi there!</div>
+          <img src="/illustrations/illus-about.png" alt="Deepak John Mathew waving" className="ap-sticker-img" draggable="false" />
         </div>
+
       </header>
 
       <div className="ap-div" />
 
-      {/* ── PANEL ── */}
+      {/* -- PANEL -- */}
       <div className={`ap-panel${out?' ap-panel--out':''}`}>
 
         {mode === 'work' && (
@@ -118,7 +141,7 @@ export default function About() {
               <Slider images={workImages} speed={36} />
             </div>
 
-            {/* 2. ABOUT — dark green, full-width text */}
+            {/* 2. ABOUT */}
             <section className="ap-sec ap-sec--green" id="about">
               <h2 className="sec-head">About</h2>
               <p className="about-body">
@@ -135,25 +158,22 @@ export default function About() {
               <p className="about-body about-body--mt">
                 His current research focuses on autonomous drones, exploring their applications in digital heritage
                 and design education through AR/VR integration.
-              </p> 
-          
+              </p>
 
               {/* 3 cards */}
               <div className="frames">
                 {FRAMES.map((f, i) => (
                   <div className="frame" key={i}>
-                    {/* White header band — text left, circle badge top-right corner */}
                     <div className="frame-header">
                       <p className="frame-top-text">{f.text}</p>
                       <div className="frame-circ">
                         <CircularText
-                          text={`${f.label.toUpperCase()} ✦ `}
+                          text={`${f.label.toUpperCase()} * `}
                           onHover="speedUp"
                           spinDuration={16}
                         />
                       </div>
                     </div>
-                    {/* Photo fills below */}
                     <div className="frame-img">
                       <img src={f.img} alt={f.label}
                         onError={e => e.currentTarget.src = PH} />
@@ -197,11 +217,10 @@ export default function About() {
               </div>
             </section>
 
-            {/* 5. TESTIMONIALS — quote + photo left/right, author + nav BELOW */}
+            {/* 5. TESTIMONIALS */}
             <section className="ap-sec" id="testi">
               <h2 className="sec-head">Testimonials</h2>
               <div className="testi-layout">
-                {/* top row: quote + text | photo */}
                 <div className="testi-top">
                   <div className="testi-left">
                     <span className="testi-q">"</span>
@@ -212,16 +231,14 @@ export default function About() {
                       onError={e => e.currentTarget.src = PH} />
                   </div>
                 </div>
-
-                {/* bottom row: author info | nav arrows — on the same line */}
                 <div className="testi-bottom">
                   <div className="testi-author">
                     <p className="testi-name">{TESTI[tIdx].name}</p>
                     <p className="testi-role">{TESTI[tIdx].role}</p>
                   </div>
                   <div className="testi-nav">
-                    <button className="testi-arr" onClick={() => setTIdx(i=>(i-1+TESTI.length)%TESTI.length)} aria-label="Previous">‹</button>
-                    <button className="testi-arr" onClick={() => setTIdx(i=>(i+1)%TESTI.length)} aria-label="Next">›</button>
+                    <button className="testi-arr" onClick={() => setTIdx(i=>(i-1+TESTI.length)%TESTI.length)} aria-label="Previous">&#8249;</button>
+                    <button className="testi-arr" onClick={() => setTIdx(i=>(i+1)%TESTI.length)} aria-label="Next">&#8250;</button>
                   </div>
                 </div>
               </div>
@@ -235,9 +252,7 @@ export default function About() {
                 <div className="contact-icons">
                   {[
                     { label:'Instagram', path:'M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z' },
-                   
                     { label:'LinkedIn',  path:'M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z' },
-                    
                     { label:'X',        path:'M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.754l7.83-8.945L2.003 2.25H8.08l4.224 5.654zm-1.161 17.52h1.833L7.084 4.126H5.117z' },
                     { label:'YouTube',  path:'M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z' },
                   ].map(s => (
