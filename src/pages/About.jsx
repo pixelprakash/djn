@@ -29,7 +29,7 @@ const NEWS = [
 ]
 
 const TESTI = [
-  { name:'Ananya Sharma',   role:'Former PhD Student, IIT Hyderabad',  quote:'Shadcn Space replaced messy UI kits and half-baked templates. Today our dashboards look premium, scale beautifully, and our team focuses on real features instead of design debt.', img:'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=300&h=400&fit=crop' },
+  { name:'Ananya Sharma',   role:'M.Des Student, IIT Hyderabad',  quote:'Prof. Mathew transformed my understanding of visual storytelling. His Photography Design program gave me the confidence to pursue a career in creative direction. The hands-on VR projects were mind-blowing!', img:'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=300&h=400&fit=crop' },
   { name:'Rohan Mehta',     role:'Alumni, IIT Hyderabad Design Dept.',  quote:'The course rewired my creative thinking entirely. A rare combination of academic rigor and creative imagination that I carry with me every day.', img:'https://images.unsplash.com/photo-1463453091185-61582044d556?w=300&h=400&fit=crop' },
   { name:'Dr. Sarah Ellis', role:'Swinburne University, Melbourne',     quote:'A genuinely interdisciplinary thinker. His work bridging heritage, VR, and design education is unlike anything else I have encountered in the field.', img:'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300&h=400&fit=crop' },
 ]

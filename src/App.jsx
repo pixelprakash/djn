@@ -1,5 +1,8 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"
 import FloatingNav from "./components/FloatingNav"
+import TopNav     from "./components/TopNav"
+import CvPage     from "./pages/CvPage"
+
 import "./App.css"
 
 import About   from "./pages/About"
@@ -13,7 +16,9 @@ import Contact from "./pages/Contact"
 function App() {
   return (
     <BrowserRouter>
+      <TopNav />
       <FloatingNav />
+      
       <Routes>
         {/* Default page → About */}
         <Route path="/"        element={<Navigate to="/about" replace />} />
@@ -24,6 +29,7 @@ function App() {
         <Route path="/lab"     element={<Lab />} />
         <Route path="/blog"    element={<Blog />} />
         <Route path="/contact" element={<Contact />} />
+        <Route path="/cv/:slug" element={<CvPage />} />
       </Routes>
     </BrowserRouter>
   )

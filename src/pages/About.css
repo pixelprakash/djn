@@ -47,7 +47,7 @@
   grid-template-columns: 1fr auto auto;
   align-items: center;
   column-gap: clamp(20px, 3vw, 40px);
-  padding: clamp(14px, 2vw, 24px) var(--g);
+  padding: clamp(32px, 4vw, 48px) var(--g) clamp(14px, 2vw, 24px);
   position: relative;
   overflow: visible;
 }

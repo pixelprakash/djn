@@ -212,9 +212,10 @@ export default function ProjectDetail() {
 
   /* Bar becomes "stuck" after hero scrolls past */
   useEffect(() => {
-    const fn = () => setStuck(window.scrollY > 48)
-    window.addEventListener('scroll', fn, { passive: true })
-    return () => window.removeEventListener('scroll', fn)
+    const root = document.getElementById('root') || window
+    const fn = () => setStuck((root.scrollTop || window.scrollY) > 48)
+    root.addEventListener('scroll', fn, { passive: true })
+    return () => root.removeEventListener('scroll', fn)
   }, [])
 
   if (!project) return (
@@ -222,6 +223,12 @@ export default function ProjectDetail() {
       Project not found. <Link to="/work">← Back to Work</Link>
     </div>
   )
+
+  // Hide TopNav on project detail for clean viewing
+  useEffect(() => {
+    document.documentElement.classList.add('hide-topnav')
+    return () => document.documentElement.classList.remove('hide-topnav')
+  }, [])
 
   return (
     <div className="pd">

@@ -4,10 +4,8 @@
   padding: 0;
 }
 
-/* KEY FIX: html and body must NOT scroll.
-   position:fixed is relative to the viewport ONLY when
-   html/body are not the scroll container.
-   Make #root scroll instead. */
+/* html/body do NOT scroll - #root is scroll container
+   Ensures position:fixed works on all mobile browsers */
 html {
   height: 100%;
   overflow: hidden;
@@ -17,7 +15,7 @@ body {
   height: 100%;
   overflow: hidden;
   font-family: 'Rubik', sans-serif;
-  background: #f7f5f0;
+  background: #f5f3ee;
   color: #1a1814;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -27,9 +25,8 @@ body {
   height: 100%;
   overflow-y: auto;
   overflow-x: hidden;
-  /* Enable momentum scrolling on iOS */
   -webkit-overflow-scrolling: touch;
-  background: #f7f5f0;
+  background: #f5f3ee;
   color: #1a1814;
 }
 
@@ -38,11 +35,27 @@ a {
   color: inherit;
 }
 
-ul, ol {
-  list-style: none;
+ul, ol { list-style: none; }
+
+button { font-family: inherit; cursor: pointer; }
+
+/* TopNav offset — nav height + generous breathing room */
+.tn-offset {
+  height: 96px;
+  flex-shrink: 0;
+}
+@media (max-width: 640px) {
+  .tn-offset { height: 82px; }
 }
 
-button {
-  font-family: inherit;
-  cursor: pointer;
+/* Extra top spacing on mobile for ALL page first sections */
+@media (max-width: 768px) {
+  .ap-top, .wp-head, .r-header, .lab-head, .bl-head, .contact-header {
+    padding-top: clamp(24px, 4vw, 36px) !important;
+  }
+}
+@media (max-width: 540px) {
+  .ap-top, .wp-head, .r-header, .lab-head, .bl-head, .contact-header {
+    padding-top: 20px !important;
+  }
 }
