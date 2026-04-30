@@ -29,8 +29,7 @@
 }
 
 /* =============================================
-   HEADER -- 2-col flex: left text | right sticker
-   Compact, matches About/Work/Resume pattern
+   HEADER
 ============================================= */
 .lab-head {
   display: flex;
@@ -44,7 +43,6 @@
   overflow: visible;
 }
 
-/* Left: eyebrow + title + subtitle */
 .lab-head-left {
   flex: 1;
   min-width: 0;
@@ -80,7 +78,7 @@
   white-space: nowrap;
 }
 
-/* Right: VR illustration sticker */
+/* Sticker */
 .lab-sticker {
   flex-shrink: 0;
   width: clamp(90px, 11vw, 150px);
@@ -90,7 +88,6 @@
   position: relative;
 }
 
-/* Bubble -- hover only */
 .lab-sticker-bubble {
   position: absolute;
   top: 0;
@@ -111,16 +108,19 @@
     opacity .25s cubic-bezier(.34,1.56,.64,1),
     transform .25s cubic-bezier(.34,1.56,.64,1);
 }
+
 .lab-sticker-bubble::before {
   content: '';
   position: absolute;
   bottom: 7px;
   left: -6px;
-  width: 0; height: 0;
+  width: 0;
+  height: 0;
   border-top: 5px solid transparent;
   border-bottom: 5px solid transparent;
   border-right: 7px solid #1a1814;
 }
+
 .lab-sticker:hover .lab-sticker-bubble {
   opacity: 1;
   transform: translateX(100%) scale(1);
@@ -136,6 +136,7 @@
   transform-origin: bottom center;
   pointer-events: none;
 }
+
 .lab-sticker:hover .lab-sticker-img {
   animation: lab-scan 0.7s ease-in-out infinite alternate;
 }
@@ -146,23 +147,101 @@
   70%       { transform: translateY(-2px) rotate(-0.5deg); }
 }
 
-/* VR head scan: sway side to side */
 @keyframes lab-scan {
   0%   { transform: translateX(-8px) translateY(-4px) rotate(-3deg); }
   100% { transform: translateX(8px) translateY(-7px) rotate(3deg); }
 }
 
-/* ==========================================
+/* =============================================
    BODY
-========================================== */
+============================================= */
 .lab-body {
   padding: clamp(48px, 6vw, 80px) var(--g);
 }
 
-/* ==========================================
-   EXPERIMENT LIST
-========================================== */
-.lab-list { display: flex; flex-direction: column; }
+/* =============================================
+   STATS
+============================================= */
+.lab-stats {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 1px;
+  background: var(--rule);
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: clamp(48px, 6vw, 80px);
+  animation: fadeUp .5s ease both;
+}
+
+.lab-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: clamp(16px, 2.5vw, 28px) 8px;
+  background: var(--bg);
+  text-align: center;
+}
+
+.lab-stat-num {
+  font-family: var(--serif);
+  font-size: clamp(1.4rem, 2.5vw, 2rem);
+  font-weight: 400;
+  color: var(--accent);
+  line-height: 1;
+}
+
+.lab-stat-label {
+  font-family: var(--body);
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  line-height: 1.3;
+}
+
+/* =============================================
+   ABOUT
+============================================= */
+.lab-about {
+  margin-bottom: clamp(48px, 6vw, 80px);
+  animation: fadeUp .5s ease .1s both;
+}
+
+.lab-about-body {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 20px;
+}
+
+/* =============================================
+   SECTIONS
+============================================= */
+.lab-section {
+  margin-bottom: clamp(48px, 6vw, 80px);
+}
+
+.lab-section-title {
+  font-family: var(--serif);
+  font-size: clamp(1.2rem, 2.2vw, 1.6rem);
+  font-weight: 400;
+  color: var(--ink);
+  margin-bottom: clamp(20px, 3vw, 32px);
+  padding-bottom: 12px;
+  border-bottom: 1.5px solid var(--ink);
+  letter-spacing: -0.01em;
+}
+
+/* =============================================
+   EXPERIMENT / DOMAIN LIST
+============================================= */
+.lab-list {
+  display: flex;
+  flex-direction: column;
+}
 
 .lab-item {
   display: grid;
@@ -175,10 +254,15 @@
   transition: padding-left .25s;
   cursor: default;
 }
-.lab-item:first-child { border-top: 1px solid var(--rule); }
-.lab-item:hover { padding-left: 8px; }
 
-/* Number -- large, faded, purely decorative */
+.lab-item:first-child {
+  border-top: 1px solid var(--rule);
+}
+
+.lab-item:hover {
+  padding-left: 8px;
+}
+
 .lab-num {
   font-family: var(--serif);
   font-size: clamp(1.8rem, 3vw, 2.8rem);
@@ -190,12 +274,17 @@
   user-select: none;
   transition: color .25s;
 }
-.lab-item:hover .lab-num { color: var(--accent); }
 
-/* Content area */
-.lab-content { display: flex; flex-direction: column; gap: 12px; }
+.lab-item:hover .lab-num {
+  color: var(--accent);
+}
 
-/* Top row: title + meta */
+.lab-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
 .lab-item-top {
   display: flex;
   justify-content: space-between;
@@ -203,7 +292,6 @@
   gap: 16px;
 }
 
-/* Item title -- Bree Serif, prominent */
 .lab-item-title {
   font-family: var(--serif);
   font-size: clamp(1.1rem, 2vw, 1.55rem);
@@ -214,7 +302,6 @@
   flex: 1;
 }
 
-/* Meta: type + year stacked right */
 .lab-meta {
   display: flex;
   flex-direction: column;
@@ -224,7 +311,6 @@
   padding-top: 3px;
 }
 
-/* Type pill */
 .lab-type {
   font-family: var(--body);
   font-size: 0.65rem;
@@ -239,14 +325,6 @@
   white-space: nowrap;
 }
 
-.lab-year {
-  font-family: var(--body);
-  font-size: 0.75rem;
-  font-weight: 300;
-  color: var(--muted);
-}
-
-/* Description -- 1.5rem Rubik 300 */
 .lab-desc {
   font-family: var(--body);
   font-size: clamp(0.95rem, 1.4vw, 1.1rem);
@@ -256,37 +334,315 @@
   max-width: 680px;
 }
 
-/* ==========================================
+/* Tags */
+.lab-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.lab-tag {
+  font-family: var(--body);
+  font-size: 0.68rem;
+  font-weight: 400;
+  color: var(--muted);
+  background: transparent;
+  border: 1px solid var(--rule);
+  border-radius: 100px;
+  padding: 3px 12px;
+  letter-spacing: .02em;
+  transition: border-color .2s, color .2s;
+}
+
+.lab-item:hover .lab-tag {
+  border-color: rgba(255,94,46,.25);
+  color: var(--sub);
+}
+
+/* =============================================
+   VIDEO GRID -- full-width cards
+============================================= */
+.lab-video-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+}
+
+.lab-video {
+  position: relative;
+  width: 100%;
+  padding-top: 56.25%;
+  background: var(--ink);
+  border-radius: 10px;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.lab-video-thumb {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: opacity .4s ease, transform .6s cubic-bezier(.16,1,.3,1);
+}
+
+.lab-video:hover .lab-video-thumb {
+  transform: scale(1.03);
+}
+
+.lab-video-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(26,24,20,.7) 0%,
+    rgba(26,24,20,.15) 40%,
+    transparent 100%
+  );
+  pointer-events: none;
+  transition: background .3s;
+}
+
+.lab-video:hover .lab-video-overlay {
+  background: linear-gradient(
+    to top,
+    rgba(26,24,20,.8) 0%,
+    rgba(26,24,20,.2) 50%,
+    transparent 100%
+  );
+}
+
+/* Play button */
+.lab-video-play {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.12);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255,255,255,.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-left: 3px;
+  transition: all .35s cubic-bezier(.16,1,.3,1);
+  box-shadow: 0 8px 32px rgba(0,0,0,.3);
+  z-index: 2;
+}
+
+.lab-video:hover .lab-video-play {
+  transform: translate(-50%, -50%) scale(1.12);
+  background: rgba(255,94,46,.85);
+  border-color: rgba(255,94,46,.4);
+}
+
+/* Video title overlay */
+.lab-video-title {
+  position: absolute;
+  bottom: 20px;
+  left: 24px;
+  right: 24px;
+  font-family: var(--serif);
+  font-size: clamp(1rem, 2vw, 1.4rem);
+  font-weight: 400;
+  color: #fff;
+  z-index: 2;
+  pointer-events: none;
+  line-height: 1.25;
+}
+
+.lab-video-iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+/* =============================================
+   PATENTS
+============================================= */
+.lab-patent-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1px;
+  background: var(--rule);
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.lab-patent {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 18px 20px;
+  background: var(--bg);
+  transition: padding-left .2s;
+}
+
+.lab-patent:hover {
+  padding-left: 28px;
+}
+
+.lab-patent-name {
+  font-family: var(--serif);
+  font-size: 0.95rem;
+  font-weight: 400;
+  color: var(--ink);
+  line-height: 1.3;
+}
+
+.lab-patent-inv {
+  font-family: var(--body);
+  font-size: 0.78rem;
+  font-weight: 300;
+  color: var(--muted);
+}
+
+/* =============================================
+   COURSES
+============================================= */
+.lab-course-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.lab-course {
+  font-family: var(--body);
+  font-size: 0.82rem;
+  font-weight: 400;
+  color: var(--sub);
+  background: var(--white);
+  border: 1px solid var(--rule);
+  border-radius: 100px;
+  padding: 8px 18px;
+  transition: border-color .2s, color .2s, transform .2s;
+  cursor: default;
+}
+
+.lab-course:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  transform: translateY(-2px);
+}
+
+/* =============================================
+   PARTNERS
+============================================= */
+.lab-partner-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.lab-partner {
+  font-family: var(--body);
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: .04em;
+  color: var(--muted);
+  border: 1px solid var(--rule);
+  border-radius: 100px;
+  padding: 7px 16px;
+  transition: border-color .2s, color .2s;
+  cursor: default;
+}
+
+.lab-partner:hover {
+  border-color: var(--green);
+  color: var(--green);
+}
+
+/* =============================================
    ANIMATION
-========================================== */
+============================================= */
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(14px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* ==========================================
+/* =============================================
    RESPONSIVE
-========================================== */
+============================================= */
 @media (max-width: 1100px) {
   :root { --g: 64px; }
 }
 
+@media (max-width: 900px) {
+  .lab-stats {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
 @media (max-width: 768px) {
   :root { --g: 32px; }
+
   .lab-sticker { width: clamp(80px, 14vw, 120px); }
   .lab-title { font-size: clamp(22px, 7vw, 34px); }
   .lab-sub { white-space: normal; font-size: 0.95rem; }
   .lab-item-title { font-size: 1.1rem; }
   .lab-desc { font-size: 0.95rem; }
+
+  .lab-stats {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .lab-patent-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 540px) {
   :root { --g: 20px; }
-  .lab-item { grid-template-columns: 1fr; gap: 8px; }
+
+  .lab-item {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
   .lab-num { font-size: 1.4rem; }
-  .lab-item-top { flex-direction: column; gap: 8px; }
-  .lab-meta { align-items: flex-start; flex-direction: row; gap: 8px; }
+
+  .lab-item-top {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .lab-meta {
+    align-items: flex-start;
+    flex-direction: row;
+    gap: 8px;
+  }
+
   .lab-item:hover { padding-left: 0; }
+
+  .lab-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .lab-video-title {
+    font-size: 0.9rem;
+    bottom: 14px;
+    left: 16px;
+  }
+
+  .lab-video-play {
+    width: 52px;
+    height: 52px;
+  }
+
+  .lab-video-play svg {
+    width: 18px;
+    height: 18px;
+  }
 }
 
 @media (max-width: 420px) {
