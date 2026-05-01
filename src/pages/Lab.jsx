@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useRef, useEffect } from 'react'
 import './Lab.css'
 
 /* ── Data ── */
@@ -74,6 +74,7 @@ const VIDEOS = [
   { id: '_jiQ5xb13pE', title: 'Digital Heritage Preservation of Ramappa Temple' },
   { id: 'OxqstyCRBwU', title: 'Tangible and Intangible Cultural Heritage of Telangana' },
   { id: 'hinNkP3qjLo', title: 'Full-Scale Passenger Drone Cabin Prototype' },
+  { id: 'Pb4BENo5VwI', title: 'Passenger Drone Digital Prototype' },
   { id: 'gVAsxlgAvqw', title: 'Dhokra Casting' },
   { id: '2pRFgecS3js', title: 'World of PAVs' },
   { id: 'K0GEoz2SyeE', title: 'Fourth All India DIC Meet 2024' },
@@ -103,11 +104,37 @@ const PARTNERS = [
   'Ministry of Culture', 'ICMR',
 ]
 
+const SLIDER_IMAGES = Array.from({ length: 10 }, function (_, i) {
+  return '/dicimgs/' + (i + 1) + '.webp'
+})
+
+/* ── Image Slider ── */
+function ImageSlider() {
+  return (
+    <div className="lab-slider-wrap">
+      <div className="lab-slider">
+        {[...SLIDER_IMAGES, ...SLIDER_IMAGES].map(function (src, i) {
+          return (
+            <img
+              key={i}
+              src={src}
+              alt={'DIC Lab image ' + ((i % 10) + 1)}
+              className="lab-slider-img"
+              loading="lazy"
+              draggable="false"
+            />
+          )
+        })}
+      </div>
+    </div>
+  )
+}
+
 /* ── Video Card ── */
 function VideoCard({ videoId, title }) {
-  const [playing, setPlaying] = useState(false)
-  const [loaded, setLoaded] = useState(false)
-  const play = useCallback(function () { setPlaying(true) }, [])
+  var [playing, setPlaying] = useState(false)
+  var [loaded, setLoaded] = useState(false)
+  var play = useCallback(function () { setPlaying(true) }, [])
 
   if (playing) {
     return (
@@ -126,7 +153,7 @@ function VideoCard({ videoId, title }) {
   return (
     <div className="lab-video" role="button" tabIndex={0} onClick={play} onKeyDown={function (e) { if (e.key === 'Enter') play() }}>
       <img
-        src={'https://img.youtube.com/vi/' + videoId + '/hqdefault.jpg'}
+        src={'https://img.youtube.com/vi/' + videoId + '/maxresdefault.jpg'}
         alt={title}
         loading="lazy"
         className="lab-video-thumb"
@@ -152,10 +179,11 @@ export default function Lab() {
       {/* ── HEADER ── */}
       <header className="lab-head">
         <div className="lab-head-left">
-          <p className="lab-eyebrow">Design Innovation Centre &middot; IIT Hyderabad</p>
+          <p className="lab-eyebrow">Design Innovation Centre · IIT Hyderabad</p>
           <h1 className="lab-title">DIC Lab</h1>
-          <p className="lab-sub">Hub &amp; Nodal — Interdisciplinary design research &amp; innovation.</p>
+          <p className="lab-sub">Hub & Nodal — Interdisciplinary design research & innovation.</p>
         </div>
+        <img src="/diclogo.png" alt="DIC Nodal logo" className="lab-logo" draggable="false" />
         <div className="lab-sticker">
           <div className="lab-sticker-bubble">Explore XR!</div>
           <img
@@ -166,35 +194,49 @@ export default function Lab() {
           />
         </div>
       </header>
-
       <div className="lab-body">
 
-        {/* ── STATS ── */}
-        <section className="lab-stats">
-          {STATS.map(function (s) {
-            return (
-              <div className="lab-stat" key={s.label}>
-                <span className="lab-stat-num">{s.number}</span>
-                <span className="lab-stat-label">{s.label}</span>
-              </div>
-            )
-          })}
-        </section>
-
-        {/* ── ABOUT ── */}
+        {/* 1. ABOUT */}
         <section className="lab-about">
           <h2 className="lab-section-title">About the Centre</h2>
-          <div className="lab-about-body">
-            <p className="lab-desc">
-              The Design Innovation Centre (DIC) Nodal at IIT Hyderabad drives innovation through design and technology. The Department of Design along with partnering institutions engages in mutually beneficial innovation activities across cultural heritage, architecture, digital humanities, autonomous mobility, and sustainable product development.
-            </p>
-            <p className="lab-desc">
-              DIC creates a holistic and inter-disciplinary nature of design to cut across research and move projects from research to development. Our hub and partnering spokes incubate meaningful projects in line with contemporary trends in the design discipline.
-            </p>
+          <p className="lab-desc lab-desc--full">
+            The Design Innovation Centre (DIC) Nodal at IIT Hyderabad drives innovation through design and technology. The Department of Design along with partnering institutions engages in mutually beneficial innovation activities across cultural heritage, architecture, digital humanities, autonomous mobility, and sustainable product development.
+          </p>
+          <p className="lab-desc lab-desc--full">
+            DIC creates a holistic and inter-disciplinary nature of design to cut across research and move projects from research to development. Our hub and partnering spokes incubate meaningful projects in line with contemporary trends in the design discipline — encouraging design praxis as a convergence of multiple interests across diverse contexts and scenarios.
+          </p>
+        </section>
+
+        {/* 2. IMAGE SLIDER */}
+        <section className="lab-section lab-section--flush">
+          <ImageSlider />
+        </section>
+
+        {/* 3. STATS */}
+        <section className="lab-section">
+          <div className="lab-stats">
+            {STATS.map(function (s) {
+              return (
+                <div className="lab-stat" key={s.label}>
+                  <span className="lab-stat-num">{s.number}</span>
+                  <span className="lab-stat-label">{s.label}</span>
+                </div>
+              )
+            })}
           </div>
         </section>
 
-        {/* ── RESEARCH DOMAINS ── */}
+        {/* 4. PROJECT FILMS */}
+        <section className="lab-section">
+          <h2 className="lab-section-title">Project Films</h2>
+          <div className="lab-video-grid">
+            {VIDEOS.map(function (v) {
+              return <VideoCard key={v.id} videoId={v.id} title={v.title} />
+            })}
+          </div>
+        </section>
+
+        {/* 5. RESEARCH DOMAINS */}
         <section className="lab-section">
           <h2 className="lab-section-title">Research Domains</h2>
           <div className="lab-list">
@@ -226,17 +268,7 @@ export default function Lab() {
           </div>
         </section>
 
-        {/* ── PROJECT FILMS ── */}
-        <section className="lab-section">
-          <h2 className="lab-section-title">Project Films</h2>
-          <div className="lab-video-grid">
-            {VIDEOS.map(function (v) {
-              return <VideoCard key={v.id} videoId={v.id} title={v.title} />
-            })}
-          </div>
-        </section>
-
-        {/* ── PATENTS ── */}
+        {/* 6. PATENTS */}
         <section className="lab-section">
           <h2 className="lab-section-title">Patents</h2>
           <div className="lab-patent-grid">
@@ -251,7 +283,7 @@ export default function Lab() {
           </div>
         </section>
 
-        {/* ── COURSES ── */}
+        {/* 7. COURSES */}
         <section className="lab-section">
           <h2 className="lab-section-title">DIC Courses</h2>
           <div className="lab-course-grid">
@@ -261,7 +293,7 @@ export default function Lab() {
           </div>
         </section>
 
-        {/* ── COLLABORATIONS ── */}
+        {/* 8. COLLABORATIONS */}
         <section className="lab-section">
           <h2 className="lab-section-title">Collaborations</h2>
           <div className="lab-partner-grid">
