@@ -71,6 +71,7 @@ const STATS = [
 ]
 
 const VIDEOS = [
+  { id: 'JVgO6pTn4jA', title: 'Design Innovation Centre at IIT Hyderabad' },
   { id: '_jiQ5xb13pE', title: 'Digital Heritage Preservation of Ramappa Temple' },
   { id: 'OxqstyCRBwU', title: 'Tangible and Intangible Cultural Heritage of Telangana' },
   { id: 'hinNkP3qjLo', title: 'Full-Scale Passenger Drone Cabin Prototype' },
