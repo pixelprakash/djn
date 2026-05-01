@@ -71,12 +71,12 @@ const STATS = [
 ]
 
 const VIDEOS = [
-  { id: '_jiQ5xb13pE', title: 'DIC Project Documentary' },
-  { id: 'OxqstyCRBwU', title: 'Heritage Preservation' },
-  { id: 'hinNkP3qjLo', title: 'VR/AR in Education' },
-  { id: 'gVAsxlgAvqw', title: 'Urban Air Mobility' },
-  { id: '2pRFgecS3js', title: 'Design Innovation' },
-  { id: 'K0GEoz2SyeE', title: 'Product Design Lab' },
+  { id: '_jiQ5xb13pE', title: 'Digital Heritage Preservation of Ramappa Temple' },
+  { id: 'OxqstyCRBwU', title: 'Tangible and Intangible Cultural Heritage of Telangana' },
+  { id: 'hinNkP3qjLo', title: 'Full-Scale Passenger Drone Cabin Prototype' },
+  { id: 'gVAsxlgAvqw', title: 'Dhokra Casting' },
+  { id: '2pRFgecS3js', title: 'World of PAVs' },
+  { id: 'K0GEoz2SyeE', title: 'Fourth All India DIC Meet 2024' },
 ]
 
 const PATENTS = [
