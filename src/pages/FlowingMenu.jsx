@@ -44,6 +44,7 @@ function MenuItem({ link, text, image, speed, textColor, marqueeBgColor, marquee
   }, [text, image]);
 
   useEffect(() => {
+    if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return;
     const setup = () => {
       if (!marqueeInnerRef.current) return;
       const part = marqueeInnerRef.current.querySelector('.marquee__part');

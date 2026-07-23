@@ -1,0 +1,33 @@
+/* =====================================================
+   DESIGN TOKENS — single source of truth for every page.
+   Previously each page CSS file redefined its own :root with
+   near-identical (and sometimes slightly drifted) values, which is why
+   colors/type looked a little different from page to page. Page CSS
+   files should read these instead of redeclaring them.
+===================================================== */
+:root {
+  /* Color */
+  --bg:      #f5f3ee;
+  --ink:     #1a1814;
+  --sub:     #4a4540;
+  --muted:   #6b6660; /* darkened from #8a8478 — that value contrasts ~3.35:1
+                          on --bg, below WCAG AA's 4.5:1 for the small/body
+                          text it's used for. This passes ~5.1:1. */
+  --rule:    #dbd6ce;
+  --accent:  #FF5E2E;
+  --green:   #024F46;
+  --white:   #ffffff;
+
+  /* Type */
+  --serif: 'Bree Serif', serif;
+  --body:  'Rubik', sans-serif;
+
+  /* Fluid type scale shared by every page's hero header */
+  --fs-h1:       clamp(28px, 4.5vw, 52px);   /* page title, e.g. "Deepak John Mathew" / "Selected Work" */
+  --fs-h1-sm:    clamp(22px, 7vw, 34px);     /* page title, ≤640px */
+  --fs-subtitle: 1.125rem;                   /* hero subtitle line under every page title */
+
+  /* Layout */
+  --g:        120px;  /* page gutter */
+  --nav-safe: 110px;  /* clearance reserved above the floating dock nav */
+}

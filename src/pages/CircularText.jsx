@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { motion, useAnimation, useMotionValue } from 'framer-motion';
+import { motion, useAnimation, useMotionValue, useReducedMotion } from 'framer-motion';
 import './CircularText.css';
 
 const getRotationTransition = (duration, from, loop = true) => ({
@@ -20,17 +20,20 @@ const CircularText = ({ text, spinDuration = 20, onHover = 'speedUp', className 
   const letters = Array.from(text);
   const controls = useAnimation();
   const rotation = useMotionValue(0);
+  const reduceMotion = useReducedMotion();
 
   useEffect(() => {
+    if (reduceMotion) return; // don't spin indefinitely for reduced-motion users
     const start = rotation.get();
     controls.start({
       rotate: start + 360,
       scale: 1,
       transition: getTransition(spinDuration, start)
     });
-  }, [spinDuration, text, onHover, controls, rotation]);
+  }, [spinDuration, text, onHover, controls, rotation, reduceMotion]);
 
   const handleHoverStart = () => {
+    if (reduceMotion) return;
     const start = rotation.get();
     if (!onHover) return;
     let transitionConfig;
@@ -53,6 +56,7 @@ const CircularText = ({ text, spinDuration = 20, onHover = 'speedUp', className 
   };
 
   const handleHoverEnd = () => {
+    if (reduceMotion) return;
     const start = rotation.get();
     controls.start({ rotate: start + 360, scale: 1, transition: getTransition(spinDuration, start) });
   };

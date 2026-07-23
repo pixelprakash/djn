@@ -1,21 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Bree+Serif&family=Rubik:ital,wght@0,300;0,400;0,500;1,300&display=swap');
-
-/* ==========================================
-   TOKENS  -- identical to About / Work pages
-========================================== */
-:root {
-  --bg:       #f5f3ee;
-  --ink:      #1a1814;
-  --sub:      #4a4540;
-  --muted:    #8a8478;
-  --rule:     #dbd6ce;
-  --accent:   #FF5E2E;
-  --white:    #ffffff;
-  --serif:    'Bree Serif', serif;
-  --body:     'Rubik', sans-serif;
-  --g:        120px;
-  --nav-safe: 110px;
-}
+/* Shared design tokens (colors, fonts, spacing) live in src/styles/tokens.css */
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -70,7 +53,7 @@
 /* Name -- Bree Serif display, matches ap-title sizing */
 .r-name {
   font-family: var(--serif);
-  font-size: clamp(28px, 4.5vw, 52px);
+  font-size: var(--fs-h1);
   font-weight: 400;
   line-height: 1.0;
   letter-spacing: -0.01em;
@@ -85,10 +68,10 @@
 /* Role -- 1.5rem Rubik 500, matches about-body weight */
 .r-role {
   font-family: var(--body);
-  font-size: 1.5rem;
-  font-weight: 500;
-  color: var(--ink);
-  line-height: 1.3;
+  font-size: var(--fs-subtitle);
+  font-weight: 300;
+  color: var(--sub);
+  line-height: 1.4;
 }
 
 /* Secondary role line -- lighter */
@@ -451,7 +434,6 @@
   .r-entry-title { font-size: 1.2rem; }
   .r-award-text { font-size: 1rem; }
   .r-paper-title { font-size: 1rem; }
-  .r-role { font-size: 1.2rem; }
   .r-name { font-size: clamp(20px, 5vw, 36px); }
 }
 

@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { createPortal } from 'react-dom'
 import { NavLink } from 'react-router-dom'
+import { preloadForPath } from '../routePreload'
 import './TopNav.css'
 
 const NAV_ITEMS = [
@@ -45,7 +46,6 @@ const NAV_ITEMS = [
 
 export default function TopNav() {
   const [scrolled, setScrolled]       = useState(false)
-  const [open, setOpen]               = useState(null)
   const [mobileOpen, setMobileOpen]   = useState(false)
   const [mobileExp, setMobileExp]     = useState(null)
   const navRef = useRef(null)
@@ -60,7 +60,7 @@ export default function TopNav() {
   useEffect(() => {
     const onClick = (e) => {
       if (navRef.current && !navRef.current.contains(e.target)) {
-        setOpen(null); setMobileOpen(false)
+        setMobileOpen(false)
       }
     }
     document.addEventListener('mousedown', onClick)
@@ -88,7 +88,8 @@ export default function TopNav() {
                 className={({ isActive }) =>
                   `tn-link${isActive ? ' tn-link--active' : ''}`
                 }
-                onClick={() => setOpen(null)}
+                onMouseEnter={() => preloadForPath(item.path)}
+                onFocus={() => preloadForPath(item.path)}
               >
                 {item.label}
                 <svg className="tn-chevron" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
@@ -103,7 +104,8 @@ export default function TopNav() {
                       key={child.label}
                       to={child.path}
                       className="tn-drop-link"
-                      onClick={() => setOpen(null)}
+                      onMouseEnter={() => preloadForPath(child.path)}
+                      onFocus={() => preloadForPath(child.path)}
                     >
                       <span className="tn-drop-arrow">&#8594;</span>
                       {child.label}
@@ -120,32 +122,39 @@ export default function TopNav() {
           className={`tn-burger${mobileOpen ? ' tn-burger--open' : ''}`}
           onClick={() => setMobileOpen(v => !v)}
           aria-label="Toggle menu"
+          aria-expanded={mobileOpen}
+          aria-controls="tn-mobile-menu"
         >
           <span /><span /><span />
         </button>
       </div>
 
       {/* Mobile menu */}
-      <div className={`tn-mobile${mobileOpen ? ' tn-mobile--open' : ''}`}>
+      <div id="tn-mobile-menu" className={`tn-mobile${mobileOpen ? ' tn-mobile--open' : ''}`} inert={!mobileOpen}>
         <div className="tn-mobile-inner">
           {NAV_ITEMS.map(item => (
             <div key={item.label} className="tn-mobile-item">
               <button
                 className={`tn-mobile-link${mobileExp === item.label ? ' tn-mobile-link--open' : ''}`}
                 onClick={() => setMobileExp(v => v === item.label ? null : item.label)}
+                aria-expanded={mobileExp === item.label}
               >
                 {item.label}
                 <svg className="tn-chevron" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
                   <polyline points="6 9 12 15 18 9"/>
                 </svg>
               </button>
-              <div className={`tn-mobile-sub${mobileExp === item.label ? ' tn-mobile-sub--open' : ''}`}>
+              <div
+                className={`tn-mobile-sub${mobileExp === item.label ? ' tn-mobile-sub--open' : ''}`}
+                inert={mobileExp !== item.label}
+              >
                 {item.children.map(child => (
                   <NavLink
                     key={child.label}
                     to={child.path}
                     className="tn-mobile-sublink"
                     onClick={() => { setMobileOpen(false); setMobileExp(null) }}
+                    onFocus={() => preloadForPath(child.path)}
                   >
                     {child.label}
                   </NavLink>

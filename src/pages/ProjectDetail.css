@@ -1,18 +1,7 @@
-@import url('https://fonts.googleapis.com/css2?family=Bree+Serif&family=Rubik:ital,wght@0,300;0,400;0,500;1,300&display=swap');
 
-/* ═══════════════════════════════════════════════════
-   DESIGN TOKENS
-═══════════════════════════════════════════════════ */
+/* Shared colors/fonts come from src/styles/tokens.css — only this page's
+   own unique tokens live here. */
 :root {
-  --bg:          #f7f5f0;
-  --ink:         #1a1814;
-  --sub:         #4a4640;
-  --muted:       #8a8478;
-  --rule:        #dedad3;
-  --accent:      #FF5E2E;
-  --white:       #ffffff;
-  --serif:       'Bree Serif', serif;
-  --body:        'Rubik', sans-serif;
   --nb-line:     #e8e3db;
   --nb-red:      rgba(210,65,45,.38);
   /* Page gutter — consistent margin across all elements */

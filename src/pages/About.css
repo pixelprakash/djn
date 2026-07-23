@@ -1,22 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Bree+Serif&family=Rubik:ital,wght@0,300;0,400;0,500;1,300&display=swap');
-
-/* ══════════════════════════════════════════
-   TOKENS
-══════════════════════════════════════════ */
-:root {
-  --bg:      #f5f3ee;
-  --ink:     #1a1814;
-  --sub:     #4a4540;
-  --muted:   #8a8478;
-  --rule:    #dbd6ce;
-  --accent:  #FF5E2E;
-  --green:   #024F46;   /* ← exact brand colour */
-  --white:   #ffffff;
-  --serif:   'Bree Serif', serif;
-  --body:    'Rubik', sans-serif;
-  --g:       120px;   /* 120px fixed page gutter */
-  --nav-safe: 110px;
-}
+/* Shared design tokens (colors, fonts, spacing) live in src/styles/tokens.css */
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 .ap, .ap * { background: transparent; }
@@ -73,7 +55,7 @@
 /* ── NAME — Bree Serif display ── */
 .ap-title {
   font-family: var(--serif);
-  font-size: clamp(28px, 4.5vw, 52px);
+  font-size: var(--fs-h1);
   font-weight: 400;
   line-height: 1.0;
   color: var(--ink);
@@ -83,7 +65,7 @@
 /* ── Subtitle — Rubik 300 ── */
 .ap-sub {
   font-family: var(--body);
-  font-size: 1.5rem;
+  font-size: var(--fs-subtitle);
   font-weight: 300;
   color: var(--sub);
   line-height: 1.4;

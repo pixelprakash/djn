@@ -1,5 +1,7 @@
 import { NavLink } from "react-router-dom";
 import { createPortal } from "react-dom";
+import { preloadForPath } from "../routePreload";
+import "./FloatingNav.css";
 
 const NAV = [
   { id: "about",   label: "About",   path: "/about",
@@ -16,120 +18,29 @@ const NAV = [
     icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg> },
 ];
 
-const CSS = `
-.fn-wrap {
-  position: fixed;
-  bottom: 28px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 99999;
-  width: max-content;
-  max-width: calc(100vw - 24px);
-}
-.fn-pill {
-  display: flex;
-  align-items: center;
-  gap: 2px;
-  padding: 6px;
-  background: rgba(15,14,12,0.96);
-  backdrop-filter: blur(20px) saturate(160%);
-  -webkit-backdrop-filter: blur(20px) saturate(160%);
-  border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 24px;
-  box-shadow: 0 8px 40px rgba(0,0,0,0.55), 0 2px 8px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.07);
-}
-.fn-link {
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  padding: 10px 20px;
-  min-height: 46px;
-  border-radius: 18px;
-  text-decoration: none;
-  font-family: 'Rubik', sans-serif;
-  font-size: 15px;
-  font-weight: 400;
-  letter-spacing: 0.01em;
-  white-space: nowrap;
-  color: rgba(255,255,255,0.52);
-  transition: color 0.2s ease, background 0.2s ease, transform 0.2s cubic-bezier(.34,1.56,.64,1);
-  outline: none;
-  -webkit-tap-highlight-color: transparent;
-  cursor: pointer;
-}
-.fn-link:hover { color: rgba(255,255,255,0.9); background: rgba(255,255,255,0.08); transform: translateY(-1px); }
-.fn-link:focus-visible { outline: 2px solid #FF5E2E; outline-offset: 2px; }
-.fn-link.fn-active { color: #fff; background: #FF5E2E; font-weight: 500; box-shadow: 0 4px 16px rgba(255,94,46,0.4); }
-.fn-link.fn-active:hover { background: #e8521f; transform: translateY(-1px); }
-.fn-icon { display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: transform 0.2s cubic-bezier(.34,1.56,.64,1); }
-.fn-link:not(.fn-active):hover .fn-icon { transform: translateY(-1px) scale(1.08); }
-.fn-link.fn-active::after { display: none; }
-.fn-div { width: 1px; height: 22px; background: rgba(255,255,255,0.1); flex-shrink: 0; margin: 0 1px; }
-
-@media (max-width: 640px) {
-  .fn-wrap { bottom: 20px; max-width: calc(100vw - 16px); }
-  .fn-pill { padding: 5px; border-radius: 22px; gap: 1px; }
-  .fn-link { padding: 0; width: 50px; height: 50px; min-height: 50px; border-radius: 16px; justify-content: center; gap: 0; }
-  .fn-label { display: none; }
-  .fn-icon svg { width: 20px; height: 20px; }
-  .fn-link::before {
-    content: attr(data-label);
-    position: absolute;
-    bottom: calc(100% + 10px);
-    left: 50%;
-    transform: translateX(-50%) translateY(5px);
-    background: rgba(15,14,12,0.97);
-    color: rgba(255,255,255,0.92);
-    font-family: 'Rubik', sans-serif;
-    font-size: 12px;
-    font-weight: 500;
-    padding: 5px 12px;
-    border-radius: 8px;
-    white-space: nowrap;
-    pointer-events: none;
-    opacity: 0;
-    border: 1px solid rgba(255,255,255,0.12);
-    letter-spacing: 0.02em;
-    transition: opacity 0.15s ease, transform 0.15s ease;
-  }
-  .fn-link:hover::before, .fn-link:focus-visible::before { opacity: 1; transform: translateX(-50%) translateY(0); }
-  .fn-link.fn-active { background: rgba(255,94,46,0.18); box-shadow: none; }
-  .fn-link.fn-active::after {
-    display: block; content: "";
-    position: absolute; bottom: 5px; left: 50%;
-    transform: translateX(-50%);
-    width: 4px; height: 4px; border-radius: 50%; background: #FF5E2E;
-  }
-}
-@media (max-width: 380px) {
-  .fn-link { width: 44px; height: 46px; min-height: 46px; }
-}
-`;
-
 export default function FloatingNav() {
   const nav = (
-    <>
-      <style>{CSS}</style>
-      <div className="fn-wrap">
-        <nav className="fn-pill" role="navigation" aria-label="Main navigation">
-          {NAV.map((item, i) => (
-            <div key={item.id} style={{ display: "flex", alignItems: "center" }}>
-              {i > 0 && <div className="fn-div" aria-hidden="true" />}
-              <NavLink
-                to={item.path}
-                data-label={item.label}
-                aria-label={item.label}
-                className={({ isActive }) => "fn-link" + (isActive ? " fn-active" : "")}
-              >
-                <span className="fn-icon" aria-hidden="true">{item.icon}</span>
-                <span className="fn-label">{item.label}</span>
-              </NavLink>
-            </div>
-          ))}
-        </nav>
-      </div>
-    </>
+    <div className="fn-wrap">
+      <nav className="fn-pill" role="navigation" aria-label="Main navigation">
+        {NAV.map((item, i) => (
+          <div key={item.id} style={{ display: "flex", alignItems: "center" }}>
+            {i > 0 && <div className="fn-div" aria-hidden="true" />}
+            <NavLink
+              to={item.path}
+              data-label={item.label}
+              aria-label={item.label}
+              className={({ isActive }) => "fn-link" + (isActive ? " fn-active" : "")}
+              onMouseEnter={() => preloadForPath(item.path)}
+              onFocus={() => preloadForPath(item.path)}
+              onTouchStart={() => preloadForPath(item.path)}
+            >
+              <span className="fn-icon" aria-hidden="true">{item.icon}</span>
+              <span className="fn-label">{item.label}</span>
+            </NavLink>
+          </div>
+        ))}
+      </nav>
+    </div>
   );
 
   // Render into document.body directly — escapes ALL stacking contexts

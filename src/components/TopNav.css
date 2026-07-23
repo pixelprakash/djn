@@ -100,8 +100,11 @@
   transition: opacity .18s ease, transform .18s ease;
 }
 
-/* Show on hover of parent item — NOT just the link */
-.tn-item:hover .tn-drop {
+/* Show on hover of parent item — NOT just the link.
+   :focus-within mirrors this for keyboard users tabbing through the link
+   and its dropdown children (the dropdown has no JS-driven open state). */
+.tn-item:hover .tn-drop,
+.tn-item:focus-within .tn-drop {
   opacity: 1;
   pointer-events: all;
   transform: translateY(0);
@@ -255,3 +258,4 @@
 
 /* Hide TopNav on project detail page for clean fullscreen viewing */
 .hide-topnav .tn { display: none !important; }
+.hide-topnav .tn-offset { display: none !important; }

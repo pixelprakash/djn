@@ -1,7 +1,11 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, lazy, Suspense } from 'react'
 import CircularText from './CircularText'
-import FlowingMenu from './FlowingMenu'
 import './About.css'
+
+// FlowingMenu pulls in gsap (a large dependency) purely for a below-the-fold
+// section ("Areas of Interest") — lazy-loading it keeps gsap out of the
+// critical path for the page's initial render.
+const FlowingMenu = lazy(() => import('./FlowingMenu'))
 
 const workImages = Array.from({ length: 9 }, (_, i) => `/work/w${i + 1}.webp`)
 const lifeImages = Array.from({ length: 9 }, (_, i) => `/life/l${i + 1}.webp`)
@@ -88,7 +92,7 @@ export default function About() {
 
         {/* Left: name + subtitle -- on mobile, toggle moves here too */}
         <div className="ap-top-left">
-          <h1 className="ap-title">Deepak John Mathew</h1>
+          <h1 className="ap-title">Prof. Deepak John Mathew</h1>
           <p className="ap-sub">Professor &amp; Founding head of Design at IIT Hyderabad</p>
           {/* Toggle shown only on mobile, tucked below subtitle */}
           <div className="tog tog--mobile" role="group" aria-label="View toggle">
@@ -187,15 +191,17 @@ export default function About() {
             <section className="ap-sec ap-sec--flow" id="interests">
               <h2 className="sec-head" style={{ padding: '0 var(--g)' }}>Areas of Interest</h2>
               <div className="flow-host">
-                <FlowingMenu
-                  items={INTERESTS}
-                  speed={13}
-                  textColor="#ffffff"
-                  bgColor="#060010"
-                  marqueeBgColor="#ffffff"
-                  marqueeTextColor="#060010"
-                  borderColor="rgba(255,255,255,0.18)"
-                />
+                <Suspense fallback={null}>
+                  <FlowingMenu
+                    items={INTERESTS}
+                    speed={13}
+                    textColor="#ffffff"
+                    bgColor="#060010"
+                    marqueeBgColor="#ffffff"
+                    marqueeTextColor="#060010"
+                    borderColor="rgba(255,255,255,0.18)"
+                  />
+                </Suspense>
               </div>
             </section>
 

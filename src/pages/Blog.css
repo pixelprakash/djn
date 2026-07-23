@@ -1,21 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Bree+Serif&family=Rubik:ital,wght@0,300;0,400;0,500;1,300&display=swap');
-
-/* ==========================================
-   TOKENS
-========================================== */
-:root {
-  --bg:       #f5f3ee;
-  --ink:      #1a1814;
-  --sub:      #4a4540;
-  --muted:    #8a8478;
-  --rule:     #dbd6ce;
-  --accent:   #FF5E2E;
-  --white:    #ffffff;
-  --serif:    'Bree Serif', serif;
-  --body:     'Rubik', sans-serif;
-  --g:        120px;
-  --nav-safe: 110px;
-}
+/* Shared design tokens (colors, fonts, spacing) live in src/styles/tokens.css */
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -67,7 +50,7 @@
 /* Title -- no italic, no accent, clean */
 .bl-title {
   font-family: var(--serif);
-  font-size: clamp(28px, 4.5vw, 52px);
+  font-size: var(--fs-h1);
   font-weight: 400;
   line-height: 1.0;
   letter-spacing: -0.01em;
@@ -77,9 +60,9 @@
 /* Subtitle -- single line */
 .bl-sub {
   font-family: var(--body);
-  font-size: 1rem;
+  font-size: var(--fs-subtitle);
   font-weight: 300;
-  color: var(--muted);
+  color: var(--sub);
   line-height: 1.4;
   white-space: nowrap;
   overflow: hidden;
@@ -513,7 +496,7 @@
 @media (max-width: 640px) {
   :root { --g: 24px; }
   .bl-grid { grid-template-columns: 1fr; }
-  .bl-title { font-size: clamp(22px, 7vw, 34px); }
+  .bl-title { font-size: var(--fs-h1-sm); }
   .bl-sub { font-size: 1rem; }
   .bl-banner { flex-direction: column; align-items: flex-start; }
   .bl-banner-arrow { display: none; }

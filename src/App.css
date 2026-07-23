@@ -1,4 +1,27 @@
 #root {
   min-height: 100vh;
-  background: #f7f5f0;
+  background: var(--bg);
+}
+
+/* Route-chunk loading fallback — shown only on the rare cold fetch of a
+   not-yet-cached page chunk; kept minimal on purpose. */
+.page-loader {
+  min-height: 60vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.page-loader-mark {
+  font-family: var(--serif);
+  font-size: 1.5rem;
+  color: var(--ink);
+  opacity: 0.35;
+  animation: page-loader-pulse 1.1s ease-in-out infinite;
+}
+@keyframes page-loader-pulse {
+  0%, 100% { opacity: 0.2; }
+  50%      { opacity: 0.5; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .page-loader-mark { animation: none; opacity: 0.4; }
 }
