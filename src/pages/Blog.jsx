@@ -65,26 +65,12 @@ export default function Blog() {
   return (
     <div className="bl">
 
-      {/* -- HEADER -- same pattern: left text | right sticker -- */}
+      {/* -- HEADER -- */}
       <header className="bl-head">
-
         <div className="bl-head-left">
-          <p className="bl-eyebrow">Thoughts &amp; Writing</p>
           <h1 className="bl-title">Blog &amp; Notes</h1>
           <p className="bl-sub">Photography, design research, education, and everything in between.</p>
         </div>
-
-        {/* Writing illustration sticker */}
-        <div className="bl-sticker">
-          <div className="bl-sticker-bubble">Writing...</div>
-          <img
-            src="/illustrations/illus-blog.png"
-            alt="Deepak John Mathew writing"
-            className="bl-sticker-img"
-            draggable="false"
-          />
-        </div>
-
       </header>
 
       {/* -- TAG FILTERS -- */}

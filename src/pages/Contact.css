@@ -14,37 +14,22 @@
 }
 
 /* =============================================
-   HEADER -- flex row: left text | right sticker
-   Compact, matches all other pages
+   HEADER
 ============================================= */
 .contact-header {
   display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: clamp(20px, 3vw, 40px);
+  flex-direction: column;
+  justify-content: center;
+  min-height: var(--hero-h);
   padding: clamp(32px, 4vw, 48px) var(--g);
   border-bottom: 1.5px solid var(--ink);
   animation: fadeUp .5s ease both;
-  position: relative;
-  overflow: visible;
 }
 
-/* Left: eyebrow + heading + subtitle */
 .contact-header-left {
-  flex: 1;
-  min-width: 0;
   display: flex;
   flex-direction: column;
   gap: 6px;
-}
-
-.contact-eyebrow {
-  font-family: var(--body);
-  font-size: 0.7rem;
-  font-weight: 500;
-  letter-spacing: .14em;
-  text-transform: uppercase;
-  color: var(--muted);
 }
 
 /* Heading -- clean, no italic accent */
@@ -53,8 +38,9 @@
   font-size: var(--fs-h1);
   font-weight: 400;
   line-height: 1.0;
-  letter-spacing: -0.01em;
+  letter-spacing: var(--title-tracking);
   color: var(--ink);
+  animation: titleReveal .7s cubic-bezier(.16,1,.3,1) .08s both;
 }
 
 /* Subtitle -- single line */
@@ -67,82 +53,6 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-}
-
-/* Right: phone illustration sticker */
-.contact-sticker {
-  flex-shrink: 0;
-  width: clamp(90px, 11vw, 150px);
-  align-self: center;
-  cursor: pointer;
-  z-index: 10;
-  position: relative;
-}
-
-/* Bubble -- hover only */
-.contact-sticker-bubble {
-  position: absolute;
-  top: 0;
-  right: -4px;
-  transform: translateX(100%) scale(0.88);
-  background: #1a1814;
-  color: #fff;
-  font-family: var(--body);
-  font-size: 0.78rem;
-  font-weight: 600;
-  padding: 6px 12px;
-  border-radius: 12px 12px 12px 0;
-  white-space: nowrap;
-  pointer-events: none;
-  z-index: 11;
-  opacity: 0;
-  transition:
-    opacity .25s cubic-bezier(.34,1.56,.64,1),
-    transform .25s cubic-bezier(.34,1.56,.64,1);
-}
-.contact-sticker-bubble::before {
-  content: '';
-  position: absolute;
-  bottom: 7px;
-  left: -6px;
-  width: 0; height: 0;
-  border-top: 5px solid transparent;
-  border-bottom: 5px solid transparent;
-  border-right: 7px solid #1a1814;
-}
-.contact-sticker:hover .contact-sticker-bubble {
-  opacity: 1;
-  transform: translateX(100%) scale(1);
-}
-
-.contact-sticker-img {
-  width: 100%;
-  height: auto;
-  display: block;
-  mix-blend-mode: multiply;
-  filter: drop-shadow(0 4px 12px rgba(0,0,0,.12));
-  animation: sticker-float 3.5s ease-in-out infinite;
-  transform-origin: bottom center;
-  pointer-events: none;
-}
-.contact-sticker:hover .contact-sticker-img {
-  animation: contact-listen 1.8s ease-in-out infinite;
-}
-
-@keyframes sticker-float {
-  0%, 100% { transform: translateY(0) rotate(0deg); }
-  40%       { transform: translateY(-5px) rotate(1deg); }
-  70%       { transform: translateY(-2px) rotate(-0.5deg); }
-}
-
-/* Gentle listening motion: slow head-tilt + soft bob, like nodding on a call */
-@keyframes contact-listen {
-  0%   { transform: translateY(0) rotate(0deg); }
-  20%  { transform: translateY(-4px) rotate(-3deg); }
-  45%  { transform: translateY(-6px) rotate(2deg); }
-  65%  { transform: translateY(-3px) rotate(-1.5deg); }
-  85%  { transform: translateY(-5px) rotate(1deg); }
-  100% { transform: translateY(0) rotate(0deg); }
 }
 
 /* ==========================================
@@ -181,7 +91,7 @@
 /* Label -- small uppercase, Rubik */
 .form-label {
   font-family: var(--body);
-  font-size: 0.72rem;
+  font-size: 1rem;
   font-weight: 500;
   letter-spacing: .1em;
   text-transform: uppercase;
@@ -206,7 +116,7 @@
 .form-input::placeholder { color: var(--rule); }
 .form-input:focus {
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(255,94,46,.1);
+  box-shadow: 0 0 0 3px rgba(var(--accent-rgb),.1);
 }
 
 .form-textarea {
@@ -217,7 +127,7 @@
 
 .form-error {
   font-family: var(--body);
-  font-size: 0.82rem;
+  font-size: 1rem;
   color: var(--accent);
 }
 
@@ -252,7 +162,7 @@
 }
 .cta-primary:hover::before { transform: scaleX(1); }
 .cta-primary:hover {
-  box-shadow: 0 6px 24px rgba(255,94,46,.3);
+  box-shadow: 0 6px 24px rgba(var(--accent-rgb),.3);
   transform: translateY(-2px);
 }
 .cta-primary:active { transform: scale(.97); }
@@ -320,7 +230,7 @@
 /* Label -- small caps */
 .contact-label {
   font-family: var(--body);
-  font-size: 0.7rem;
+  font-size: 1rem;
   font-weight: 500;
   letter-spacing: .1em;
   text-transform: uppercase;
@@ -331,7 +241,7 @@
 /* Value link */
 .contact-value {
   font-family: var(--body);
-  font-size: 0.9rem;
+  font-size: 1rem;
   font-weight: 400;
   color: var(--sub);
   text-decoration: none;
@@ -342,6 +252,15 @@
 
 /* Location block */
 .contact-location { display: flex; flex-direction: column; gap: 10px; }
+
+.contact-location-label {
+  font-family: var(--body);
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
 
 .contact-place {
   font-family: var(--body);
@@ -354,7 +273,7 @@
   gap: 5px;
 }
 .contact-place span {
-  font-size: 0.95rem;
+  font-size: 1rem;
   font-weight: 300;
   color: var(--muted);
   line-height: 1.65;
@@ -371,29 +290,19 @@
 /* ==========================================
    RESPONSIVE
 ========================================== */
-@media (max-width: 1100px) {
-  :root { --g: 64px; }
-}
-
 @media (max-width: 860px) {
   .contact-body {
     grid-template-columns: 1fr;
     gap: clamp(40px, 6vw, 60px);
   }
-  .contact-sticker { width: clamp(80px, 14vw, 120px); }
-  .contact-sub { white-space: normal; font-size: 0.9rem; }
+  .contact-sub { white-space: normal; font-size: 1rem; }
 }
 
 @media (max-width: 640px) {
-  :root { --g: 24px; }
-  .contact-heading { font-size: var(--fs-h1-sm); }
+  .contact-heading { font-size: var(--fs-h1-sm); letter-spacing: var(--title-tracking-sm); }
   .contact-sub { font-size: 1rem; }
   .form-row { grid-template-columns: 1fr; }
-  .form-input { font-size: 0.95rem; }
-  .cta-primary { font-size: 0.9rem; }
+  .form-input { font-size: 1rem; }
+  .cta-primary { font-size: 1rem; }
   .contact-success h3 { font-size: 1.5rem; }
-}
-
-@media (max-width: 420px) {
-  :root { --g: 16px; }
 }

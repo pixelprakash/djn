@@ -43,26 +43,12 @@ export default function Contact() {
   return (
     <div className="contact-page">
 
-      {/* -- HEADER -- same pattern: left text | right sticker -- */}
+      {/* -- HEADER -- */}
       <header className="contact-header">
-
         <div className="contact-header-left">
-          <p className="contact-eyebrow">Get in touch</p>
           <h1 className="contact-heading">Let's Talk</h1>
           <p className="contact-sub">Open to research collaborations, speaking invitations, and design conversations.</p>
         </div>
-
-        {/* Phone illustration sticker */}
-        <div className="contact-sticker">
-          <div className="contact-sticker-bubble">Let's talk!</div>
-          <img
-            src="/illustrations/illus-contact.png"
-            alt="Deepak John Mathew on phone"
-            className="contact-sticker-img"
-            draggable="false"
-          />
-        </div>
-
       </header>
 
       {/* -- BODY: form + info -- */}
@@ -133,7 +119,7 @@ export default function Contact() {
             })}
           </div>
           <div className="contact-location">
-            <p className="contact-eyebrow">Based at</p>
+            <p className="contact-location-label">Based at</p>
             <p className="contact-place">
               Indian Institute of Technology Hyderabad
               <span>Kandi, Sangareddy<br />Telangana 502284, India</span>

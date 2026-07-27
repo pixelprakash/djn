@@ -28,7 +28,7 @@
   min-height: 46px;
   border-radius: 18px;
   text-decoration: none;
-  font-family: 'Rubik', sans-serif;
+  font-family: var(--body);
   font-size: 15px;
   font-weight: 400;
   letter-spacing: 0.01em;
@@ -66,7 +66,7 @@
     transform: translateX(-50%) translateY(5px);
     background: rgba(15,14,12,0.97);
     color: rgba(255,255,255,0.92);
-    font-family: 'Rubik', sans-serif;
+    font-family: var(--body);
     font-size: 12px;
     font-weight: 500;
     padding: 5px 12px;

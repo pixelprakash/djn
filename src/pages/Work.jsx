@@ -10,27 +10,12 @@ export default function Work() {
   return (
     <div className="wp">
 
-      {/* -- HEADER -- 3-col grid: title+sub | spacer | sticker -- */}
+      {/* -- HEADER -- */}
       <header className="wp-head">
-
-        {/* Left: eyebrow + title + subtitle stacked */}
         <div className="wp-head-left">
-          <p className="wp-eyebrow">Portfolio</p>
           <h1 className="wp-heading">Selected Work</h1>
           <p className="wp-sub">Photography, research projects, and exhibitions spanning three decades.</p>
         </div>
-
-        {/* Right: sticker illustration */}
-        <div className="wp-sticker">
-          <div className="wp-sticker-bubble">Click!</div>
-          <img
-            src="/illustrations/illus-work.png"
-            alt="Deepak John Mathew with camera"
-            className="wp-sticker-img"
-            draggable="false"
-          />
-        </div>
-
       </header>
 
       {/* -- TABS -- */}

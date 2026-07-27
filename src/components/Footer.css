@@ -1,0 +1,106 @@
+/* =====================================================
+   SITE FOOTER — renders once in App.jsx, on every route.
+   Dark surface deliberately breaks from the cream page background: it
+   reads as a definite "end of page" bookend rather than the content
+   just trailing off, and it's the one place the whole nav + socials +
+   identity statement live together in one glance.
+===================================================== */
+.ft {
+  background: var(--ink);
+  color: rgba(255,255,255,.7);
+  margin-top: clamp(56px, 7vw, 88px);
+}
+
+.ft-inner {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: clamp(48px, 6vw, 72px) var(--g) clamp(32px, 4vw, 48px);
+  display: flex;
+  flex-wrap: wrap;
+  gap: clamp(32px, 5vw, 64px);
+  justify-content: space-between;
+}
+
+.ft-brand { max-width: 360px; }
+
+.ft-logo {
+  font-family: var(--body);
+  font-size: 1.6rem;
+  font-weight: 400;
+  color: #fff;
+  letter-spacing: -0.02em;
+  text-decoration: none;
+  transition: opacity .2s;
+}
+.ft-logo:hover { opacity: .7; }
+
+.ft-tagline {
+  margin-top: 14px;
+  font-family: var(--body);
+  font-size: 1rem;
+  font-weight: 300;
+  line-height: 1.65;
+  color: rgba(255,255,255,.55);
+  max-width: 36ch;
+}
+
+.ft-links {
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+}
+
+.ft-link {
+  font-family: var(--body);
+  font-size: 1rem;
+  font-weight: 400;
+  color: rgba(255,255,255,.65);
+  text-decoration: none;
+  width: fit-content;
+  transition: color .2s ease, transform .2s cubic-bezier(.34,1.56,.64,1);
+}
+.ft-link:hover { color: #fff; transform: translateX(3px); }
+.ft-link.active { color: #fff; }
+
+.ft-socials {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+.ft-social {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255,255,255,.16);
+  color: rgba(255,255,255,.65);
+  transition: background .25s ease, color .25s ease, border-color .25s ease, transform .25s cubic-bezier(.34,1.56,.64,1);
+}
+.ft-social:hover, .ft-social:focus-visible {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+  transform: translateY(-3px);
+}
+
+.ft-bottom {
+  max-width: 1440px;
+  margin: 0 auto;
+  border-top: 1px solid rgba(255,255,255,.1);
+  padding: 18px var(--g);
+}
+.ft-bottom p {
+  font-family: var(--body);
+  font-size: 1rem;
+  color: rgba(255,255,255,.4);
+}
+
+@media (max-width: 640px) {
+  .ft-inner { flex-direction: column; gap: 32px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ft-link, .ft-social { transition: none; }
+}

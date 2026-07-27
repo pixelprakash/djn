@@ -14,40 +14,22 @@
 }
 
 /* ==========================================
-   HEADER  -- same structure as About / Work
+   HEADER
 ========================================== */
 .r-header {
   display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: clamp(20px, 3vw, 40px);
-  padding: clamp(32px, 4vw, 48px) var(--g) clamp(20px, 2.5vw, 32px);
+  flex-direction: column;
+  justify-content: center;
+  min-height: var(--hero-h);
+  padding: clamp(32px, 4vw, 48px) var(--g);
   border-bottom: 1.5px solid var(--ink);
   animation: fadeUp .5s ease both;
-  position: relative;
-  overflow: visible;
 }
 
-/* Left text block -- fills remaining space */
 .r-header-left {
-  flex: 1;
-  min-width: 0;
   display: flex;
   flex-direction: column;
   gap: 6px;
-}
-
-/* r-photo removed -- illustration sticker used instead */
-
-/* Small label above name */
-.r-eyebrow {
-  font-family: var(--body);
-  font-size: 0.7rem;
-  font-weight: 500;
-  letter-spacing: .14em;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin-bottom: 10px;
 }
 
 /* Name -- Bree Serif display, matches ap-title sizing */
@@ -56,8 +38,9 @@
   font-size: var(--fs-h1);
   font-weight: 400;
   line-height: 1.0;
-  letter-spacing: -0.01em;
+  letter-spacing: var(--title-tracking);
   color: var(--ink);
+  animation: titleReveal .7s cubic-bezier(.16,1,.3,1) .08s both;
 }
 /* "Mathew" -- italic but SAME ink colour, no accent */
 .r-name em {
@@ -77,7 +60,7 @@
 /* Secondary role line -- lighter */
 .r-nodal {
   font-family: var(--body);
-  font-size: clamp(0.85rem, 1.3vw, 1rem);
+  font-size: clamp(1rem, 1.3vw, 1.05rem);
   font-weight: 300;
   color: var(--sub);
   line-height: 1.6;
@@ -91,7 +74,7 @@
 }
 .r-links a {
   font-family: var(--body);
-  font-size: 0.78rem;
+  font-size: 1rem;
   font-weight: 500;
   color: var(--accent);
   text-decoration: none;
@@ -107,82 +90,6 @@
   border-color: var(--accent);
   transform: translateY(-2px);
 }
-
-/* -- Sticker illustration in header -- */
-.r-sticker {
-  flex-shrink: 0;
-  width: clamp(90px, 11vw, 150px);
-  align-self: center;
-  cursor: pointer;
-  z-index: 10;
-  position: relative;
-  margin-left: auto;
-}
-
-.r-sticker-bubble {
-  position: absolute;
-  top: 0;
-  right: -4px;
-  transform: translateX(100%) scale(0.88);
-  background: #1a1814;
-  color: #fff;
-  font-family: var(--body);
-  font-size: 0.78rem;
-  font-weight: 600;
-  padding: 6px 12px;
-  border-radius: 12px 12px 12px 0;
-  white-space: nowrap;
-  pointer-events: none;
-  z-index: 11;
-  opacity: 0;
-  transition:
-    opacity .25s cubic-bezier(.34,1.56,.64,1),
-    transform .25s cubic-bezier(.34,1.56,.64,1);
-}
-.r-sticker-bubble::before {
-  content: '';
-  position: absolute;
-  bottom: 7px;
-  left: -6px;
-  width: 0; height: 0;
-  border-top: 5px solid transparent;
-  border-bottom: 5px solid transparent;
-  border-right: 7px solid #1a1814;
-}
-.r-sticker:hover .r-sticker-bubble {
-  opacity: 1;
-  transform: translateX(100%) scale(1);
-}
-
-.r-sticker-img {
-  width: 100%;
-  height: auto;
-  display: block;
-  mix-blend-mode: multiply;
-  filter: drop-shadow(0 4px 12px rgba(0,0,0,.12));
-  animation: sticker-float 3.5s ease-in-out infinite;
-  transform-origin: bottom center;
-  pointer-events: none;
-}
-.r-sticker:hover .r-sticker-img {
-  animation: resume-tip 1.2s cubic-bezier(.34,1.56,.64,1) infinite;
-}
-
-@keyframes sticker-float {
-  0%, 100% { transform: translateY(0) rotate(0deg); }
-  40%       { transform: translateY(-5px) rotate(1deg); }
-  70%       { transform: translateY(-2px) rotate(-0.5deg); }
-}
-/* Proud bow / glasses tip on hover */
-@keyframes resume-tip {
-  0%   { transform: rotate(0deg) translateY(0); }
-  20%  { transform: rotate(-4deg) translateY(-4px); }
-  45%  { transform: rotate(3deg) translateY(-7px); }
-  70%  { transform: rotate(-2deg) translateY(-4px); }
-  100% { transform: rotate(0deg) translateY(0); }
-}
-
-
 
 /* ==========================================
    SECTION SHELL
@@ -264,10 +171,10 @@
 .r-entry:first-child { border-top: 1px solid var(--rule); }
 .r-entry:hover { padding-left: 8px; }
 
-/* Period / year label -- small mono-style */
+/* Period / year label */
 .r-period {
   font-family: var(--body);
-  font-size: 0.78rem;
+  font-size: 1rem;
   font-weight: 500;
   color: var(--muted);
   padding-top: 4px;
@@ -313,7 +220,7 @@
 
 .r-award-year {
   font-family: var(--body);
-  font-size: 0.82rem;
+  font-size: 1rem;
   font-weight: 500;
   color: var(--muted);
   white-space: nowrap;
@@ -355,7 +262,7 @@
   flex-wrap: wrap;
   gap: 12px;
   font-family: var(--body);
-  font-size: 0.78rem;
+  font-size: 1rem;
   font-weight: 300;
   color: var(--muted);
 }
@@ -373,13 +280,13 @@
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  font-size: 0.72rem;
+  font-size: 1rem;
   font-weight: 500;
   color: var(--sub);
   background: rgba(74,69,64,.06);
   border: 1px solid var(--rule);
   border-radius: 100px;
-  padding: 2px 10px;
+  padding: 3px 12px;
 }
 
 /* ==========================================
@@ -392,7 +299,7 @@
 }
 .r-profile-links a {
   font-family: var(--body);
-  font-size: 0.82rem;
+  font-size: 1rem;
   font-weight: 400;
   color: var(--sub);
   text-decoration: none;
@@ -420,39 +327,28 @@
 /* ==========================================
    RESPONSIVE
 ========================================== */
-@media (max-width: 1100px) {
-  :root { --g: 64px; }
-  .r-sticker { width: clamp(90px, 11vw, 130px); }
-}
-
 @media (max-width: 768px) {
-  :root { --g: 32px; }
-  /* Header: text left, sticker right — keep side by side but smaller */
   .r-header { align-items: center; gap: 16px; padding: 16px var(--g); }
-  .r-sticker { width: clamp(70px, 14vw, 110px); }
   .r-section-title { font-size: 2rem; }
   .r-entry-title { font-size: 1.2rem; }
   .r-award-text { font-size: 1rem; }
   .r-paper-title { font-size: 1rem; }
-  .r-name { font-size: clamp(20px, 5vw, 36px); }
+  .r-name { font-size: var(--fs-h1-sm); letter-spacing: var(--title-tracking-sm); }
 }
 
 @media (max-width: 580px) {
-  :root { --g: 20px; }
-  /* On small phones: sticker shrinks further, sits right of text */
   .r-header { align-items: center; gap: 12px; }
-  .r-sticker { width: clamp(60px, 18vw, 90px); flex-shrink: 0; }
-  .r-name { font-size: clamp(18px, 6vw, 28px); }
-  .r-role { font-size: 0.95rem; }
-  .r-nodal { font-size: 0.82rem; }
+  .r-name { font-size: clamp(18px, 6vw, 28px); letter-spacing: var(--title-tracking-sm); }
+  .r-role { font-size: 1rem; }
+  .r-nodal { font-size: 1rem; }
   .r-section-title { font-size: 1.6rem; }
   .r-entry { grid-template-columns: 1fr; gap: 4px; }
   .r-entry:hover { padding-left: 0; }
   .r-period { padding-top: 0; }
   .r-award { grid-template-columns: 1fr; gap: 4px; }
   .r-award:hover { padding-left: 0; }
-  .r-entry-title { font-size: 1rem; }
-  .r-award-text { font-size: 0.95rem; }
-  .r-paper-title { font-size: 0.95rem; }
-  .r-tag { font-size: 0.88rem; padding: 6px 14px; }
+  .r-entry-title { font-size: 1.1rem; }
+  .r-award-text { font-size: 1rem; }
+  .r-paper-title { font-size: 1rem; }
+  .r-tag { font-size: 1rem; padding: 6px 14px; }
 }

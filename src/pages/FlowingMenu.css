@@ -34,7 +34,7 @@
   font-weight: 600;
   font-size: clamp(1.4rem, 4vh, 2.6rem);
   letter-spacing: 0.06em;
-  font-family: 'Bree Serif', serif;
+  font-family: var(--body);
   transition: letter-spacing .3s ease;
   /* Prevent text selection on tap, stop any browser tap highlight */
   user-select: none;
@@ -69,7 +69,7 @@
   font-size: clamp(1.4rem, 4vh, 2.6rem);
   line-height: 1;
   padding: 0 1.5vw;
-  font-family: 'Bree Serif', serif;
+  font-family: var(--body);
   letter-spacing: 0.06em;
 }
 .marquee__img {

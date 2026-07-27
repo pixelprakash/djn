@@ -14,6 +14,12 @@ const NAV_ITEMS = [
       { label: 'Professional Experience',    path: '/cv/professional-experience' },
     ],
   },
+  // Merged in from the removed floating dock nav, for now — plain links, no dropdown.
+  // Contact is intentionally not here — it renders as the CTA button instead.
+  { label: 'Work',    path: '/work' },
+  { label: 'Resume',  path: '/resume' },
+  { label: 'DIC Lab', path: '/lab' },
+  { label: 'Blog',    path: '/blog' },
   {
     label: 'Academics',
     path: '/cv/teaching-experience',
@@ -92,30 +98,45 @@ export default function TopNav() {
                 onFocus={() => preloadForPath(item.path)}
               >
                 {item.label}
-                <svg className="tn-chevron" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-                  <polyline points="6 9 12 15 18 9"/>
-                </svg>
+                {item.children && (
+                  <svg className="tn-chevron" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                    <polyline points="6 9 12 15 18 9"/>
+                  </svg>
+                )}
               </NavLink>
 
-              <div className="tn-drop">
-                <div className="tn-drop-inner">
-                  {item.children.map(child => (
-                    <NavLink
-                      key={child.label}
-                      to={child.path}
-                      className="tn-drop-link"
-                      onMouseEnter={() => preloadForPath(child.path)}
-                      onFocus={() => preloadForPath(child.path)}
-                    >
-                      <span className="tn-drop-arrow">&#8594;</span>
-                      {child.label}
-                    </NavLink>
-                  ))}
+              {item.children && (
+                <div className="tn-drop">
+                  <div className="tn-drop-inner">
+                    {item.children.map(child => (
+                      <NavLink
+                        key={child.label}
+                        to={child.path}
+                        className="tn-drop-link"
+                        onMouseEnter={() => preloadForPath(child.path)}
+                        onFocus={() => preloadForPath(child.path)}
+                      >
+                        <span className="tn-drop-arrow">&#8594;</span>
+                        {child.label}
+                      </NavLink>
+                    ))}
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           ))}
         </nav>
+
+        {/* Contact CTA — always visible, right-aligned */}
+        <NavLink
+          to="/contact"
+          className={({ isActive }) => `tn-cta${isActive ? ' tn-cta--active' : ''}`}
+          onClick={() => setMobileOpen(false)}
+          onMouseEnter={() => preloadForPath('/contact')}
+          onFocus={() => preloadForPath('/contact')}
+        >
+          Contact
+        </NavLink>
 
         {/* Hamburger */}
         <button
@@ -134,32 +155,45 @@ export default function TopNav() {
         <div className="tn-mobile-inner">
           {NAV_ITEMS.map(item => (
             <div key={item.label} className="tn-mobile-item">
-              <button
-                className={`tn-mobile-link${mobileExp === item.label ? ' tn-mobile-link--open' : ''}`}
-                onClick={() => setMobileExp(v => v === item.label ? null : item.label)}
-                aria-expanded={mobileExp === item.label}
-              >
-                {item.label}
-                <svg className="tn-chevron" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-                  <polyline points="6 9 12 15 18 9"/>
-                </svg>
-              </button>
-              <div
-                className={`tn-mobile-sub${mobileExp === item.label ? ' tn-mobile-sub--open' : ''}`}
-                inert={mobileExp !== item.label}
-              >
-                {item.children.map(child => (
-                  <NavLink
-                    key={child.label}
-                    to={child.path}
-                    className="tn-mobile-sublink"
-                    onClick={() => { setMobileOpen(false); setMobileExp(null) }}
-                    onFocus={() => preloadForPath(child.path)}
+              {item.children ? (
+                <>
+                  <button
+                    className={`tn-mobile-link${mobileExp === item.label ? ' tn-mobile-link--open' : ''}`}
+                    onClick={() => setMobileExp(v => v === item.label ? null : item.label)}
+                    aria-expanded={mobileExp === item.label}
                   >
-                    {child.label}
-                  </NavLink>
-                ))}
-              </div>
+                    {item.label}
+                    <svg className="tn-chevron" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                      <polyline points="6 9 12 15 18 9"/>
+                    </svg>
+                  </button>
+                  <div
+                    className={`tn-mobile-sub${mobileExp === item.label ? ' tn-mobile-sub--open' : ''}`}
+                    inert={mobileExp !== item.label}
+                  >
+                    {item.children.map(child => (
+                      <NavLink
+                        key={child.label}
+                        to={child.path}
+                        className="tn-mobile-sublink"
+                        onClick={() => { setMobileOpen(false); setMobileExp(null) }}
+                        onFocus={() => preloadForPath(child.path)}
+                      >
+                        {child.label}
+                      </NavLink>
+                    ))}
+                  </div>
+                </>
+              ) : (
+                <NavLink
+                  to={item.path}
+                  className="tn-mobile-link"
+                  onClick={() => { setMobileOpen(false); setMobileExp(null) }}
+                  onFocus={() => preloadForPath(item.path)}
+                >
+                  {item.label}
+                </NavLink>
+              )}
             </div>
           ))}
         </div>

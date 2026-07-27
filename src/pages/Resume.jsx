@@ -72,12 +72,9 @@ export default function Resume() {
   return (
     <div className="resume">
 
-      {/* -- HEADER -- same pattern as About/Work: left text | right sticker -- */}
+      {/* -- HEADER -- */}
       <header className="r-header">
-
-        {/* Left: eyebrow + name + role + links */}
         <div className="r-header-left">
-          <p className="r-eyebrow">Curriculum Vitae</p>
           <h1 className="r-name">Deepak John Mathew</h1>
           <p className="r-role">Professor of Design · IIT Hyderabad</p>
           <p className="r-nodal">
@@ -90,18 +87,6 @@ export default function Resume() {
             ))}
           </div>
         </div>
-
-        {/* Right: graduation illustration */}
-        <div className="r-sticker">
-          <div className="r-sticker-bubble">My CV!</div>
-          <img
-            src="/illustrations/illus-resume.png"
-            alt="Deepak John Mathew illustration"
-            className="r-sticker-img"
-            draggable="false"
-          />
-        </div>
-
       </header>
 
       {/* -- RESEARCH AREAS -- */}

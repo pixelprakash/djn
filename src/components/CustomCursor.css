@@ -1,0 +1,80 @@
+/* Native cursor hidden only once JS confirms a fine pointer is present —
+   see CustomCursor.jsx. Touch/coarse pointers never get this class, so
+   mobile is completely unaffected. */
+html.cc-enabled,
+html.cc-enabled * {
+  cursor: none !important;
+}
+html.cc-enabled input,
+html.cc-enabled textarea,
+html.cc-enabled [contenteditable="true"] {
+  cursor: text !important; /* precise caret placement beats the viewfinder */
+}
+
+.cc {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  z-index: 100000;
+  pointer-events: none;
+  color: var(--accent);
+  opacity: 0;
+  transition: opacity .15s ease;
+  will-change: transform;
+}
+
+.cc-brackets {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: translate(-50%, -50%);
+  transition: transform .28s cubic-bezier(.34,1.56,.64,1), opacity .2s ease;
+}
+
+.cc-dot {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+  transform: translate(-50%, -50%);
+  transition: opacity .18s ease, transform .28s cubic-bezier(.34,1.56,.64,1);
+}
+
+.cc-expand {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: translate(-50%, -50%) scale(0.4);
+  opacity: 0;
+  transition: opacity .18s ease, transform .25s cubic-bezier(.34,1.56,.64,1);
+}
+
+/* ── States ── */
+
+/* default: resting viewfinder, dot visible */
+.cc[data-state="default"] .cc-brackets { transform: translate(-50%, -50%) scale(1); }
+
+/* interactive: brackets relax outward slightly, inviting a click */
+.cc[data-state="interactive"] .cc-brackets { transform: translate(-50%, -50%) scale(1.35); }
+.cc[data-state="interactive"] .cc-dot { transform: translate(-50%, -50%) scale(0.4); opacity: .6; }
+
+/* view: brackets pull in tight around the expand glyph — "focus lock" */
+.cc[data-state="view"] .cc-brackets { transform: translate(-50%, -50%) scale(0.72); }
+.cc[data-state="view"] .cc-dot { opacity: 0; transform: translate(-50%, -50%) scale(0); }
+.cc[data-state="view"] .cc-expand { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+
+/* text: hide entirely, native caret takes over */
+.cc[data-state="text"] .cc-brackets,
+.cc[data-state="text"] .cc-dot { opacity: 0; }
+
+/* click feedback — a shutter-click squeeze */
+.cc--down .cc-brackets { transform: translate(-50%, -50%) scale(0.82) !important; }
+
+@media (prefers-reduced-motion: reduce) {
+  .cc, .cc-brackets, .cc-dot, .cc-expand { transition: opacity .15s ease; }
+}

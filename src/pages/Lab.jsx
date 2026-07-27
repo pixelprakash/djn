@@ -180,20 +180,10 @@ export default function Lab() {
       {/* ── HEADER ── */}
       <header className="lab-head">
         <div className="lab-head-left">
-          <p className="lab-eyebrow">Design Innovation Centre · IIT Hyderabad</p>
           <h1 className="lab-title">DIC Lab</h1>
           <p className="lab-sub">Hub & Nodal — Interdisciplinary design research & innovation.</p>
         </div>
         <img src="/diclogo.png" alt="DIC Nodal logo" className="lab-logo" draggable="false" />
-        <div className="lab-sticker">
-          <div className="lab-sticker-bubble">Explore XR!</div>
-          <img
-            src="/illustrations/illus-lab.png"
-            alt="VR headset illustration"
-            className="lab-sticker-img"
-            draggable="false"
-          />
-        </div>
       </header>
       <div className="lab-body">
 

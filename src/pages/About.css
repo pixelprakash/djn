@@ -1,721 +1,458 @@
 /* Shared design tokens (colors, fonts, spacing) live in src/styles/tokens.css */
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-.ap, .ap * { background: transparent; }
-.ap { background: var(--bg) !important; }
+.hp, .hp * { background: transparent; }
 
-.ap {
+.hp {
+  --hp-blue:        #1c5d8c;
+  --hp-blue-card:   #2f78ab;
+  --hp-purple:      #7a2c8c;
+  --hp-purple-card: #9542a3;
+  --hp-accent:      #7fe6e2;
+
+  background: var(--bg) !important;
   min-height: 100%;
   font-family: var(--body);
   color: var(--ink);
   -webkit-font-smoothing: antialiased;
   display: flex;
   flex-direction: column;
+  gap: clamp(20px, 3vw, 36px);
+  padding-bottom: clamp(40px, 6vw, 72px);
+  animation: hpFadeUp .4s ease both;
 }
-/* panel no longer flex:1 since .ap now has nav padding */
-.ap-panel {
-  display: flex;
-  flex-direction: column;
-  animation: fadeUp .3s ease both;
+
+@keyframes hpFadeUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 /* ══════════════════════════════════════════
-   HEADER
-   3-col grid: [name+sub] [toggle] [sticker]
-   All vertically centred
+   HERO
 ══════════════════════════════════════════ */
-.ap-top {
-  display: grid;
-  grid-template-columns: 1fr auto auto;
-  align-items: center;
-  column-gap: clamp(20px, 3vw, 40px);
-  padding: clamp(32px, 4vw, 48px) var(--g) clamp(14px, 2vw, 24px);
-  position: relative;
-  overflow: visible;
-}
-
-/* Left: name + subtitle stacked */
-.ap-top-left {
-  grid-column: 1;
+.hp-hero {
   display: flex;
-  flex-direction: column;
-  gap: clamp(8px, 1.2vw, 14px);
-  min-width: 0;
+  align-items: center;
+  justify-content: space-between;
+  gap: clamp(24px, 4vw, 56px);
+  min-height: var(--hero-h);
+  padding: clamp(32px, 5vw, 56px) var(--g);
 }
 
-/* Toggle: col 2, centred */
-.tog {
-  grid-column: 2;
-  align-self: center;
-}
+.hp-hero-text { min-width: 0; }
 
-
-
-
-/* ── NAME — Bree Serif display ── */
-.ap-title {
-  font-family: var(--serif);
-  font-size: var(--fs-h1);
+.hp-title {
+  font-family: var(--body);
   font-weight: 400;
-  line-height: 1.0;
+  font-size: var(--fs-h1);
+  line-height: 1.03;
+  letter-spacing: var(--title-tracking);
   color: var(--ink);
+  animation: titleReveal .7s cubic-bezier(.16,1,.3,1) .08s both;
+}
+
+.hp-sub {
+  margin-top: clamp(14px, 2.2vw, 20px);
+  font-family: var(--body);
+  font-weight: 400;
+  font-size: clamp(1.1rem, 2.3vw, 2.05rem); /* one-line on desktop; sized with margin so the "Design Dept" / "IIT Hyderabad" links never clip against the photo column */
+  line-height: 1.25;
   letter-spacing: -0.01em;
-}
-
-/* ── Subtitle — Rubik 300 ── */
-.ap-sub {
-  font-family: var(--body);
-  font-size: var(--fs-subtitle);
-  font-weight: 300;
   color: var(--sub);
-  line-height: 1.4;
-}
-
-/* ── Toggle — icon + big thumb style ── */
-.tog {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex-shrink: 0;
-}
-
-/* Each label is clickable */
-.tog-lbl {
-  font-family: var(--body);
-  font-size: 1.1rem;
-  font-weight: 500;
-  color: var(--muted);
-  cursor: pointer;
-  transition: color .2s;
-  user-select: none;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 4px 2px;
-  border: none;
-  background: none;
-  outline: none;
-}
-.tog-lbl:hover { color: var(--ink); }
-.tog-lbl--on { color: var(--ink); }
-
-/* Icons inside labels */
-.tog-lbl svg {
-  width: 20px; height: 20px;
-  stroke: currentColor;
-  fill: none;
-  stroke-width: 1.8;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  flex-shrink: 0;
-  transition: stroke .2s;
-}
-.tog-lbl--on svg { stroke: var(--accent); }
-
-/* The pill track — larger, matching wireframe */
-.tog-track {
-  position: relative;
-  width: 76px; height: 42px;
-  background: #dbd6ce;
-  border-radius: 100px;
-  border: none;
-  cursor: pointer;
-  padding: 0;
-  flex-shrink: 0;
-  transition: background .3s;
-  box-shadow: inset 0 2px 6px rgba(0,0,0,.08);
-}
-.tog-track--life { background: #dbd6ce; }
-.tog-track:hover { filter: brightness(.96); }
-.tog-track:active { transform: scale(.97); }
-
-/* Large coloured thumb */
-.tog-thumb {
-  position: absolute;
-  top: 5px; left: 5px;
-  width: 32px; height: 32px;
-  background: var(--white);
-  border-radius: 50%;
-  box-shadow: 0 2px 8px rgba(0,0,0,.18);
-  transition: transform .32s cubic-bezier(.34,1.56,.64,1),
-              background .3s;
-  display: block;
-  pointer-events: none;
-}
-/* Life mode: thumb turns accent orange and slides right */
-.tog-track--life .tog-thumb {
-  transform: translateX(34px);
-  background: var(--accent);
-}
-
-/* ── Sticker — col3, centred vertically ── */
-.ap-sticker {
-  grid-column: 3;
-  align-self: center;
-  flex-shrink: 0;
-  width: clamp(90px, 11vw, 150px);
-  cursor: pointer;
-  z-index: 10;
-  position: relative;
-}
-
-/* "Hi there!" bubble — top-right of sticker, hover only */
-.ap-sticker-bubble {
-  position: absolute;
-  top: 0;
-  right: -4px;
-  transform: translateX(100%) scale(0.88);
-  background: #1a1814;
-  color: #fff;
-  font-family: 'Rubik', sans-serif;
-  font-size: 0.78rem;
-  font-weight: 600;
-  padding: 6px 12px;
-  border-radius: 12px 12px 12px 0;
   white-space: nowrap;
-  pointer-events: none;
-  z-index: 11;
-  opacity: 0;
-  transition:
-    opacity .25s cubic-bezier(.34,1.56,.64,1),
-    transform .25s cubic-bezier(.34,1.56,.64,1);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
 }
 
-/* Tail pointing left */
-.ap-sticker-bubble::before {
+.hp-bio {
+  margin-top: clamp(20px, 2.6vw, 28px);
+  font-family: var(--body);
+  font-weight: 400;
+  font-size: clamp(1.1rem, 1.4vw, 1.2rem); /* a notch up from --fs-body */
+  line-height: 1.65;
+  color: var(--sub);
+  max-width: 68ch;
+}
+.hp-bio em { font-style: italic; color: var(--ink); }
+
+/* ── Areas of interest — deliberately chip-shaped, not another line of
+   prose, so it reads as a distinct block from the bio paragraph above. ── */
+.hp-interests {
+  margin-top: clamp(20px, 2.8vw, 28px);
+}
+/* Sits inline as the first item in the chip row instead of on its own
+   line above — saves a full line of hero height without losing context. */
+.hp-interests-label {
+  display: flex;
+  align-items: center;
+  font-family: var(--body);
+  font-size: .95rem;
+  font-weight: 500;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  white-space: nowrap;
+}
+.hp-interests-list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Flip card: .hp-interest is just the 3D stage; .hp-interest-inner is the
+   piece that rotates; front/back are two faces of equal size stacked with
+   backface-visibility:hidden so only one shows at a time. The front (icon
+   + label) sizes the whole card — the back is absolutely positioned to
+   match it exactly, so both faces occupy the same footprint. */
+.hp-interest {
+  display: inline-block;
+  perspective: 900px;
+}
+.hp-interest-inner {
+  position: relative;
+  display: inline-block;
+  transform-style: preserve-3d;
+  transition: transform .55s cubic-bezier(.34,1.56,.64,1);
+}
+.hp-interest:hover .hp-interest-inner,
+.hp-interest:focus-within .hp-interest-inner {
+  transform: rotateX(180deg);
+}
+
+.hp-interest-front,
+.hp-interest-back {
+  backface-visibility: hidden;
+  border-radius: 100px;
+  font-family: var(--body);
+}
+.hp-interest-front {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 195px;
+  padding: 8px 16px 8px 12px;
+  border: 1px solid var(--rule);
+  background: var(--white);
+  color: var(--sub);
+  font-size: 1rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.hp-interest-front svg { flex-shrink: 0; transition: transform .35s cubic-bezier(.34,1.56,.64,1); }
+.hp-interest:hover .hp-interest-front svg { transform: rotate(10deg) scale(1.12); }
+
+.hp-interest-back {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 16px;
+  background: var(--accent);
+  color: #fff;
+  font-size: .92rem;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transform: rotateX(180deg);
+}
+
+/* ── Social links — filled brand marks, a different register from the
+   thin-stroke interest icons above (logos vs. glyphs). ── */
+.hp-socials {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 18px;
+}
+.hp-social {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--rule);
+  color: var(--sub);
+  transition: background .25s ease, color .25s ease, border-color .25s ease, transform .25s cubic-bezier(.34,1.56,.64,1);
+}
+.hp-social:hover, .hp-social:focus-visible {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+  transform: translateY(-3px);
+}
+
+/* ── Underline / text-swap link ──
+   An earlier version wrapped the words in an inline-flex box with
+   overflow:hidden to get a "slide up and reveal" hover effect — but a
+   clipped inline-flex box's baseline (CSS2.1 §10.8.1 synthesis vs.
+   Flexbox's own baseline algorithm) isn't computed identically across
+   browser engines, so a hand-tuned px/em correction that looked flush in
+   one browser sat visibly off in another. Nothing inside .hp-link uses
+   overflow:hidden any more (.hp-link-mask/-word/-word-real are all plain
+   `display:inline`, normal text), so .hp-link's own baseline — the
+   standard "baseline of its last line box" rule for inline-block — is
+   just the real text baseline, with zero correction needed. It stays
+   `inline-block` (not `inline`) so the underline's `width:100%` below
+   resolves against one unambiguous box — a bare `inline` element's
+   containing-block-for-absolute-children is a genuinely inconsistent
+   area across browser engines, which is what made the underline and the
+   hover swap flaky. The hover "clone" is an absolutely-positioned
+   ::before — out of flow entirely, so it can't affect the real text's
+   layout — that fades/rises in while the real word fades out. */
+.hp-link {
+  position: relative;
+  display: inline-block;
+  color: var(--ink);
+  font-weight: 600;
+  text-decoration: none;
+  padding-bottom: 2px;
+}
+.hp-link-mask {
+  display: inline;
+  white-space: nowrap; /* keeps "Design"/"Dept" from splitting across a wrap point on mobile */
+}
+.hp-link-word {
+  /* container only — its own opacity must stay untouched, since fading
+     THIS element would fade its ::before clone too (opacity applies to
+     an element and everything it generates as one unit). The real word
+     and the clone are siblings below, so each can fade independently. */
+  position: relative;
+  display: inline;
+}
+.hp-link-word:not(:last-child) { margin-right: 0.32em; }
+.hp-link-word-real {
+  display: inline;
+  transition: opacity .2s ease;
+}
+.hp-link-word::before {
+  content: attr(data-word);
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: inline-block;
+  color: var(--accent);
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity .2s cubic-bezier(.215,.61,.355,1), transform .2s cubic-bezier(.215,.61,.355,1);
+}
+.hp-link:hover .hp-link-word-real,
+.hp-link:focus-visible .hp-link-word-real {
+  opacity: 0;
+}
+.hp-link:hover .hp-link-word::before,
+.hp-link:focus-visible .hp-link-word::before {
+  opacity: 1;
+  transform: translateY(0);
+}
+.hp-link:hover .hp-link-word:nth-child(1)::before,
+.hp-link:focus-visible .hp-link-word:nth-child(1)::before { transition-delay: .05s; }
+.hp-link:hover .hp-link-word:nth-child(2)::before,
+.hp-link:focus-visible .hp-link-word:nth-child(2)::before { transition-delay: .1s; }
+
+/* Underline sweep: hidden at rest, grows in left-to-right on hover */
+.hp-link::before {
   content: '';
   position: absolute;
-  bottom: 7px;
-  left: -6px;
-  width: 0; height: 0;
-  border-top: 5px solid transparent;
-  border-bottom: 5px solid transparent;
-  border-right: 7px solid #1a1814;
-}
-
-/* Show bubble only on hover */
-.ap-sticker:hover .ap-sticker-bubble {
-  opacity: 1;
-  transform: translateX(100%) scale(1);
-}
-
-@keyframes bubble-in {
-  from { opacity: 0; transform: translateX(calc(100% - 8px)) scale(0.85); }
-  to   { opacity: 1; transform: translateX(100%) scale(1); }
-}
-
-.ap-sticker-img {
+  left: 0; bottom: 0;
+  height: 2px;
   width: 100%;
-  height: auto;
-  display: block;
-  mix-blend-mode: multiply;
-  filter: drop-shadow(0 4px 12px rgba(0,0,0,.12));
-  animation: sticker-float 3.5s ease-in-out infinite;
-  transform-origin: bottom center;
-  pointer-events: none;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform .25s ease-out;
+}
+.hp-link:hover::before, .hp-link:focus-visible::before {
+  transform: scaleX(1);
+  transform-origin: left;
 }
 
-.ap-sticker:hover .ap-sticker-img {
-  animation: sticker-wave 0.45s ease-in-out infinite alternate;
-}
-
-@keyframes sticker-float {
-  0%, 100% { transform: translateY(0) rotate(0deg); }
-  40%       { transform: translateY(-5px) rotate(1deg); }
-  70%       { transform: translateY(-2px) rotate(-0.5deg); }
-}
-
-@keyframes sticker-wave {
-  0%   { transform: rotate(-8deg) translateY(-4px); }
-  100% { transform: rotate(8deg) translateY(-9px); }
-}
-
-
-/* Mobile toggle hidden by default (shown on mobile only) */
-.tog--mobile { display: none; }
-/* Desktop toggle shown by default */
-.tog--desktop { display: flex; }
-.ap-div { height: 1.5px; background: var(--ink); }
-
-/* ══════════════════════════════════════════
-   PANEL
-══════════════════════════════════════════ */
-.ap-panel--out { opacity:0; transform:translateY(6px); transition: opacity .16s, transform .16s; }
-
-/* ══════════════════════════════════════════
-   SLIDER  (full-bleed, no gaps)
-══════════════════════════════════════════ */
-.ap-slider-wrap { width: 100%; overflow: hidden; line-height: 0; }
-
-.sl-wrap {
-  overflow: hidden; width: 100%;
-  /* no mask — full bleed slider, no fade */
-}
-.sl-track {
-  display: flex; gap: 0; width: max-content;
-  animation: scrollL var(--spd,40s) linear infinite;
-}
-.sl-wrap:hover .sl-track { animation-play-state: paused; }
-
-.sl-card {
+.hp-hero-photo-col {
   flex-shrink: 0;
-  /* bigger hero: large margin top + bottom implicitly by section padding */
-  height: clamp(240px, 34vw, 480px);
-  overflow: hidden; background: #c8c3bb; line-height: 0;
-}
-.sl-card img { height: 100%; width: auto; display: block; pointer-events: none; user-select: none; transition: transform .65s ease; }
-.sl-card:hover img { transform: scale(1.07); }
-
-@keyframes scrollL {
-  from { transform: translateX(0); }
-  to   { transform: translateX(var(--slide-dist,-3200px)); }
-}
-
-/* ══════════════════════════════════════════
-   SECTION WRAPPER
-══════════════════════════════════════════ */
-.ap-sec {
-  /* generous top + bottom = "breathing room" */
-  padding: clamp(56px,8vw,100px) var(--g);
-  border-bottom: 1px solid var(--rule);
-  position: relative;
-}
-.ap-sec:last-child { border-bottom: none; }
-
-/* ── SECTION HEADING — 48px / 3rem, Bree Serif ── */
-.sec-head {
-  font-family: var(--serif);
-  font-size: 3rem;          /* 48px exactly */
-  font-weight: 400;
-  color: var(--ink);
-  line-height: 1.05;
-  letter-spacing: -0.01em;
-  /* generous gap below before content starts */
-  margin-bottom: clamp(32px, 5vw, 56px);
-}
-
-/* ══════════════════════════════════════════
-   ABOUT  (green)
-══════════════════════════════════════════ */
-.ap-sec--green { background: var(--green) !important; }
-.ap-sec--green .sec-head { color: #fff; }
-
-/* Body text: 24px / 1.5rem, Rubik 300, full width */
-.about-body {
-  font-family: var(--body);
-  font-size: 1.5rem;       /* 24px */
-  font-weight: 300;
-  line-height: 1.8;
-  /* full width — no max-width constraint */
-  width: 100%;
-  color: rgba(255,255,255,.72);
-  margin-bottom: clamp(36px,5vw,56px);
-}
-.about-body strong { color: #fff; font-weight: 500; }
-.about-body--mt { margin-top: 1.6rem; margin-bottom: 0; }
-.about-body a { color: rgba(255,255,255,.75); text-decoration: underline; text-underline-offset: 3px; }
-.about-body em { font-style: italic; }
-
-/* ── 3 frame cards ── */
-.frames {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: clamp(12px, 2vw, 24px);
-  /* Space between last bio paragraph and the cards */
-  margin-top: clamp(40px, 6vw, 72px);
-}
-
-/* Each card */
-.frame {
-  position: relative;
   display: flex;
   flex-direction: column;
-  border-radius: 14px;
+  width: clamp(160px, 20vw, 280px);
+}
+
+.hp-hero-photo {
+  width: 100%;
+  aspect-ratio: 1 / 1.08;
+  border-radius: var(--radius-lg);
   overflow: hidden;
-  background: rgba(255,255,255,.1) !important;
-  border: 1px solid rgba(255,255,255,.14);
-  transition: transform .32s cubic-bezier(.34,1.56,.64,1), box-shadow .32s;
+  background: var(--rule);
 }
-.frame:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 24px 56px rgba(0,0,0,.32);
-}
-
-/*
-  .frame-header = white/light band at top of card
-  Structure matches image 2 exactly:
-  ┌─────────────────────────────┬──────┐  ← frame-header (light bg)
-  │  bold text (dark green)     │ ●circ│  ← circle in top-right corner
-  └─────────────────────────────┴──────┘
-  │  photo fills card below              │
-  └──────────────────────────────────────┘
-*/
-.frame-header {
-  position: relative;
-  background: rgba(255,255,255,.95) !important;
-  padding: clamp(16px, 2vw, 22px);
-  padding-right: clamp(80px, 8vw, 110px);  /* right room for circle */
-  min-height: clamp(80px, 10vw, 110px);
-  display: flex;
-  align-items: flex-start;
-}
-
-/* Text inside white band — dark green like image 2 */
-.frame-top-text {
-  font-family: var(--body);
-  font-size: clamp(0.85rem, 1.3vw, 1.05rem);
-  font-weight: 700;
-  color: #024F46;           /* brand dark green on white bg */
-  line-height: 1.45;
-  flex: 1;
-}
-
-/* ── Circular badge — top-right corner of .frame-header ── */
-.frame-circ {
-  position: absolute;
-  top: -12px;              /* half in, half out of header top edge */
-  right: -12px;            /* half in, half out of header right edge */
-  width: clamp(72px, 6vw, 96px);
-  height: clamp(72px, 6vw, 96px);
-  z-index: 4;
-  /* pointer-events off so it doesn't block hover */
-  pointer-events: none;
-}
-.frame-circ .circular-text {
-  width: 100% !important;
-  height: 100% !important;
-  background: #111 !important;
-  border-radius: 50% !important;
-}
-.frame-circ .circular-text span {
-  font-size: clamp(8px, 0.75vw, 11px) !important;
-  color: #fff !important;
-  font-family: var(--body) !important;
-  font-weight: 700 !important;
-  letter-spacing: .1em !important;
-}
-
-/* Photo fills lower half */
-.frame-img {
-  flex: 1;
-  min-height: clamp(160px, 22vw, 280px);
-  overflow: hidden;
-  background: rgba(0,0,0,.3);
-  line-height: 0;
-}
-.frame-img img {
+.hp-hero-photo img {
   width: 100%; height: 100%;
-  object-fit: cover; display: block;
-  transition: transform .65s ease;
-}
-.frame:hover .frame-img img { transform: scale(1.07); }
-
-/* ══════════════════════════════════════════
-   AREAS OF INTEREST  — edge-to-edge
-══════════════════════════════════════════ */
-.ap-sec--flow {
-  padding-left: 0;
-  padding-right: 0;
-}
-.ap-sec--flow .sec-head {
-  /* re-add horizontal padding just for the heading */
-  padding-left: var(--g);
-  padding-right: var(--g);
-  color: var(--ink);
-}
-
-.flow-host {
-  height: clamp(300px, 44vw, 500px);
-  width: 100%;
-  overflow: hidden;
-  border-radius: 0;        /* edge-to-edge, no rounded corners */
-}
-
-/* ── FlowingMenu: force Rubik font ── */
-.flow-host .menu__item-link,
-.flow-host .marquee span {
-  font-family: var(--body) !important;
-  font-size: 1.5rem !important;      /* 24px body size */
-  font-weight: 600 !important;
-  letter-spacing: 0.04em !important;
-  text-transform: uppercase !important;
-}
-
-/* ── marquee image — pill shape, proper dimensions ── */
-.flow-host .marquee__img {
-  width: clamp(100px, 12vw, 180px) !important;
-  height: clamp(44px, 6vh, 64px) !important;
-  max-height: none !important;
-  border-radius: 100px !important;
-  background-size: cover !important;
-  background-position: center center !important;
-  flex-shrink: 0 !important;
-  display: block !important;
-}
-
-/* ══════════════════════════════════════════
-   LATEST NEWS
-══════════════════════════════════════════ */
-.news-row {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: clamp(14px, 2.5vw, 28px);
-}
-
-.news-card {
-  border: 1px solid var(--rule);
-  border-radius: 14px; overflow: hidden;
-  background: var(--white) !important;
-  cursor: pointer; display: flex; flex-direction: column;
-  transition: transform .28s cubic-bezier(.34,1.56,.64,1), box-shadow .28s;
-}
-.news-card:hover { transform: translateY(-6px); box-shadow: 0 14px 40px rgba(0,0,0,.09); }
-.news-card:hover .news-card-img img { transform: scale(1.07); }
-
-.news-card-head { padding: clamp(14px,2vw,22px) clamp(14px,2vw,22px) clamp(10px,1.5vw,16px); }
-
-/* TAG — smallest label */
-.news-card-tag {
-  display: inline-block;
-  font-family: var(--body);
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: .12em;
-  text-transform: uppercase;
-  color: var(--accent);
-  margin-bottom: 8px;
-}
-
-/* TITLE — 24px Rubik */
-.news-card-title {
-  font-family: var(--body);
-  font-size: 1.5rem;      /* 24px */
-  font-weight: 500;
-  line-height: 1.45;
-  color: var(--ink);
-}
-
-.news-card-img {
-  flex: 1; min-height: clamp(120px,16vw,190px);
-  overflow: hidden; background: var(--rule); line-height: 0;
-}
-.news-card-img img { width:100%; height:100%; object-fit:cover; display:block; transition: transform .55s ease; }
-
-/* ══════════════════════════════════════════
-   TESTIMONIALS
-   Layout:
-   ┌─────────────────────────┬──────────┐
-   │  " big quote            │  photo   │
-   │    quote text           │          │
-   └─────────────────────────┴──────────┘
-   ┌──────────── name+role ──┬── navs ──┐
-   └─────────────────────────┴──────────┘
-══════════════════════════════════════════ */
-.testi-layout {
-  border: 1px solid var(--rule);
-  border-radius: 14px;
-  padding: clamp(28px,4vw,52px);
-  background: var(--white) !important;
-  display: flex;
-  flex-direction: column;
-  gap: clamp(20px,3vw,36px);
-}
-
-/* ── Top row: quote text + photo ── */
-.testi-top {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: clamp(20px,3.5vw,44px);
-  align-items: start;
-}
-
-.testi-left { display: flex; flex-direction: column; gap: 16px; }
-
-/* BIG QUOTE MARK */
-.testi-q {
-  font-family: var(--serif);
-  font-size: clamp(4rem,7vw,7rem);
-  line-height: .7;
-  color: var(--rule);
-  user-select: none;
+  object-fit: cover;
   display: block;
+  filter: grayscale(1);
+  transform: scale(1);
+  transition: filter .5s ease, transform .5s cubic-bezier(.34,1.56,.64,1);
+}
+.hp-hero-photo:hover img,
+.hp-hero-photo:focus-within img {
+  filter: grayscale(0);
+  transform: scale(1.03);
 }
 
-/* QUOTE TEXT — 24px Rubik */
-.testi-text {
-  font-family: var(--body);
-  font-size: 1.5rem;      /* 24px */
-  font-weight: 300;
-  line-height: 1.75;
-  color: var(--sub);
+/* ══════════════════════════════════════════
+   PANEL — Works / Research
+══════════════════════════════════════════ */
+.hp-panel {
+  margin: 0 var(--g);
+  border-radius: var(--radius-lg);
+  padding: clamp(40px, 6vw, 72px) 0;
 }
+.hp-panel--blue   { background: var(--hp-blue); }
+.hp-panel--purple { background: var(--hp-purple); }
 
-/* PHOTO */
-.testi-photo {
-  width: clamp(110px,14vw,180px);
-  aspect-ratio: 3/4;
-  border-radius: 12px; overflow: hidden;
-  background: var(--rule); flex-shrink: 0;
-}
-.testi-photo img { width:100%; height:100%; object-fit:cover; display:block; }
-
-/* ── Bottom row: author LEFT, nav arrows RIGHT ── */
-.testi-bottom {
+.hp-panel-head {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  padding-top: clamp(16px,2.5vw,24px);
-  border-top: 1px solid var(--rule);
+  padding: 0 clamp(32px, 5vw, 64px);
+  margin-bottom: clamp(28px, 4vw, 40px);
 }
 
-.testi-author { display: flex; flex-direction: column; gap: 4px; }
-
-/* NAME — clearly labelled */
-.testi-name {
+.hp-panel-title {
   font-family: var(--body);
-  font-size: 1rem;
-  font-weight: 600;
-  color: var(--ink);
+  font-weight: 700;
+  font-size: clamp(1.6rem, 3vw, 2.4rem);
+  letter-spacing: -0.02em;
+  color: var(--hp-accent);
 }
 
-/* ROLE — small + muted */
-.testi-role {
-  font-family: var(--body);
-  font-size: 0.8rem;
-  font-weight: 300;
-  color: var(--muted);
-  letter-spacing: .01em;
-}
+.hp-controls { display: flex; gap: 8px; flex-shrink: 0; }
 
-/* NAV ARROWS — sits right-side of bottom row */
-.testi-nav {
-  display: flex;
-  gap: 8px;
-  flex-shrink: 0;
-}
-.testi-arr {
+.hp-ctrl {
   width: 40px; height: 40px;
   border-radius: 50%;
-  border: 1.5px solid var(--rule);
-  background: none; color: var(--ink);
-  font-size: 1.3rem; line-height: 1;
-  cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  transition: background .2s, color .2s, border-color .2s,
-              transform .22s cubic-bezier(.34,1.56,.64,1);
-}
-.testi-arr:hover { background: var(--ink); color: var(--white); border-color: var(--ink); transform: scale(1.12); }
-
-/* ══════════════════════════════════════════
-   GET IN TOUCH  (dark green) — fills to bottom
-══════════════════════════════════════════ */
-.ap-sec--dark {
-  background: #0d2820 !important;
-  border-bottom: none;
-  padding-bottom: clamp(56px, 8vw, 100px); /* same as other sections */
-}
-
-.contact-box { display: flex; flex-direction: column; gap: 12px; }
-
-/* Heading — 3rem Bree Serif */
-.contact-h {
-  font-family: var(--serif);
-  font-size: 3rem;         /* 48px */
-  font-weight: 400;
+  background: rgba(255,255,255,.12);
+  border: 1px solid rgba(255,255,255,.28);
   color: #fff;
-  letter-spacing: -0.01em; line-height: 1.05;
-}
-
-/* Subtitle — 24px Rubik */
-.contact-p {
-  font-family: var(--body);
-  font-size: 1.5rem;       /* 24px */
-  font-weight: 300;
-  color: rgba(255,255,255,.4);
-  line-height: 1.7;
-}
-
-.contact-icons { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
-
-.ci {
-  width: 48px; height: 48px;
-  border-radius: 50%;
-  border: 1px solid rgba(255,255,255,.15);
   display: flex; align-items: center; justify-content: center;
-  color: rgba(255,255,255,.45);
-  text-decoration: none;
-  transition: background .2s, color .2s, border-color .2s,
-              transform .25s cubic-bezier(.34,1.56,.64,1);
+  cursor: pointer;
+  transition: background .2s, transform .25s cubic-bezier(.34,1.56,.64,1), border-color .2s;
 }
-.ci:hover { background: var(--accent); color: #fff; border-color: var(--accent); transform: translateY(-4px) scale(1.1); }
+.hp-ctrl:hover { background: rgba(255,255,255,.26); transform: translateY(-2px); }
+.hp-ctrl:active { transform: translateY(0) scale(.94); }
+.hp-ctrl[aria-pressed="true"] { background: rgba(255,255,255,.9); color: var(--ink); border-color: transparent; }
 
-/* ══════════════════════════════════════════
-   ANIMATION
-══════════════════════════════════════════ */
-@keyframes fadeUp {
-  from { opacity:0; transform:translateY(14px); }
-  to   { opacity:1; transform:translateY(0); }
+/* ── Marquee track ── */
+.hp-marquee {
+  overflow: hidden;
 }
+
+.hp-track {
+  display: flex;
+  gap: 28px;
+  width: max-content;
+  padding: 0 clamp(32px, 5vw, 64px);
+  will-change: transform;
+}
+
+.hp-slide { flex-shrink: 0; width: clamp(320px, 32vw, 440px); }
+
+.hp-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  text-decoration: none;
+  box-shadow: 0 6px 20px rgba(0,0,0,.12);
+  transition: transform .35s cubic-bezier(.34,1.56,.64,1), box-shadow .35s;
+}
+.hp-card:hover, .hp-card:focus-visible {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 44px rgba(0,0,0,.28);
+}
+.hp-card--blue   { background: var(--hp-blue-card); }
+.hp-card--purple { background: var(--hp-purple-card); }
+
+.hp-card-img {
+  height: clamp(190px, 22vw, 270px);
+  overflow: hidden;
+  background: rgba(255,255,255,.08);
+  line-height: 0;
+}
+.hp-card-img img {
+  width: 100%; height: 100%;
+  object-fit: cover; display: block;
+  transition: transform .6s ease;
+}
+.hp-card:hover .hp-card-img img { transform: scale(1.08); }
+
+.hp-card-body {
+  flex: 1;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  padding: clamp(22px, 2.6vw, 32px);
+}
+
+.hp-card-title {
+  font-family: var(--body);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.3;
+  margin-bottom: 8px;
+}
+
+.hp-card-desc {
+  font-family: var(--body);
+  font-size: 1rem;
+  font-weight: 400;
+  color: rgba(255,255,255,.72);
+  line-height: 1.45;
+}
+
+.hp-card-arrow {
+  flex-shrink: 0;
+  width: 42px; height: 42px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.16);
+  color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  transition: background .3s, color .3s, transform .35s cubic-bezier(.34,1.56,.64,1);
+}
+.hp-card:hover .hp-card-arrow { transform: rotate(45deg) scale(1.08); }
+.hp-card--blue:hover .hp-card-arrow   { background: #fff; color: var(--hp-blue); }
+.hp-card--purple:hover .hp-card-arrow { background: #fff; color: var(--hp-purple); }
 
 /* ══════════════════════════════════════════
    RESPONSIVE
 ══════════════════════════════════════════ */
-@media (max-width: 900px) {
-  .sec-head { font-size: 2.2rem; }
-  .about-body, .testi-text, .news-card-title, .contact-p { font-size: 1.2rem; }
-  .contact-h { font-size: 2.2rem; }
-}
-
-@media (max-width: 1100px) {
-  :root { --g: 64px; }
-  .ap-sticker { width: clamp(90px, 11vw, 140px); }
+@media (max-width: 860px) {
+  .hp-hero { flex-direction: column; align-items: flex-start; }
+  .hp-hero-text { width: 100%; } /* column layout + align-items:flex-start would otherwise shrink this to its nowrap subtitle's intrinsic width, overflowing the viewport */
+  .hp-hero-photo-col { width: clamp(140px, 40vw, 220px); align-self: flex-start; }
+  /* Single-line + ellipsis is a desktop-only flourish — on a narrow column
+     it would silently hide "at IIT Hyderabad", so let it wrap here instead. */
+  .hp-sub { white-space: normal; overflow: visible; text-overflow: clip; }
 }
 
 @media (max-width: 768px) {
-  :root { --g: 32px; }
-  .frames { grid-template-columns: 1fr 1fr; }
-  .news-row { grid-template-columns: 1fr 1fr; }
-  .testi-top { grid-template-columns: 1fr; }
-  .testi-photo { width: 100%; max-width: 100%; aspect-ratio: 16/9; }
-  /* Header: 2-col — text+toggle LEFT, sticker RIGHT */
-  .ap-top { grid-template-columns: 1fr auto; align-items: center; }
-  /* Hide desktop toggle, show mobile toggle inside ap-top-left */
-  .tog--desktop { display: none; }
-  .tog--mobile {
-    display: flex;
-    margin-top: 12px;
-    margin-left: 0;
-    padding: 0;
-    align-self: flex-start;  /* don't stretch full width */
-  }
-  /* Sticker: single column, centred */
-  .ap-sticker { grid-column: 2; grid-row: 1; width: clamp(80px, 16vw, 120px); align-self: center; }
-  .ap-title { font-size: clamp(20px, 5vw, 34px); }
-  .ap-sub { font-size: 1rem; }
-  .sec-head { font-size: 2rem; }
-  .about-body { font-size: 1.15rem; }
-  .contact-h { font-size: 2rem; }
-  .contact-p { font-size: 1.1rem; }
+  .hp-slide { width: clamp(260px, 74vw, 340px); }
 }
 
 @media (max-width: 540px) {
-  :root { --g: 20px; }
-  .frames { grid-template-columns: 1fr; }
-  .news-row { grid-template-columns: 1fr; }
-  .testi-q { font-size: 3rem; }
-  .ap-sticker { width: clamp(65px, 18vw, 95px); }
-  /* Smaller toggle on tiny phones */
-  .tog-track { width: 52px; height: 28px; }
-  .tog-thumb { width: 20px; height: 20px; }
-  .tog-track--life .tog-thumb { transform: translateX(24px); }
-  .tog-lbl { font-size: 0.85rem; }
-  .tog-lbl svg { width: 16px; height: 16px; }
-  .ap-title { font-size: clamp(18px, 6vw, 28px); }
-  .ap-sub { font-size: 0.88rem; }
-  .sec-head { font-size: 1.6rem; }
-  .about-body, .testi-text, .news-card-title, .contact-p { font-size: 1rem; }
-  .contact-h { font-size: 1.8rem; }
-  .testi-text { font-size: 1rem; }
-  .frame-top-text { font-size: 0.9rem; }
+  .hp-title { letter-spacing: var(--title-tracking-sm); }
+  .hp-sub { font-size: 1rem; }
+  .hp-panel-title { font-size: 1.4rem; }
+  .hp-ctrl { width: 34px; height: 34px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hp { animation: none; }
+  .hp-card, .hp-ctrl, .hp-card-arrow, .hp-hero-photo img,
+  .hp-link::before, .hp-link-word-real, .hp-link-word::before,
+  .hp-interest-inner, .hp-interest-front svg, .hp-social { transition: none; }
 }

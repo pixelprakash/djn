@@ -18,7 +18,7 @@
 }
 
 .tn-inner {
-  padding: 0 120px;
+  padding: 0 var(--g);
   height: 64px;
   display: flex;
   align-items: center;
@@ -26,7 +26,7 @@
 
 /* Logo */
 .tn-logo {
-  font-family: 'Bree Serif', serif;
+  font-family: var(--body);
   font-size: 1.75rem;
   font-weight: 400;
   color: var(--ink);
@@ -54,8 +54,8 @@
 }
 
 .tn-link {
-  font-family: 'Rubik', sans-serif;
-  font-size: 0.95rem;
+  font-family: var(--body);
+  font-size: 1.05rem;
   font-weight: 400;
   color: var(--ink);
   text-decoration: none;
@@ -133,8 +133,8 @@
 }
 
 .tn-drop-link {
-  font-family: 'Rubik', sans-serif;
-  font-size: 0.875rem;
+  font-family: var(--body);
+  font-size: 1rem;
   font-weight: 400;
   color: var(--ink);
   text-decoration: none;
@@ -160,6 +160,31 @@
 }
 .tn-drop-link:hover .tn-drop-arrow { opacity: 1; }
 
+/* Contact CTA — pinned to the right; margin-left:auto pushes it (and the
+   burger after it) to the end of the row whether or not .tn-links is
+   visible, since .tn-links itself is flex:1 when shown. */
+.tn-cta {
+  margin-left: auto;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--body);
+  font-size: 1rem;
+  font-weight: 600;
+  color: #fff;
+  background: var(--accent);
+  padding: 10px 22px;
+  border-radius: 100px;
+  text-decoration: none;
+  white-space: nowrap;
+  box-shadow: 0 2px 10px rgba(28,93,140,.28);
+  transition: background .2s, transform .2s cubic-bezier(.34,1.56,.64,1), box-shadow .2s;
+}
+.tn-cta:hover { background: #164a70; transform: translateY(-2px); box-shadow: 0 6px 18px rgba(28,93,140,.38); }
+.tn-cta:active { transform: translateY(0); }
+.tn-cta--active { background: #164a70; }
+
 /* Hamburger */
 .tn-burger {
   display: none;
@@ -173,7 +198,7 @@
   cursor: pointer;
   border-radius: 8px;
   transition: background .2s;
-  margin-left: auto;
+  margin-left: 4px;
 }
 .tn-burger:hover { background: rgba(26,24,20,.06); }
 .tn-burger span {
@@ -203,8 +228,8 @@
 }
 
 .tn-mobile-link {
-  font-family: 'Rubik', sans-serif;
-  font-size: 1rem; font-weight: 500;
+  font-family: var(--body);
+  font-size: 1.1rem; font-weight: 500;
   color: var(--ink);
   text-decoration: none;
   padding: 14px 0;
@@ -225,8 +250,8 @@
 .tn-mobile-sub--open { max-height: 500px; }
 
 .tn-mobile-sublink {
-  font-family: 'Rubik', sans-serif;
-  font-size: 0.9rem; font-weight: 400;
+  font-family: var(--body);
+  font-size: 1rem; font-weight: 400;
   color: var(--sub); text-decoration: none;
   padding: 11px 16px;
   border-bottom: 1px solid rgba(26,24,20,.05);
@@ -242,18 +267,16 @@
 /* =====================================================
    RESPONSIVE
 ===================================================== */
-@media (max-width: 1200px) {
-  .tn-inner { padding: 0 64px; }
-}
 @media (max-width: 960px) {
   .tn-links { display: none; }
   .tn-burger { display: flex; }
   .tn-mobile { display: block; }
 }
 @media (max-width: 640px) {
-  .tn-inner { height: 56px; padding: 0 20px; }
+  .tn-inner { height: 56px; }
   .tn-logo { font-size: 1.5rem; margin-right: 0; }
   .tn-offset { height: 82px; }
+  .tn-cta { padding: 8px 16px; font-size: 1rem; }
 }
 
 /* Hide TopNav on project detail page for clean fullscreen viewing */

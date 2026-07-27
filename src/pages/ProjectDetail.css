@@ -21,33 +21,6 @@
 }
 
 /* ═══════════════════════════════════════════════════
-   CUSTOM CURSOR  (photo grid areas only)
-═══════════════════════════════════════════════════ */
-.pd-cursor {
-  position: fixed;
-  pointer-events: none;
-  z-index: 9990;
-  width: 52px;
-  height: 52px;
-  border-radius: 50%;
-  border: 1.5px solid var(--accent);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  /* start hidden + scaled down */
-  opacity: 0;
-  transform: translate(-50%, -50%) scale(0.4);
-  transition:
-    opacity   .18s ease,
-    transform .25s cubic-bezier(.34,1.56,.64,1),
-    background .18s ease;
-  mix-blend-mode: normal;
-}
-.pd-cursor.on  { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-.pd-cursor.pop { transform: translate(-50%, -50%) scale(0.72); background: rgba(255,94,46,.14); }
-.pd-cursor svg { color: var(--accent); }
-
-/* ═══════════════════════════════════════════════════
    TOP NAVIGATION BAR
 ═══════════════════════════════════════════════════ */
 .pd-bar {
@@ -76,7 +49,7 @@
   align-items: center;
   gap: 9px;
   font-family: var(--body);
-  font-size: 0.9rem;          /* ↑ readable size */
+  font-size: 1rem;            /* readable size */
   font-weight: 500;
   color: var(--ink);
   background: var(--white);
@@ -112,7 +85,7 @@
   display: flex;
   align-items: center;
   gap: 9px;
-  font-size: 0.8rem;
+  font-size: 1rem;
   color: var(--muted);
   min-width: 0;
   overflow: hidden;
@@ -151,7 +124,7 @@
   align-items: center;
   gap: 11px;
   font-family: var(--body);
-  font-size: 0.9rem;          /* ↑ same as back button */
+  font-size: 1rem;            /* same as back button */
   font-weight: 500;
   letter-spacing: -0.01em;
   color: var(--white);
@@ -178,7 +151,7 @@
 }
 .pd-ss-btn:hover::after { transform: scaleX(1); }
 .pd-ss-btn:hover {
-  box-shadow: 0 6px 24px rgba(255,94,46,.32);
+  box-shadow: 0 6px 24px rgba(var(--accent-rgb),.32);
   transform: translateY(-1px);
 }
 .pd-ss-btn:active { transform: scale(.96); }
@@ -237,14 +210,14 @@
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  font-size: 0.6rem;
+  font-size: 1rem;
   font-weight: 500;
-  letter-spacing: .16em;
+  letter-spacing: .08em;
   text-transform: uppercase;
   color: var(--accent);
-  background: rgba(255,94,46,.12);
-  border: 1px solid rgba(255,94,46,.22);
-  padding: 5px 14px;
+  background: rgba(var(--accent-rgb),.12);
+  border: 1px solid rgba(var(--accent-rgb),.22);
+  padding: 6px 16px;
   border-radius: 100px;
   margin-bottom: 18px;
   animation: slideUp .5s ease .05s both;
@@ -260,7 +233,7 @@
   animation: slideUp .55s ease .14s both;
 }
 .pd-hero-venue {
-  font-size: 0.88rem;
+  font-size: 1rem;
   font-weight: 300;
   color: rgba(255,255,255,.46);
   animation: slideUp .55s ease .24s both;
@@ -343,7 +316,7 @@
   align-items: center;
   gap: 9px;
   font-family: var(--body);
-  font-size: 0.82rem;
+  font-size: 1rem;
   font-weight: 500;
   color: var(--ink);
   background: var(--white);
@@ -380,7 +353,7 @@
 .nb-view-btn:hover .nb-play-dot { transform: scale(1.2) rotate(12deg); }
 
 .nb-count {
-  font-size: 0.78rem;
+  font-size: 1rem;
   font-weight: 400;
   color: var(--muted);
   transition: color .2s;
@@ -423,7 +396,6 @@
   position: relative;
   overflow: hidden;
   background: var(--rule);
-  cursor: none;
 }
 .pg-item img {
   width: 100%; height: 100%;
@@ -511,13 +483,13 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse at 0% 100%, rgba(255,94,46,.07) 0%, transparent 65%);
+  background: radial-gradient(ellipse at 0% 100%, rgba(var(--accent-rgb),.07) 0%, transparent 65%);
   opacity: 0;
   transition: opacity .4s;
   pointer-events: none;
 }
 .pd-pn-cell-right .pd-pn-link::before {
-  background: radial-gradient(ellipse at 100% 100%, rgba(255,94,46,.07) 0%, transparent 65%);
+  background: radial-gradient(ellipse at 100% 100%, rgba(var(--accent-rgb),.07) 0%, transparent 65%);
 }
 .pd-pn-link:hover::before { opacity: 1; }
 
@@ -528,9 +500,9 @@
 
 /* Direction label */
 .pd-pn-dir {
-  font-size: 0.62rem;
+  font-size: 1rem;
   font-weight: 500;
-  letter-spacing: .16em;
+  letter-spacing: .08em;
   text-transform: uppercase;
   color: rgba(255,255,255,.25);
   display: flex;
@@ -710,8 +682,8 @@
   :root { --nav-safe: 80px; }
   .pd-bar { padding: 14px var(--gutter); }
   .pd-crumb { display: none; }
-  .pd-back { padding: 10px 18px; font-size: 0.84rem; }
-  .pd-ss-btn { padding: 10px 18px; font-size: 0.84rem; }
+  .pd-back { padding: 10px 18px; font-size: 1rem; }
+  .pd-ss-btn { padding: 10px 18px; font-size: 1rem; }
   .pd-ss-dot { width: 24px; height: 24px; }
   .pd-hero { height: clamp(280px, 55vw, 480px); }
 

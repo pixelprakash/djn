@@ -1,46 +1,7 @@
-import { useParams, Link, useNavigate } from 'react-router-dom'
+import { useParams, Link, useNavigate, useLocation } from 'react-router-dom'
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { PROJECTS } from './projectData'
 import './ProjectDetail.css'
-
-/* ═══════════════════════════════════════════
-   Custom cursor — follows mouse only while
-   hovering photo grid cells (cursor: none)
-═══════════════════════════════════════════ */
-function PhotoCursor() {
-  const el = useRef(null)
-
-  useEffect(() => {
-    const cursor = el.current
-    if (!cursor) return
-    const onMove = e => {
-      cursor.style.left = e.clientX + 'px'
-      cursor.style.top  = e.clientY + 'px'
-    }
-    window.addEventListener('mousemove', onMove, { passive: true })
-    return () => window.removeEventListener('mousemove', onMove)
-  }, [])
-
-  return (
-    <div className="pd-cursor" ref={el} id="djm-cursor" aria-hidden>
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
-        stroke="currentColor" strokeWidth="1.7" strokeLinecap="round">
-        <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>
-      </svg>
-    </div>
-  )
-}
-
-/* helpers to drive the cursor from photo cells */
-function getCursor() { return document.getElementById('djm-cursor') }
-function cursorOn()  { getCursor()?.classList.add('on') }
-function cursorOff() { getCursor()?.classList.remove('on','pop') }
-function cursorPop() {
-  const c = getCursor()
-  if (!c) return
-  c.classList.add('pop')
-  setTimeout(() => c.classList.remove('pop'), 220)
-}
 
 /* ═══════════════════════════════════════════
    Fullscreen Slideshow
@@ -136,9 +97,7 @@ function PhotoGrid({ images, onOpen }) {
         <div
           key={i}
           className="pg-item"
-          onMouseEnter={cursorOn}
-          onMouseLeave={cursorOff}
-          onClick={() => { cursorPop(); onOpen(i) }}
+          onClick={() => onOpen(i)}
           role="button"
           tabIndex={0}
           aria-label={`Open photo ${i + 1}`}
@@ -194,6 +153,7 @@ function Notebook({ section, onSlideshow }) {
 export default function ProjectDetail() {
   const { slug }    = useParams()
   const navigate    = useNavigate()
+  const location    = useLocation()
 
   const [slideshow, setSlideshow] = useState(null)  // { images, startIdx }
   const [stuck, setStuck]         = useState(false)
@@ -232,12 +192,14 @@ export default function ProjectDetail() {
 
   return (
     <div className="pd">
-      <PhotoCursor />
-
       {/* ── TOP NAV BAR ── */}
       <header className={`pd-bar${stuck ? ' stuck' : ''}`} role="navigation">
         {/* Back */}
-        <button className="pd-back" onClick={() => navigate('/work')} aria-label="Back to Work">
+        <button
+          className="pd-back"
+          onClick={() => { if (location.key !== 'default') navigate(-1); else navigate('/work') }}
+          aria-label="Go back"
+        >
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
             stroke="currentColor" strokeWidth="2.2"
             strokeLinecap="round" strokeLinejoin="round">

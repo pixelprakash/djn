@@ -1,8 +1,9 @@
 import { Suspense, lazy, useEffect, useRef } from "react"
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom"
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion"
-import FloatingNav from "./components/FloatingNav"
 import TopNav     from "./components/TopNav"
+import CustomCursor from "./components/CustomCursor"
+import Footer from "./components/Footer"
 import { routeImports, preloadAllRoutes } from "./routePreload"
 // About is the default landing route ("/" redirects here), so it's imported
 // eagerly — lazy-loading it would add a chunk-fetch round trip to the most
@@ -92,8 +93,8 @@ function App() {
       <a href="#main-content" className="skip-link">Skip to main content</a>
 
       <IdlePreload />
+      <CustomCursor />
       <TopNav />
-      <FloatingNav />
       <div className="tn-offset" aria-hidden="true" />
       <ScrollToTop />
 
@@ -102,6 +103,8 @@ function App() {
           <AnimatedRoutes />
         </Suspense>
       </main>
+
+      <Footer />
     </BrowserRouter>
   )
 }
