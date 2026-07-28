@@ -697,8 +697,19 @@
 
   .ss-wrap { padding: 20px 16px; }
   .ss-photo { max-width: calc(100vw - 28px); max-height: calc(100vh - 180px); }
-  .ss-stage { gap: 10px; }
+  /* The photo alone claims almost the full viewport width here, so
+     keeping prev/next as flex siblings (as on desktop) pushed them
+     mostly off-screen — overlay them on the photo's edges instead. */
+  .ss-stage { position: relative; gap: 0; }
   .ss-btn { width: 44px; height: 44px; font-size: 1.6rem; }
+  .ss-btn--prev, .ss-btn--next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1;
+  }
+  .ss-btn--prev { left: 4px; }
+  .ss-btn--next { right: 4px; }
 }
 
 /* ── Mobile small ── */

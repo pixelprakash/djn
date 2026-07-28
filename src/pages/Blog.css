@@ -398,6 +398,9 @@
 }
 
 @media (max-width: 860px) {
+  /* --hero-h assumes a desktop-height hero; centering short header
+     content inside it left a large empty band above the title. */
+  .bl-head { min-height: 0; }
   .bl-featured {
     grid-template-columns: 1fr;
   }

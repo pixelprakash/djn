@@ -291,6 +291,9 @@
    RESPONSIVE
 ========================================== */
 @media (max-width: 860px) {
+  /* --hero-h assumes a desktop-height hero; centering short header
+     content inside it left a large empty band above the title. */
+  .contact-header { min-height: 0; }
   .contact-body {
     grid-template-columns: 1fr;
     gap: clamp(40px, 6vw, 60px);

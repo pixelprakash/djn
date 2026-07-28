@@ -420,7 +420,13 @@
 }
 
 @media (max-width: 640px) {
+  /* --hero-h is tuned for a desktop hero with room to breathe; on mobile
+     it left ~150px of dead space below the short title+subtitle here. */
+  .wp-head { min-height: 0; }
   .wp-heading { font-size: var(--fs-h1-sm); letter-spacing: var(--title-tracking-sm); }
+  /* Nowrap+ellipsis is a desktop-only flourish — on a narrow screen it was
+     silently cutting the subtitle down to about half its words. */
+  .wp-sub { white-space: normal; overflow: visible; text-overflow: clip; }
 
   /* All 3 tabs visible at once -- equal width, no scroll needed */
   .tab-nav {

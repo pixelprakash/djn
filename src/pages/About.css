@@ -111,6 +111,15 @@
   perspective: 900px;
 }
 .hp-interest-inner {
+  /* button reset — this is a real <button> now (see About.jsx) so touch
+     devices without :hover can still reveal the back face by tapping */
+  appearance: none;
+  border: none;
+  background: none;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  cursor: pointer;
   position: relative;
   display: inline-block;
   transform-style: preserve-3d;
@@ -164,11 +173,13 @@
    thin-stroke interest icons above (logos vs. glyphs). ── */
 .hp-socials {
   display: flex;
+  flex-wrap: wrap; /* the photo column is narrower than 4 icons+gaps on small screens — wrap to a second row instead of squishing */
   justify-content: center;
   gap: 10px;
   margin-top: 18px;
 }
 .hp-social {
+  flex-shrink: 0; /* without this, flex would compress width only (not height) once .hp-socials runs out of row space, stretching each circle into an oval */
   width: 46px;
   height: 46px;
   border-radius: 50%;
@@ -226,8 +237,15 @@
 }
 .hp-link-word:not(:last-child) { margin-right: 0.32em; }
 .hp-link-word-real {
-  display: inline;
-  transition: opacity .2s ease;
+  /* inline-block (not plain inline) so it can safely receive `transform`
+     — plain inline boxes are outside the spec's "transformable element"
+     categories, which is exactly the kind of engine-dependent behavior
+     this component got burned by once already. It carries no overflow,
+     so it doesn't reintroduce the old baseline-synthesis bug. */
+  display: inline-block;
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity .22s ease, transform .3s cubic-bezier(.34,1.56,.64,1);
 }
 .hp-link-word::before {
   content: attr(data-word);
@@ -237,22 +255,31 @@
   display: inline-block;
   color: var(--accent);
   opacity: 0;
-  transform: translateY(8px);
-  transition: opacity .2s cubic-bezier(.215,.61,.355,1), transform .2s cubic-bezier(.215,.61,.355,1);
+  transform: translateY(10px);
+  transition: opacity .22s ease, transform .3s cubic-bezier(.34,1.56,.64,1);
 }
+/* Each word rises and swaps for its clone in turn — the real word exits
+   upward as the accent-colored clone rises in from below, on the same
+   staggered beat, so the phrase reads as one continuous cascade rather
+   than two effects racing independently. */
 .hp-link:hover .hp-link-word-real,
 .hp-link:focus-visible .hp-link-word-real {
   opacity: 0;
+  transform: translateY(-10px);
 }
 .hp-link:hover .hp-link-word::before,
 .hp-link:focus-visible .hp-link-word::before {
   opacity: 1;
   transform: translateY(0);
 }
+.hp-link:hover .hp-link-word:nth-child(1) .hp-link-word-real,
+.hp-link:focus-visible .hp-link-word:nth-child(1) .hp-link-word-real,
 .hp-link:hover .hp-link-word:nth-child(1)::before,
-.hp-link:focus-visible .hp-link-word:nth-child(1)::before { transition-delay: .05s; }
+.hp-link:focus-visible .hp-link-word:nth-child(1)::before { transition-delay: .04s; }
+.hp-link:hover .hp-link-word:nth-child(2) .hp-link-word-real,
+.hp-link:focus-visible .hp-link-word:nth-child(2) .hp-link-word-real,
 .hp-link:hover .hp-link-word:nth-child(2)::before,
-.hp-link:focus-visible .hp-link-word:nth-child(2)::before { transition-delay: .1s; }
+.hp-link:focus-visible .hp-link-word:nth-child(2)::before { transition-delay: .09s; }
 
 /* Underline sweep: hidden at rest, grows in left-to-right on hover */
 .hp-link::before {
@@ -448,6 +475,12 @@
   .hp-sub { font-size: 1rem; }
   .hp-panel-title { font-size: 1.4rem; }
   .hp-ctrl { width: 34px; height: 34px; }
+  /* Interest chips: dropping the 195px min-width lets flex-wrap pack two
+     shorter labels onto a row where they fit, instead of forcing every
+     chip full-width regardless of how short its text is. Font-size stays
+     at 1rem — the site-wide 16px minimum applies here too. */
+  .hp-interests-label { width: 100%; margin-bottom: 2px; }
+  .hp-interest-front { min-width: 0; padding: 8px 14px 8px 11px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

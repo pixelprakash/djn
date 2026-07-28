@@ -267,13 +267,17 @@ export default function About() {
               <li className="hp-interests-label" aria-hidden="true">Areas of Interest</li>
               {INTERESTS.map(i => (
                 <li className="hp-interest" key={i.label}>
-                  <div className="hp-interest-inner">
+                  {/* A real <button>, not a hover-only <div> — :focus-within
+                      below only ever fires from a focusable descendant, and
+                      a button is also what lets a tap on touch devices
+                      (no :hover) actually reveal the back-of-card detail. */}
+                  <button type="button" className="hp-interest-inner" aria-label={`${i.label}: ${i.detail}`}>
                     <span className="hp-interest-front">
                       <InterestIcon name={i.icon} />
                       {i.label}
                     </span>
-                    <span className="hp-interest-back">{i.detail}</span>
-                  </div>
+                    <span className="hp-interest-back" aria-hidden="true">{i.detail}</span>
+                  </button>
                 </li>
               ))}
             </ul>

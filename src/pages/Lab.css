@@ -562,6 +562,9 @@
 }
 
 @media (max-width: 768px) {
+  /* --hero-h is tuned for a desktop hero; centering short header content
+     inside it left a large empty band above the title on mobile. */
+  .lab-head { min-height: 0; }
   .lab-title { font-size: var(--fs-h1-sm); letter-spacing: var(--title-tracking-sm); }
   .lab-sub { white-space: normal; font-size: 1rem; }
   .lab-item-title { font-size: 1.1rem; }

@@ -46,7 +46,7 @@ function Slideshow({ images, startIdx, onClose }) {
         <button className="ss-x" onClick={onClose} aria-label="Close slideshow">✕</button>
 
         <div className="ss-stage">
-          <button className="ss-btn" onClick={prev} aria-label="Previous photo">‹</button>
+          <button className="ss-btn ss-btn--prev" onClick={prev} aria-label="Previous photo">‹</button>
           <img
             key={idx}
             src={images[idx]}
@@ -54,7 +54,7 @@ function Slideshow({ images, startIdx, onClose }) {
             className="ss-photo"
             loading="eager"
           />
-          <button className="ss-btn" onClick={next} aria-label="Next photo">›</button>
+          <button className="ss-btn ss-btn--next" onClick={next} aria-label="Next photo">›</button>
         </div>
 
         <div className="ss-foot">

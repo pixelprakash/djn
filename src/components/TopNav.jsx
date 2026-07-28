@@ -73,6 +73,17 @@ export default function TopNav() {
     return () => document.removeEventListener('mousedown', onClick)
   }, [])
 
+  // Lock the page's own scroll container while the full-screen mobile
+  // menu is open, so it doesn't feel like the page keeps scrolling
+  // "behind" an overlay that's supposed to be the only thing on screen.
+  useEffect(() => {
+    const scroller = document.getElementById('root')
+    if (!scroller) return
+    if (mobileOpen) scroller.style.overflow = 'hidden'
+    else scroller.style.overflow = ''
+    return () => { scroller.style.overflow = '' }
+  }, [mobileOpen])
+
   const navEl = (
     <header className={`tn${scrolled ? ' tn--scrolled' : ''}`} ref={navRef}>
       <div className="tn-inner">

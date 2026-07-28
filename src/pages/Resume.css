@@ -328,7 +328,9 @@
    RESPONSIVE
 ========================================== */
 @media (max-width: 768px) {
-  .r-header { align-items: center; gap: 16px; padding: 16px var(--g); }
+  /* --hero-h assumes a desktop-height hero; centering shortish header
+     content inside it left large equal gaps above and below on mobile. */
+  .r-header { align-items: center; gap: 16px; padding: 16px var(--g); min-height: 0; }
   .r-section-title { font-size: 2rem; }
   .r-entry-title { font-size: 1.2rem; }
   .r-award-text { font-size: 1rem; }
