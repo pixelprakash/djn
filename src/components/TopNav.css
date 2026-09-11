@@ -22,6 +22,13 @@
   height: 64px;
   display: flex;
   align-items: center;
+  /* One-time settle on first load — the nav never unmounts, so this
+     fires once for the whole session, not on every route change. */
+  animation: tnEnter .5s cubic-bezier(.16, 1, .3, 1) both;
+}
+@keyframes tnEnter {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 /* Logo */
@@ -87,6 +94,21 @@
 }
 .tn-item:hover .tn-chevron { transform: rotate(180deg); opacity: .8; }
 
+/* External-link arrow — deliberately a different shape and motion from
+   the dropdown chevron above, so "opens a submenu" and "leaves this site"
+   never read as the same affordance. Nudges toward its own direction on
+   hover rather than rotating, echoing the diagonal it already points. */
+.tn-external-arrow {
+  opacity: .55;
+  flex-shrink: 0;
+  transition: transform .2s cubic-bezier(.34,1.56,.64,1), opacity .2s;
+}
+.tn-link:hover .tn-external-arrow,
+.tn-mobile-link:hover .tn-external-arrow {
+  opacity: 1;
+  transform: translate(1px, -1px);
+}
+
 /* Dropdown — no gap between trigger and menu */
 .tn-drop {
   position: absolute;
@@ -120,6 +142,25 @@
   flex-direction: column;
   gap: 1px;
   position: relative;
+}
+
+/* Groups an item's dropdown into labeled clusters (e.g. Resume's
+   Background / Teaching / Publications) instead of one flat list, so a
+   ten-entry menu still reads as three short ones. */
+.tn-drop-group + .tn-drop-group {
+  margin-top: 6px;
+  padding-top: 6px;
+  border-top: 1px solid rgba(26,24,20,.06);
+}
+.tn-drop-heading {
+  display: block;
+  padding: 6px 14px 4px;
+  font-family: var(--body);
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--muted);
 }
 .tn-drop-inner::before {
   content: '';
@@ -258,7 +299,27 @@
   max-height: 0; overflow: hidden;
   transition: max-height .28s ease;
 }
-.tn-mobile-sub--open { max-height: 500px; }
+/* Resume's is now the only grouped panel and, at 3 groups + 10 links +
+   the "view full résumé" row, comfortably the tallest — the old 500px
+   cap (sized for a 3-4 item list) would have clipped the bottom of it. */
+.tn-mobile-sub--open { max-height: 700px; }
+
+.tn-mobile-group + .tn-mobile-group { margin-top: 6px; }
+.tn-mobile-group-heading {
+  display: block;
+  padding: 10px 16px 2px;
+  font-family: var(--body);
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.tn-mobile-sublink--overview {
+  color: var(--accent);
+  font-weight: 500;
+}
 
 .tn-mobile-sublink {
   font-family: var(--body);

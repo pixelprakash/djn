@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import Reveal from '../components/Reveal'
 import './Blog.css'
 
 const POSTS = [
@@ -106,6 +107,8 @@ export default function Blog() {
                 src={featured.img}
                 alt={featured.title}
                 loading="eager"
+                decoding="async"
+                fetchPriority="high"
                 onError={function(e) { e.currentTarget.src = 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=900&h=600&fit=crop&q=85' }}
               />
               <div className="bl-featured-overlay" />
@@ -126,13 +129,14 @@ export default function Blog() {
         <div className="bl-grid">
           {(active === 'All' ? rest : visible).map(function(p, i) {
             return (
-              <a
+              <Reveal
+                as="a"
                 key={i}
                 href={p.href}
                 target="_blank"
                 rel="noreferrer"
                 className="bl-card"
-                style={{ animationDelay: (i * 0.06) + 's' }}
+                delay={(i % 3) * 0.05}
               >
                 <div className="bl-card-img">
                   <img src={p.img} alt={p.title} loading="lazy" />
@@ -146,13 +150,14 @@ export default function Blog() {
                   <p className="bl-card-desc">{p.desc}</p>
                   <span className="bl-read">Read post &#8594;</span>
                 </div>
-              </a>
+              </Reveal>
             )
           })}
         </div>
 
         {/* -- ARCHIVE BANNER -- */}
-        <a
+        <Reveal
+          as="a"
           href="http://djmphotography.blogspot.com"
           target="_blank"
           rel="noreferrer"
@@ -164,7 +169,7 @@ export default function Blog() {
             <p className="bl-banner-sub">Photographs, talks, academic updates, and more at djmphotography.blogspot.com</p>
           </div>
           <div className="bl-banner-arrow">&#8599;</div>
-        </a>
+        </Reveal>
 
       </div>
     </div>

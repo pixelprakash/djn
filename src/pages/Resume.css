@@ -42,28 +42,23 @@
   color: var(--ink);
   animation: titleReveal .7s cubic-bezier(.16,1,.3,1) .08s both;
 }
-/* "Mathew" -- italic but SAME ink colour, no accent */
-.r-name em {
-  font-style: italic;
-  color: var(--ink);
-}
 
-/* Role -- 1.5rem Rubik 500, matches about-body weight */
+/* Role line under the name */
 .r-role {
   font-family: var(--body);
   font-size: var(--fs-subtitle);
-  font-weight: 300;
+  font-weight: 400;
   color: var(--sub);
   line-height: 1.4;
 }
 
-/* Secondary role line -- lighter */
+/* Secondary role line -- the DIC / Ministry appointment */
 .r-nodal {
   font-family: var(--body);
   font-size: clamp(1rem, 1.3vw, 1.05rem);
-  font-weight: 300;
+  font-weight: 400;
   color: var(--sub);
-  line-height: 1.6;
+  line-height: 1.65;
 }
 
 /* Profile links row */
@@ -97,17 +92,8 @@
 .r-section {
   padding: clamp(40px, 5.5vw, 72px) var(--g);
   border-bottom: 1px solid var(--rule);
-  animation: fadeUp .5s ease both;
 }
 .r-section:last-child { border-bottom: none; }
-
-/* Stagger */
-.r-section:nth-child(2) { animation-delay: .06s; }
-.r-section:nth-child(3) { animation-delay: .12s; }
-.r-section:nth-child(4) { animation-delay: .18s; }
-.r-section:nth-child(5) { animation-delay: .24s; }
-.r-section:nth-child(6) { animation-delay: .30s; }
-.r-section:nth-child(7) { animation-delay: .36s; }
 
 /* Section heading -- 3rem Bree Serif with trailing rule, matches sec-head */
 .r-section-title {
@@ -192,11 +178,11 @@
   margin-bottom: 4px;
 }
 
-/* Entry sub -- lighter muted */
+/* Entry sub -- org / institution name */
 .r-entry-sub {
   font-family: var(--body);
   font-size: 1rem;
-  font-weight: 300;
+  font-weight: 400;
   color: var(--sub);
   line-height: 1.5;
 }
@@ -228,65 +214,55 @@
 
 .r-award-text {
   font-family: var(--body);
-  font-size: 1.2rem;
-  font-weight: 300;
+  font-size: 1.15rem;
+  font-weight: 400;
   color: var(--ink);
   line-height: 1.55;
 }
 
 /* ==========================================
    PUBLICATIONS
+   Same year-in-left-column layout as Positions / Education / Awards,
+   so all four sections scan the same way down the left edge.
 ========================================== */
 .r-papers { display: flex; flex-direction: column; }
 
 .r-paper {
-  padding: clamp(14px, 2vw, 22px) 0;
+  display: grid;
+  grid-template-columns: clamp(52px, 6vw, 72px) 1fr;
+  gap: clamp(16px, 3vw, 40px);
+  padding: clamp(16px, 2vw, 24px) 0;
   border-bottom: 1px solid var(--rule);
+  align-items: baseline;
   transition: padding-left .25s;
 }
 .r-paper:first-child { border-top: 1px solid var(--rule); }
 .r-paper:hover { padding-left: 8px; }
 
+.r-paper-year {
+  font-family: var(--body);
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
 .r-paper-title {
   font-family: var(--body);
   font-size: 1.2rem;
-  font-weight: 400;
+  font-weight: 500;
   color: var(--ink);
-  line-height: 1.5;
-  margin-bottom: 8px;
-}
-
-.r-paper-meta {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 12px;
-  font-family: var(--body);
-  font-size: 1rem;
-  font-weight: 300;
-  color: var(--muted);
+  line-height: 1.4;
+  margin-bottom: 5px;
 }
 
 .r-paper-venue {
-  font-style: italic;
-}
-
-.r-paper-year {
-  font-weight: 500;
-  color: var(--sub);
-}
-
-.r-cite {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
+  font-family: var(--body);
   font-size: 1rem;
-  font-weight: 500;
-  color: var(--sub);
-  background: rgba(74,69,64,.06);
-  border: 1px solid var(--rule);
-  border-radius: 100px;
-  padding: 3px 12px;
+  font-weight: 400;
+  font-style: italic;
+  color: var(--muted);
+  line-height: 1.5;
 }
 
 /* ==========================================
@@ -333,8 +309,8 @@
   .r-header { align-items: center; gap: 16px; padding: 16px var(--g); min-height: 0; }
   .r-section-title { font-size: 2rem; }
   .r-entry-title { font-size: 1.2rem; }
-  .r-award-text { font-size: 1rem; }
-  .r-paper-title { font-size: 1rem; }
+  .r-award-text { font-size: 1.05rem; }
+  .r-paper-title { font-size: 1.1rem; }
   .r-name { font-size: var(--fs-h1-sm); letter-spacing: var(--title-tracking-sm); }
 }
 
@@ -344,13 +320,15 @@
   .r-role { font-size: 1rem; }
   .r-nodal { font-size: 1rem; }
   .r-section-title { font-size: 1.6rem; }
-  .r-entry { grid-template-columns: 1fr; gap: 4px; }
-  .r-entry:hover { padding-left: 0; }
+  .r-entry,
+  .r-award,
+  .r-paper { grid-template-columns: 1fr; gap: 4px; }
+  .r-entry:hover,
+  .r-award:hover,
+  .r-paper:hover { padding-left: 0; }
   .r-period { padding-top: 0; }
-  .r-award { grid-template-columns: 1fr; gap: 4px; }
-  .r-award:hover { padding-left: 0; }
   .r-entry-title { font-size: 1.1rem; }
   .r-award-text { font-size: 1rem; }
-  .r-paper-title { font-size: 1rem; }
+  .r-paper-title { font-size: 1.05rem; }
   .r-tag { font-size: 1rem; padding: 6px 14px; }
 }

@@ -15,7 +15,7 @@ import './CustomCursor.css'
 const VIEW_SELECTOR =
   '.pg-item, .hp-card, .bl-card, .bl-featured, .lab-video, .proj-card, .lab-slider-img'
 const INTERACTIVE_SELECTOR =
-  'a, button, [role="button"], select, label, .tn-link, .tn-cta, .tab-btn, .hp-ctrl, .ss-btn, .ss-tn'
+  'a, button, [role="button"], select, label, .tn-link, .tn-cta, .tab-btn, .ss-btn, .ss-tn'
 const TEXT_SELECTOR = 'input, textarea, [contenteditable="true"]'
 
 function classify(el) {
@@ -44,6 +44,12 @@ export default function CustomCursor() {
       root.dataset.state = next
     }
 
+    // classify() walks up to three .closest() chains — cheap once, but
+    // mousemove can fire 100+ times/sec, and consecutive events overwhelmingly
+    // share the same e.target (the pointer is still over the same element,
+    // just a different pixel within it). Re-running it only when the target
+    // actually changes skips that tree-walk for the common case.
+    let lastTarget = null
     const onMove = e => {
       // Show on the first real mousemove rather than waiting for a
       // document "mouseenter" — that event never fires if the page loads
@@ -51,7 +57,10 @@ export default function CustomCursor() {
       // that relying on it left the cursor permanently invisible.
       root.style.opacity = '1'
       root.style.transform = `translate(${e.clientX}px, ${e.clientY}px) translate(-50%, -50%)`
-      setState(classify(e.target))
+      if (e.target !== lastTarget) {
+        lastTarget = e.target
+        setState(classify(e.target))
+      }
     }
     const onDown = () => root.classList.add('cc--down')
     const onUp   = () => root.classList.remove('cc--down')
@@ -59,10 +68,13 @@ export default function CustomCursor() {
     // entirely (vs. moving between elements inside it).
     const onOut = e => { if (!e.relatedTarget) root.style.opacity = '0' }
 
-    window.addEventListener('mousemove', onMove)
-    window.addEventListener('mousedown', onDown)
-    window.addEventListener('mouseup', onUp)
-    document.addEventListener('mouseout', onOut)
+    // passive: true — none of these ever call preventDefault, so this tells
+    // the browser it's free to skip the checks it'd otherwise do to allow for
+    // that on every event.
+    window.addEventListener('mousemove', onMove, { passive: true })
+    window.addEventListener('mousedown', onDown, { passive: true })
+    window.addEventListener('mouseup', onUp, { passive: true })
+    document.addEventListener('mouseout', onOut, { passive: true })
 
     return () => {
       html.classList.remove('cc-enabled')

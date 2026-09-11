@@ -1,6 +1,7 @@
 import { useParams, Link, useNavigate, useLocation } from 'react-router-dom'
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { PROJECTS } from './projectData'
+import Reveal from '../components/Reveal'
 import './ProjectDetail.css'
 
 /* ═══════════════════════════════════════════
@@ -53,6 +54,7 @@ function Slideshow({ images, startIdx, onClose }) {
             alt=""
             className="ss-photo"
             loading="eager"
+            decoding="async"
           />
           <button className="ss-btn ss-btn--next" onClick={next} aria-label="Next photo">›</button>
         </div>
@@ -101,7 +103,7 @@ function PhotoGrid({ images, onOpen }) {
           role="button"
           tabIndex={0}
           aria-label={`Open photo ${i + 1}`}
-          onKeyDown={e => e.key === 'Enter' && onOpen(i)}
+          onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onOpen(i) } }}
         >
           <img src={src} alt="" loading="lazy" decoding="async" />
           <div className="pg-veil" aria-hidden />
@@ -239,6 +241,8 @@ export default function ProjectDetail() {
           src={project.cover}
           alt={project.title}
           loading="eager"
+          decoding="async"
+          fetchPriority="high"
         />
         <div className="pd-hero-grad" aria-hidden />
         <div className="pd-hero-info">
@@ -251,7 +255,8 @@ export default function ProjectDetail() {
       {/* ── EDITORIAL SECTIONS ── */}
       <main className="pd-body">
         {project.sections.map((sec, si) => (
-          <article
+          <Reveal
+            as="article"
             key={si}
             className={`pd-sec${si % 2 === 1 ? ' pd-sec-odd' : ''}`}
           >
@@ -273,12 +278,12 @@ export default function ProjectDetail() {
             {si < project.sections.length - 1 && (
               <div className="pd-sep" aria-hidden />
             )}
-          </article>
+          </Reveal>
         ))}
       </main>
 
       {/* ── PREV / NEXT ── */}
-      <nav className="pd-pn" aria-label="Adjacent projects">
+      <Reveal as="nav" className="pd-pn" aria-label="Adjacent projects">
         {/* Hidden inner separator line */}
         <div className="pd-pn-inner-sep" aria-hidden />
 
@@ -321,7 +326,7 @@ export default function ProjectDetail() {
             </div>
           )}
         </div>
-      </nav>
+      </Reveal>
 
       {/* ── SLIDESHOW OVERLAY ── */}
       {slideshow && (

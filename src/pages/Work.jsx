@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import { PROJECTS } from './projectData'
 import { SPONSORED, SOLO_SHOWS, EXHIBITIONS } from './exhibitionData'
 import { useState } from 'react'
+import Reveal from '../components/Reveal'
 import './Work.css'
 
 export default function Work() {
@@ -42,11 +43,12 @@ export default function Work() {
         {tab === 'projects' && (
           <div className="proj-list">
             {PROJECTS.map((p, i) => (
-              <Link
+              <Reveal
+                as={Link}
                 key={p.id}
                 to={`/work/${p.slug}`}
                 className="proj-card"
-                style={{ animationDelay: `${i * 0.07}s` }}
+                delay={(i % 2) * 0.06}
               >
                 <div className="proj-img-wrap">
                   <img src={p.cover} alt={p.title} loading="lazy" decoding="async" />
@@ -61,7 +63,7 @@ export default function Work() {
                   <p className="proj-venue">{p.venue}</p>
                   <span className="proj-cta">Open project &#8594;</span>
                 </div>
-              </Link>
+              </Reveal>
             ))}
           </div>
         )}
@@ -69,7 +71,7 @@ export default function Work() {
         {tab === 'sponsored' && (
           <div className="sp-list">
             {SPONSORED.map((s, i) => (
-              <div key={i} className="sp-row" style={{ animationDelay: `${i * 0.05}s` }}>
+              <Reveal key={i} className="sp-row" delay={Math.min(i, 5) * 0.04}>
                 <div className="sp-left">
                   <span className="sp-year">{s.year}</span>
                   <span className="sp-role">{s.role}</span>
@@ -78,18 +80,18 @@ export default function Work() {
                   <p className="sp-title">{s.title}</p>
                   <p className="sp-funder">{s.funder}</p>
                 </div>
-              </div>
+              </Reveal>
             ))}
           </div>
         )}
 
         {tab === 'exhibitions' && (
           <div className="ex-wrap">
-            <div className="ex-section">
+            <Reveal className="ex-section">
               <p className="seg-lbl">Solo Shows</p>
               <div className="solo-list">
                 {SOLO_SHOWS.map((s, i) => (
-                  <div key={i} className="solo-row" style={{ animationDelay: `${i * 0.05}s` }}>
+                  <div key={i} className="solo-row">
                     <span className="solo-year">{s.year}</span>
                     <div className="solo-info">
                       <span className="solo-title">{s.title}</span>
@@ -98,12 +100,12 @@ export default function Work() {
                   </div>
                 ))}
               </div>
-            </div>
-            <div className="ex-section">
+            </Reveal>
+            <Reveal className="ex-section">
               <p className="seg-lbl">Selected Exhibitions</p>
               <div className="ex-list">
                 {EXHIBITIONS.map((e, i) => (
-                  <div key={i} className="ex-row" style={{ animationDelay: `${i * 0.03}s` }}>
+                  <div key={i} className="ex-row">
                     <span className="ex-year">{e.year}</span>
                     <div className="ex-info">
                       <span className="ex-title">{e.title}</span>
@@ -112,7 +114,7 @@ export default function Work() {
                   </div>
                 ))}
               </div>
-            </div>
+            </Reveal>
           </div>
         )}
 

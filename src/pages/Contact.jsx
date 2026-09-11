@@ -46,8 +46,8 @@ export default function Contact() {
       {/* -- HEADER -- */}
       <header className="contact-header">
         <div className="contact-header-left">
-          <h1 className="contact-heading">Let's Talk</h1>
-          <p className="contact-sub">Open to research collaborations, speaking invitations, and design conversations.</p>
+          <h1 className="contact-heading">Get in Touch</h1>
+          <p className="contact-sub">For research collaborations, speaking engagements, and academic partnerships.</p>
         </div>
       </header>
 
@@ -59,8 +59,8 @@ export default function Contact() {
           {status === 'success' ? (
             <div className="contact-success">
               <div className="success-icon">&#10003;</div>
-              <h3>Message sent!</h3>
-              <p>Thank you for reaching out. I will get back to you soon.</p>
+              <h3>Message sent</h3>
+              <p>Thank you for writing — I'll respond as soon as I'm able.</p>
               <button className="cta-primary" onClick={function() { setStatus('idle') }}>
                 Send another
               </button>
@@ -70,28 +70,28 @@ export default function Contact() {
 
               <div className="form-row">
                 <div className="form-group">
-                  <label className="form-label">First Name <span>*</span></label>
-                  <input type="text" name="firstName" value={form.firstName} onChange={change} required className="form-input" placeholder="Deepak" />
+                  <label className="form-label" htmlFor="firstName">First Name <span aria-hidden="true">*</span></label>
+                  <input id="firstName" type="text" name="firstName" value={form.firstName} onChange={change} required className="form-input" placeholder="Deepak" />
                 </div>
                 <div className="form-group">
-                  <label className="form-label">Last Name <span>*</span></label>
-                  <input type="text" name="lastName" value={form.lastName} onChange={change} required className="form-input" placeholder="Mathew" />
+                  <label className="form-label" htmlFor="lastName">Last Name <span aria-hidden="true">*</span></label>
+                  <input id="lastName" type="text" name="lastName" value={form.lastName} onChange={change} required className="form-input" placeholder="Mathew" />
                 </div>
               </div>
 
               <div className="form-group">
-                <label className="form-label">Email Address <span>*</span></label>
-                <input type="email" name="email" value={form.email} onChange={change} required className="form-input" placeholder="you@example.com" />
+                <label className="form-label" htmlFor="email">Email Address <span aria-hidden="true">*</span></label>
+                <input id="email" type="email" name="email" value={form.email} onChange={change} required className="form-input" placeholder="you@example.com" />
               </div>
 
               <div className="form-group">
-                <label className="form-label">Subject <span>*</span></label>
-                <input type="text" name="subject" value={form.subject} onChange={change} required className="form-input" placeholder="Research collaboration / Speaking invite / ..." />
+                <label className="form-label" htmlFor="subject">Subject <span aria-hidden="true">*</span></label>
+                <input id="subject" type="text" name="subject" value={form.subject} onChange={change} required className="form-input" placeholder="Research collaboration, keynote invitation, academic enquiry…" />
               </div>
 
               <div className="form-group">
-                <label className="form-label">Message <span>*</span></label>
-                <textarea name="message" value={form.message} onChange={change} required className="form-input form-textarea" placeholder="Tell me about your project, idea, or question..." rows={6} />
+                <label className="form-label" htmlFor="message">Message <span aria-hidden="true">*</span></label>
+                <textarea id="message" name="message" value={form.message} onChange={change} required className="form-input form-textarea" placeholder="Share a little about your enquiry, and I'll follow up as soon as I can." rows={6} />
               </div>
 
               {status === 'error' && (

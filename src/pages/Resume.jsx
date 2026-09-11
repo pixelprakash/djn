@@ -1,3 +1,4 @@
+import Reveal from '../components/Reveal'
 import './Resume.css'
 
 /* -- DATA -- */
@@ -23,34 +24,34 @@ const education = [
 ]
 
 const awards = [
-  { year: '2025', text: 'Lifetime Achievement Award for Design Research -- Design Research Council of India' },
-  { year: '2012', text: 'Partnership Development Seed Grant -- Shastri Foundation, with OCAD University Canada' },
-  { year: '2011', text: 'UKIERI India UK Study Mission Grant (16,000 GBP) -- British Council' },
+  { year: '2025', text: 'Lifetime Achievement Award for Design Research — Design Research Council of India' },
+  { year: '2012', text: 'Partnership Development Seed Grant — Shastri Foundation, with OCAD University Canada' },
+  { year: '2011', text: 'UKIERI India UK Study Mission Grant (16,000 GBP) — British Council' },
   { year: '2011', text: 'Commonwealth Fellowship for practice-based Ph.D. in Photography' },
-  { year: '2008', text: '50,000 GBP Grant from UKIERI -- Photography Design twin program, NID & UCA' },
-  { year: '2006', text: 'Photography Award -- India Habitat Centre' },
-  { year: '1999', text: 'Young Artist of the Year -- Alliance Française, New Delhi' },
-  { year: '1997', text: 'Kanoria Scholarship -- Kanoria Art Centre, Ahmedabad' },
+  { year: '2008', text: '50,000 GBP Grant from UKIERI — Photography Design twin program, NID & UCA' },
+  { year: '2006', text: 'Photography Award — India Habitat Centre' },
+  { year: '1999', text: 'Young Artist of the Year — Alliance Française, New Delhi' },
+  { year: '1997', text: 'Kanoria Scholarship — Kanoria Art Centre, Ahmedabad' },
   { year: '1996', text: 'Inlaks Fine Arts Award' },
-  { year: '1994', text: 'National Scholarship for Young Artists -- Ministry of Human Resources, Govt. of India' },
+  { year: '1994', text: 'National Scholarship for Young Artists — Ministry of Human Resources, Govt. of India' },
 ]
 
 const papers = [
   { year: 2024, title: '3D Game Asset Generation of Historical Architecture Through Photogrammetry',                                          venue: 'Encyclopedia of Computer Graphics and Games' },
   { year: 2024, title: 'Navigating parallel interactive narratives in virtual reality',                                                       venue: 'Media Practice & Education, Q1, H-Index 20' },
-  { year: 2023, title: 'Virtual reality for creativity practice and art and design education: a literature review',                           venue: 'ICoRD 2023', cite: 1 },
+  { year: 2023, title: 'Virtual reality for creativity practice and art and design education: a literature review',                           venue: 'ICoRD 2023' },
   { year: 2023, title: 'Games as Inherent Learning Environments: A Thematic Analysis in India',                                              venue: 'ICoRD 2023' },
-  { year: 2022, title: 'A critical review of national education policy 2020: role of twenty-first-century skills and scope of design education', venue: 'Int. Journal of Design Education', cite: 3 },
-  { year: 2022, title: 'Factors Influencing the Exterior Design of Autonomous Passenger Drones: Literature Review',                          venue: 'Proceedings of the Design Society', cite: 2 },
-  { year: 2022, title: 'Design Briefs: Review, Reframing Briefs, and Analysis of a Study',                                                   venue: 'Int. Journal of Design Education', cite: 1 },
-  { year: 2022, title: 'Table for Two -- A parallel interactive narrative in VR (PIN VR)',                                                    venue: 'The Changing Face of VR', cite: 1 },
-  { year: 2021, title: 'Enhancing creative learning methods by immersive virtual reality: A pilot study',                                    venue: 'ICoRD 2021', cite: 4 },
-  { year: 2021, title: 'Bio-bricks: Circular economy and new products',                                                                      venue: 'ICoRD 2021', cite: 6 },
-  { year: 2021, title: 'Digital preservation of the Qutb Shahi monuments: Archiving architecture for historical education',                  venue: 'ICoRD 2021', cite: 1 },
-  { year: 2020, title: 'Users Survey for Development of Passenger Drones',                                                                   venue: 'Proceedings of the Design Society: DESIGN Conference', cite: 12 },
-  { year: 2019, title: 'Bio-Brick -- Development of sustainable and cost effective building material',                                        venue: 'ICED 2019', cite: 16 },
-  { year: 2019, title: 'A study on consumer awareness towards green fashion in India',                                                        venue: 'ICoRD 2019', cite: 12 },
-  { year: 2017, title: 'Evolution of design briefs: Expressions from professional design practice',                                          venue: 'ICoRD 2017', cite: 4 },
+  { year: 2022, title: 'A critical review of national education policy 2020: role of twenty-first-century skills and scope of design education', venue: 'Int. Journal of Design Education' },
+  { year: 2022, title: 'Factors Influencing the Exterior Design of Autonomous Passenger Drones: Literature Review',                          venue: 'Proceedings of the Design Society' },
+  { year: 2022, title: 'Design Briefs: Review, Reframing Briefs, and Analysis of a Study',                                                   venue: 'Int. Journal of Design Education' },
+  { year: 2022, title: 'Table for Two — A parallel interactive narrative in VR (PIN VR)',                                                     venue: 'The Changing Face of VR' },
+  { year: 2021, title: 'Enhancing creative learning methods by immersive virtual reality: A pilot study',                                    venue: 'ICoRD 2021' },
+  { year: 2021, title: 'Bio-bricks: Circular economy and new products',                                                                      venue: 'ICoRD 2021' },
+  { year: 2021, title: 'Digital preservation of the Qutb Shahi monuments: Archiving architecture for historical education',                  venue: 'ICoRD 2021' },
+  { year: 2020, title: 'Users Survey for Development of Passenger Drones',                                                                   venue: 'Proceedings of the Design Society: DESIGN Conference' },
+  { year: 2019, title: 'Bio-Brick — Development of sustainable and cost effective building material',                                         venue: 'ICED 2019' },
+  { year: 2019, title: 'A study on consumer awareness towards green fashion in India',                                                        venue: 'ICoRD 2019' },
+  { year: 2017, title: 'Evolution of design briefs: Expressions from professional design practice',                                          venue: 'ICoRD 2017' },
 ]
 
 const researchAreas = [
@@ -90,19 +91,19 @@ export default function Resume() {
       </header>
 
       {/* -- RESEARCH AREAS -- */}
-      <section className="r-section">
+      <Reveal as="section" className="r-section">
         <h2 className="r-section-title">Research Areas</h2>
         <div className="r-tags">
           {researchAreas.map(a => <span key={a} className="r-tag">{a}</span>)}
         </div>
-      </section>
+      </Reveal>
 
       {/* -- ACADEMIC POSITIONS -- */}
-      <section className="r-section">
+      <Reveal as="section" className="r-section">
         <h2 className="r-section-title">Academic Positions</h2>
         <div className="r-entries">
           {positions.map((p, i) => (
-            <div key={i} className="r-entry" style={{ animationDelay: `${i * 0.04}s` }}>
+            <div key={i} className="r-entry">
               <span className="r-period">{p.period}</span>
               <div>
                 <p className="r-entry-title">{p.role}</p>
@@ -111,14 +112,14 @@ export default function Resume() {
             </div>
           ))}
         </div>
-      </section>
+      </Reveal>
 
       {/* -- EDUCATION -- */}
-      <section className="r-section">
+      <Reveal as="section" className="r-section">
         <h2 className="r-section-title">Education</h2>
         <div className="r-entries">
           {education.map((e, i) => (
-            <div key={i} className="r-entry" style={{ animationDelay: `${i * 0.05}s` }}>
+            <div key={i} className="r-entry">
               <span className="r-period">{e.year}</span>
               <div>
                 <p className="r-entry-title">{e.degree}</p>
@@ -127,68 +128,63 @@ export default function Resume() {
             </div>
           ))}
         </div>
-      </section>
+      </Reveal>
 
       {/* -- AWARDS -- */}
-      <section className="r-section">
+      <Reveal as="section" className="r-section">
         <h2 className="r-section-title">Awards &amp; Scholarships</h2>
         <div className="r-awards">
           {awards.map((a, i) => (
-            <div key={i} className="r-award" style={{ animationDelay: `${i * 0.04}s` }}>
+            <div key={i} className="r-award">
               <span className="r-award-year">{a.year}</span>
               <p className="r-award-text">{a.text}</p>
             </div>
           ))}
         </div>
-      </section>
+      </Reveal>
 
       {/* -- PUBLICATIONS -- */}
-      <section className="r-section">
+      <Reveal as="section" className="r-section">
         <h2 className="r-section-title">Selected Publications</h2>
         <div className="r-papers">
           {papers.map((p, i) => (
-            <div key={i} className="r-paper" style={{ animationDelay: `${i * 0.03}s` }}>
-              <p className="r-paper-title">{p.title}</p>
-              <div className="r-paper-meta">
-                <span className="r-paper-venue">{p.venue}</span>
-                <span className="r-paper-year">{p.year}</span>
-                {p.cite && (
-                  <span className="r-cite">
-                    {p.cite} citation{p.cite > 1 ? 's' : ''}
-                  </span>
-                )}
+            <div key={i} className="r-paper">
+              <span className="r-paper-year">{p.year}</span>
+              <div>
+                <p className="r-paper-title">{p.title}</p>
+                <p className="r-paper-venue">{p.venue}</p>
               </div>
             </div>
           ))}
         </div>
-      </section>
+      </Reveal>
 
       {/* -- PROFILES -- */}
-      <section className="r-section">
+      <Reveal as="section" className="r-section">
         <h2 className="r-section-title">Profiles &amp; Gallery</h2>
         <div className="r-entries">
           <div className="r-entry">
             <span className="r-period">Academic</span>
             <div className="r-profile-links">
-              <a href="https://www.researchgate.net/profile/Deepak-Mathew-3" target="_blank" rel="noreferrer">ResearchGate &#8594;</a>
-              <a href="https://nid.academia.edu/DeepakMathew" target="_blank" rel="noreferrer">Academia.edu &#8594;</a>
+              <a href="https://www.researchgate.net/profile/Deepak-Mathew-3" target="_blank" rel="noreferrer">ResearchGate <span aria-hidden="true">&#8594;</span></a>
+              <a href="https://nid.academia.edu/DeepakMathew" target="_blank" rel="noreferrer">Academia.edu <span aria-hidden="true">&#8594;</span></a>
             </div>
           </div>
           <div className="r-entry">
             <span className="r-period">Gallery</span>
             <div className="r-profile-links">
-              <a href="https://galleryragini.com/deepak-john-mathew/" target="_blank" rel="noreferrer">Gallery Ragini &#8594;</a>
+              <a href="https://galleryragini.com/deepak-john-mathew/" target="_blank" rel="noreferrer">Gallery Ragini <span aria-hidden="true">&#8594;</span></a>
             </div>
           </div>
           <div className="r-entry">
             <span className="r-period">Social</span>
             <div className="r-profile-links">
-              <a href="https://www.instagram.com/deepakjohnmathew/" target="_blank" rel="noreferrer">Instagram &#8594;</a>
-              <a href="https://www.facebook.com/deepakjohnmathew/" target="_blank" rel="noreferrer">Facebook &#8594;</a>
+              <a href="https://www.instagram.com/deepakjohnmathew/" target="_blank" rel="noreferrer">Instagram <span aria-hidden="true">&#8594;</span></a>
+              <a href="https://www.facebook.com/deepakjohnmathew/" target="_blank" rel="noreferrer">Facebook <span aria-hidden="true">&#8594;</span></a>
             </div>
           </div>
         </div>
-      </section>
+      </Reveal>
 
     </div>
   )

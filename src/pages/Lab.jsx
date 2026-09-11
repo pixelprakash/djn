@@ -1,4 +1,6 @@
 import { useState, useCallback, useRef, useEffect } from 'react'
+import Reveal from '../components/Reveal'
+import CountUp from '../components/CountUp'
 import './Lab.css'
 
 /* ── Data ── */
@@ -152,7 +154,7 @@ function VideoCard({ videoId, title }) {
   }
 
   return (
-    <div className="lab-video" role="button" tabIndex={0} onClick={play} onKeyDown={function (e) { if (e.key === 'Enter') play() }}>
+    <div className="lab-video" role="button" tabIndex={0} aria-label={'Play video: ' + title} onClick={play} onKeyDown={function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); play() } }}>
       <img
         src={'https://img.youtube.com/vi/' + videoId + '/maxresdefault.jpg'}
         alt={title}
@@ -183,12 +185,12 @@ export default function Lab() {
           <h1 className="lab-title">DIC Lab</h1>
           <p className="lab-sub">Hub & Nodal — Interdisciplinary design research & innovation.</p>
         </div>
-        <img src="/diclogo.png" alt="DIC Nodal logo" className="lab-logo" draggable="false" />
+        <img src="/diclogo.png" alt="DIC Nodal logo" className="lab-logo" draggable="false" loading="eager" decoding="async" />
       </header>
       <div className="lab-body">
 
         {/* 1. ABOUT */}
-        <section className="lab-about">
+        <Reveal as="section" className="lab-about">
           <h2 className="lab-section-title">About the Centre</h2>
           <p className="lab-desc lab-desc--full">
             The Design Innovation Centre (DIC) Nodal at IIT Hyderabad drives innovation through design and technology. The Department of Design along with partnering institutions engages in mutually beneficial innovation activities across cultural heritage, architecture, digital humanities, autonomous mobility, and sustainable product development.
@@ -196,39 +198,39 @@ export default function Lab() {
           <p className="lab-desc lab-desc--full">
             DIC creates a holistic and inter-disciplinary nature of design to cut across research and move projects from research to development. Our hub and partnering spokes incubate meaningful projects in line with contemporary trends in the design discipline — encouraging design praxis as a convergence of multiple interests across diverse contexts and scenarios.
           </p>
-        </section>
+        </Reveal>
 
         {/* 2. IMAGE SLIDER */}
-        <section className="lab-section lab-section--flush">
+        <Reveal as="section" className="lab-section lab-section--flush">
           <ImageSlider />
-        </section>
+        </Reveal>
 
         {/* 3. STATS */}
-        <section className="lab-section">
+        <Reveal as="section" className="lab-section">
           <div className="lab-stats">
             {STATS.map(function (s) {
               return (
                 <div className="lab-stat" key={s.label}>
-                  <span className="lab-stat-num">{s.number}</span>
+                  <span className="lab-stat-num"><CountUp value={s.number} /></span>
                   <span className="lab-stat-label">{s.label}</span>
                 </div>
               )
             })}
           </div>
-        </section>
+        </Reveal>
 
         {/* 4. PROJECT FILMS */}
-        <section className="lab-section">
+        <Reveal as="section" className="lab-section">
           <h2 className="lab-section-title">Project Films</h2>
           <div className="lab-video-grid">
             {VIDEOS.map(function (v) {
               return <VideoCard key={v.id} videoId={v.id} title={v.title} />
             })}
           </div>
-        </section>
+        </Reveal>
 
         {/* 5. RESEARCH DOMAINS */}
-        <section className="lab-section">
+        <Reveal as="section" className="lab-section">
           <h2 className="lab-section-title">Research Domains</h2>
           <div className="lab-list">
             {DOMAINS.map(function (e, i) {
@@ -236,7 +238,6 @@ export default function Lab() {
                 <div
                   key={e.id}
                   className="lab-item"
-                  style={{ animationDelay: (i * 0.07) + 's' }}
                 >
                   <span className="lab-num">{e.id}</span>
                   <div className="lab-content">
@@ -257,10 +258,10 @@ export default function Lab() {
               )
             })}
           </div>
-        </section>
+        </Reveal>
 
         {/* 6. PATENTS */}
-        <section className="lab-section">
+        <Reveal as="section" className="lab-section">
           <h2 className="lab-section-title">Patents</h2>
           <div className="lab-patent-grid">
             {PATENTS.map(function (p, i) {
@@ -272,27 +273,27 @@ export default function Lab() {
               )
             })}
           </div>
-        </section>
+        </Reveal>
 
         {/* 7. COURSES */}
-        <section className="lab-section">
+        <Reveal as="section" className="lab-section">
           <h2 className="lab-section-title">DIC Courses</h2>
           <div className="lab-course-grid">
             {COURSES.map(function (c) {
               return <span className="lab-course" key={c}>{c}</span>
             })}
           </div>
-        </section>
+        </Reveal>
 
         {/* 8. COLLABORATIONS */}
-        <section className="lab-section">
+        <Reveal as="section" className="lab-section">
           <h2 className="lab-section-title">Collaborations</h2>
           <div className="lab-partner-grid">
             {PARTNERS.map(function (p) {
               return <span className="lab-partner" key={p}>{p}</span>
             })}
           </div>
-        </section>
+        </Reveal>
 
       </div>
     </div>

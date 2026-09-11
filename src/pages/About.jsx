@@ -1,13 +1,11 @@
-import { useState, useRef, useEffect, useCallback } from 'react'
 import { Link } from 'react-router-dom'
-import { useReducedMotion } from 'framer-motion'
 import { PROJECTS } from './projectData'
 import { SOCIALS } from '../data/socials'
 import SocialIcon from '../components/SocialIcon'
+import Reveal from '../components/Reveal'
 import './About.css'
 
 const PH = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300'%3E%3Crect fill='%23d8d8d8' width='400' height='300'/%3E%3C/svg%3E"
-const GAP = 28
 
 const WORKS = PROJECTS.map(p => ({
   key: p.slug,
@@ -16,15 +14,6 @@ const WORKS = PROJECTS.map(p => ({
   image: p.cover,
   href: `/work/${p.slug}`,
 }))
-
-// Placeholder content — swap in real research entries when available.
-const RESEARCH = [
-  { key: 'r1', title: 'Digital Heritage & AR/VR', desc: 'Reconstructing endangered built heritage through immersive augmented and virtual reality.', image: 'https://images.unsplash.com/photo-1531297484001-80022131f5a1?w=700&h=520&fit=crop&q=80' },
-  { key: 'r2', title: 'Autonomous Drones for Documentation', desc: 'Drone-based imaging workflows for large-scale heritage and site documentation.', image: 'https://images.unsplash.com/photo-1508614999368-9260051292e5?w=700&h=520&fit=crop&q=80' },
-  { key: 'r3', title: 'Design Pedagogy Research', desc: 'How design curricula shape creative problem-solving in engineering-led institutions.', image: 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=700&h=520&fit=crop&q=80' },
-  { key: 'r4', title: 'Human-Computer Interaction', desc: 'Interaction patterns between people and emerging spatial computing interfaces.', image: 'https://images.unsplash.com/photo-1593508512255-86ab42a8e620?w=700&h=520&fit=crop&q=80' },
-  { key: 'r5', title: 'Sustainable Design Systems', desc: 'Frameworks for environmentally responsible design practice in Indian contexts.', image: 'https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?w=700&h=520&fit=crop&q=80' },
-]
 
 // detail: a real, specific anchor for each interest — pulled from his
 // actual projects/research/CV elsewhere on the site, not invented copy.
@@ -91,155 +80,63 @@ function MotionLink({ href, label }) {
   )
 }
 
-function Card({ item, color, tabIndex }) {
-  const body = (
-    <>
-      <div className="hp-card-img">
-        <img
-          src={item.image}
-          alt=""
-          loading="lazy"
-          decoding="async"
-          draggable="false"
-          onError={e => { if (e.currentTarget.src !== PH) e.currentTarget.src = PH }}
-        />
-      </div>
-      <div className="hp-card-body">
-        <div className="hp-card-text">
-          <h3 className="hp-card-title">{item.title}</h3>
-          <p className="hp-card-desc">{item.desc}</p>
-        </div>
-        <span className="hp-card-arrow" aria-hidden="true">
-          <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-            <line x1="7" y1="17" x2="17" y2="7" />
-            <polyline points="7 7 17 7 17 17" />
-          </svg>
-        </span>
-      </div>
-    </>
+/* Static editorial grid, not a carousel — a scannable "featured + grid"
+   layout (one large lead project, four supporting ones) reads as a
+   considered curatorial choice, doesn't fight the user for control the
+   way an auto-scrolling track does, and needs no play/pause/prev/next
+   affordances to be fully usable or accessible. Cards reveal in with a
+   short stagger on scroll (same primitive as the rest of the site) rather
+   than looping motion that never settles. */
+function WorksGrid({ items, color }) {
+  return (
+    <div className="hp-works-grid">
+      {items.map((item, i) => (
+        <Reveal
+          as={Link}
+          to={item.href}
+          key={item.key}
+          delay={Math.min(i, 4) * 0.07}
+          className={`hp-card hp-card--${color} hp-work-${i}`}
+        >
+          <div className="hp-card-img">
+            <img
+              src={item.image}
+              alt=""
+              loading="lazy"
+              decoding="async"
+              draggable="false"
+              onError={e => { if (e.currentTarget.src !== PH) e.currentTarget.src = PH }}
+            />
+          </div>
+          <div className="hp-card-body">
+            <div className="hp-card-text">
+              <h3 className="hp-card-title">{item.title}</h3>
+              <p className="hp-card-desc">{item.desc}</p>
+            </div>
+            <span className="hp-card-arrow" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="7" y1="17" x2="17" y2="7" />
+                <polyline points="7 7 17 7 17 17" />
+              </svg>
+            </span>
+          </div>
+        </Reveal>
+      ))}
+    </div>
   )
-
-  if (item.href) {
-    return (
-      <Link to={item.href} className={`hp-card hp-card--${color}`} tabIndex={tabIndex}>
-        {body}
-      </Link>
-    )
-  }
-  return <article className={`hp-card hp-card--${color}`}>{body}</article>
 }
 
-/* Slow auto-scrolling row with prev/next + play-pause controls.
-   Two copies of the item list sit in the track for a seamless loop;
-   the second copy is aria-hidden + untabbable so screen reader / keyboard
-   users only ever see the real set once. */
-function Marquee({ heading, id, items, color, speed = 30 }) {
-  const trackRef = useRef(null)
-  const posRef = useRef(0)
-  const distRef = useRef(0)
-  const hoverRef = useRef(false)
-  const [manualPaused, setManualPaused] = useState(false)
-  const reduceMotion = useReducedMotion()
-
-  const recalc = useCallback(() => {
-    const track = trackRef.current
-    if (!track) return
-    const cards = track.querySelectorAll('.hp-card')
-    const half = Math.floor(cards.length / 2)
-    let d = 0
-    for (let i = 0; i < half; i++) d += cards[i].offsetWidth + GAP
-    distRef.current = d
-  }, [])
-
-  useEffect(() => {
-    recalc()
-    const imgs = trackRef.current ? trackRef.current.querySelectorAll('img') : []
-    imgs.forEach(img => { if (!img.complete) img.addEventListener('load', recalc, { once: true }) })
-    window.addEventListener('resize', recalc)
-    return () => window.removeEventListener('resize', recalc)
-  }, [items, recalc])
-
-  useEffect(() => {
-    if (reduceMotion) return
-    let raf
-    let last = null
-    function frame(now) {
-      if (last == null) last = now
-      const dt = now - last
-      last = now
-      if (!hoverRef.current && !manualPaused && distRef.current && trackRef.current) {
-        posRef.current -= (speed / 1000) * dt
-        if (posRef.current <= -distRef.current) posRef.current += distRef.current
-        trackRef.current.style.transform = `translateX(${posRef.current}px)`
-      }
-      raf = requestAnimationFrame(frame)
-    }
-    raf = requestAnimationFrame(frame)
-    return () => cancelAnimationFrame(raf)
-  }, [manualPaused, reduceMotion, speed])
-
-  function step(dir) {
-    const track = trackRef.current
-    if (!track || !distRef.current) return
-    const first = track.querySelector('.hp-card')
-    const w = first ? first.getBoundingClientRect().width + GAP : 340
-    posRef.current -= dir * w
-    if (posRef.current <= -distRef.current) posRef.current += distRef.current
-    if (posRef.current > 0) posRef.current -= distRef.current
-    track.style.transition = reduceMotion ? 'none' : 'transform .45s cubic-bezier(.4,0,.2,1)'
-    track.style.transform = `translateX(${posRef.current}px)`
-    window.clearTimeout(track._t)
-    track._t = window.setTimeout(() => { if (track) track.style.transition = '' }, 460)
-  }
-
+function WorksPanel({ heading, id, items, color, viewAllHref, viewAllLabel }) {
   return (
     <section className={`hp-panel hp-panel--${color}`} aria-labelledby={id}>
       <div className="hp-panel-head">
         <h2 className="hp-panel-title" id={id}>{heading}</h2>
-        <div className="hp-controls" role="group" aria-label={`${heading} carousel controls`}>
-          <button type="button" className="hp-ctrl" onClick={() => step(-1)} aria-label={`Previous ${heading} item`}>
-            <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" strokeWidth="2.3" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6" /></svg>
-          </button>
-          <button
-            type="button"
-            className="hp-ctrl"
-            onClick={() => setManualPaused(p => !p)}
-            aria-pressed={manualPaused}
-            aria-label={manualPaused ? `Play ${heading} carousel` : `Pause ${heading} carousel`}
-          >
-            {manualPaused ? (
-              <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor"><polygon points="6 4 20 12 6 20" /></svg>
-            ) : (
-              <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor"><rect x="6" y="4" width="4" height="16" /><rect x="14" y="4" width="4" height="16" /></svg>
-            )}
-          </button>
-          <button type="button" className="hp-ctrl" onClick={() => step(1)} aria-label={`Next ${heading} item`}>
-            <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" strokeWidth="2.3" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 6 15 12 9 18" /></svg>
-          </button>
-        </div>
+        {viewAllHref && (
+          <Link to={viewAllHref} className="hp-panel-link">{viewAllLabel || 'View all'}</Link>
+        )}
       </div>
-
-      <div
-        className="hp-marquee"
-        onMouseEnter={() => { hoverRef.current = true }}
-        onMouseLeave={() => { hoverRef.current = false }}
-        onFocus={() => { hoverRef.current = true }}
-        onBlur={() => { hoverRef.current = false }}
-      >
-        <div className="hp-track" ref={trackRef}>
-          {items.map(item => (
-            <div className="hp-slide" key={item.key}>
-              <Card item={item} color={color} />
-            </div>
-          ))}
-          <div className="hp-track-dup" aria-hidden="true" style={{ display: 'contents' }}>
-            {items.map(item => (
-              <div className="hp-slide" key={`dup-${item.key}`}>
-                <Card item={item} color={color} tabIndex={-1} />
-              </div>
-            ))}
-          </div>
-        </div>
+      <div className="hp-works-wrap">
+        <WorksGrid items={items} color={color} />
       </div>
     </section>
   )
@@ -290,6 +187,13 @@ export default function About() {
               src="/profliepic.webp"
               alt="Portrait of Prof. Deepak John Mathew"
               draggable="false"
+              // Almost certainly this page's LCP element — above the fold,
+              // large, and the first meaningfully-sized thing to paint.
+              // fetchPriority tells the browser to fetch it ahead of
+              // lower-priority requests instead of at default priority.
+              loading="eager"
+              decoding="async"
+              fetchPriority="high"
               onError={e => { if (e.currentTarget.src !== PH) e.currentTarget.src = PH }}
             />
           </div>
@@ -310,8 +214,17 @@ export default function About() {
         </div>
       </header>
 
-      <Marquee heading="Works" id="hp-works-heading" items={WORKS} color="blue" speed={14} />
-      <Marquee heading="Research" id="hp-research-heading" items={RESEARCH} color="purple" speed={12} />
+      {/* Only Works — RESEARCH above is still explicitly placeholder data
+          (stock photos, invented entries) and doesn't belong on the site
+          as if it were real content. Works is real, drawn from PROJECTS. */}
+      <WorksPanel
+        heading="Works"
+        id="hp-works-heading"
+        items={WORKS}
+        color="blue"
+        viewAllHref="/work"
+        viewAllLabel="View all work"
+      />
     </div>
   )
 }

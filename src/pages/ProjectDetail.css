@@ -233,9 +233,14 @@
   animation: slideUp .55s ease .14s both;
 }
 .pd-hero-venue {
-  font-size: 1rem;
-  font-weight: 300;
-  color: rgba(255,255,255,.46);
+  font-size: 1.05rem;
+  /* was 300 — light weight plus low opacity read as barely-there on the
+     dark hero; 400 gives it presence as the title's supporting line. */
+  font-weight: 400;
+  /* .46 was thin against the dark scrim behind it (.pd-hero-grad) — this
+     sits in the strongest part of that gradient, so there's no reason not
+     to push it closer to fully opaque. */
+  color: rgba(255,255,255,.9);
   animation: slideUp .55s ease .24s both;
 }
 
@@ -272,43 +277,49 @@
   border-radius: 2px;
 }
 
-/* Ruled paper background */
+/* Ruled paper background — the whole block runs on a fixed vertical rhythm
+   (line-height = ruled-line spacing = paragraph spacing), so bumping the
+   text size means bumping every one of these values together. Grid is 34px
+   now (was 30px) to carry the larger, heavier body copy comfortably. */
 .nb-paper {
   background-image: repeating-linear-gradient(
     to bottom,
     transparent 0px,
-    transparent 29px,
-    var(--nb-line) 29px,
-    var(--nb-line) 30px
+    transparent 33px,
+    var(--nb-line) 33px,
+    var(--nb-line) 34px
   );
   /* Shift so first rule lands correctly under first text line */
-  background-position: 0 7px;
-  padding: 7px 0 0;
+  background-position: 0 9px;
+  padding: 9px 0 0;
 }
 
 .nb-p {
-  font-size: 1.0rem;
-  font-weight: 300;
-  /* line-height MUST match ruled line spacing exactly = 30px */
-  line-height: 30px;
+  /* This is the page's primary reading copy — was 16px / weight 300, which
+     read as faint and small for sustained reading. */
+  font-size: 1.1875rem;
+  font-weight: 400;
+  /* line-height MUST match ruled line spacing exactly = 34px */
+  line-height: 34px;
   color: var(--sub);
   /* Each paragraph = whole number of ruled lines */
-  margin-bottom: 30px;
+  margin-bottom: 34px;
 }
 .nb-p:last-of-type { margin-bottom: 0; }
 
 /* Button row: lives below the ruled area, flush with page gutter */
 .nb-actions {
-  /* Gap above = one ruled-line gap (30px) */
-  margin-top: 30px;
-  padding-top: 30px;
+  /* Gap above = one ruled-line gap (34px) */
+  margin-top: 34px;
+  padding-top: 34px;
   border-top: 1px solid var(--nb-line);
   /* Align left with text (no extra indent) */
   display: flex;
   align-items: center;
   gap: 12px;
+  flex-wrap: wrap;
   /* Bottom padding = one ruled line so element clears nicely */
-  padding-bottom: 32px;
+  padding-bottom: 36px;
 }
 
 .nb-view-btn {
@@ -451,6 +462,13 @@
   padding-bottom: var(--nav-safe);
 }
 
+/* The global focus ring is accent-blue, which sits at ~2.5:1 against this
+   section's near-black background — under the 3:1 WCAG wants for a focus
+   indicator against its surroundings. White clears it easily. */
+.pd-pn-link:focus-visible {
+  outline-color: #fff;
+}
+
 /* Divider between the two cells */
 .pd-pn-inner-sep {
   position: absolute;
@@ -504,7 +522,9 @@
   font-weight: 500;
   letter-spacing: .08em;
   text-transform: uppercase;
-  color: rgba(255,255,255,.25);
+  /* .25 measured ~1.6:1 against this section's #0e0c09 — nowhere close to
+     readable. .6 clears 4.5:1 with margin. */
+  color: rgba(255,255,255,.6);
   display: flex;
   align-items: center;
   gap: 7px;
@@ -536,10 +556,13 @@
 .pd-pn-title {
   font-family: var(--serif);
   font-style: italic;
-  font-size: clamp(1.05rem, 2.2vw, 1.55rem);
+  /* min bumped 1.05rem -> 1.2rem — this is the name of the adjacent
+     project and the main label of a primary nav link, shouldn't shrink
+     to near-body size on smaller screens. */
+  font-size: clamp(1.2rem, 2.2vw, 1.55rem);
   font-weight: 400;
-  color: rgba(255,255,255,.78);
-  line-height: 1.22;
+  color: rgba(255,255,255,.82);
+  line-height: 1.3;
   max-width: clamp(200px, 32vw, 440px);
   transition: color .2s;
 }
@@ -563,6 +586,14 @@
   animation: fadeIn .2s ease;
 }
 @keyframes fadeIn { from { opacity:0 } to { opacity:1 } }
+
+/* Same reasoning as .pd-pn-link above — accent-blue is too close to this
+   near-black modal's own background to read as a focus indicator. */
+.ss-x:focus-visible,
+.ss-btn:focus-visible,
+.ss-tn:focus-visible {
+  outline-color: #fff;
+}
 
 .ss-wrap {
   width: 100%; height: 100%;
@@ -629,8 +660,11 @@
   width: 100%;
 }
 .ss-idx {
+  /* Small by design — a compact page-position readout, not prose — but
+     .3 was still too faint to read comfortably; .6 keeps it unobtrusive
+     while actually being legible against the near-black modal. */
   font-size: 0.72rem;
-  color: rgba(255,255,255,.3);
+  color: rgba(255,255,255,.6);
   letter-spacing: .08em;
 }
 

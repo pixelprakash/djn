@@ -1,5 +1,10 @@
 /* =====================================================
-   CV CONTENT PAGE
+   CV DETAIL PAGE
+   The deep pages under "Résumé ▾" (plus the exhibition
+   ones under Work). Treated as a centered editorial
+   document: eyebrow back-link → display title → hard
+   rule → year-column lists that scan the same way as
+   the main résumé's list sections.
 ===================================================== */
 .cvp {
   min-height: 100%;
@@ -7,50 +12,84 @@
   font-family: var(--body);
   color: var(--ink);
   -webkit-font-smoothing: antialiased;
-  padding-bottom: 120px;
+  padding-bottom: var(--nav-safe);
 }
 
 .cvp-inner {
-  max-width: 860px;
-  padding: 80px 120px 0; /* ↑ was 56px — gives the title room to breathe below nav */
+  max-width: 940px;
+  margin: 0 auto;
+  padding: clamp(44px, 7vw, 84px) var(--g) 0;
 }
 
-/* Page title */
+.cvp-missing {
+  font-family: var(--body);
+  font-size: 1.1rem;
+  color: var(--sub);
+  margin-top: 40px;
+}
+.cvp-missing a { color: var(--accent); text-decoration: none; }
+.cvp-missing a:hover { text-decoration: underline; }
+
+/* Eyebrow — back to the parent section */
+.cvp-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--body);
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-decoration: none;
+  margin-bottom: clamp(20px, 3vw, 32px);
+  transition: color .2s ease, gap .2s ease;
+  animation: cvpFade .5s ease both;
+}
+.cvp-back:hover { color: var(--accent); gap: 12px; }
+
+/* Display title */
 .cvp-title {
   font-family: var(--serif);
   font-size: var(--fs-h1);
   font-weight: 400;
-  line-height: 1.1;
+  line-height: 1.04;
   letter-spacing: var(--title-tracking);
   color: var(--ink);
-  margin-bottom: 16px; /* tighter — rule carries the visual separation */
+  margin-bottom: clamp(16px, 2vw, 22px);
   animation: titleReveal .7s cubic-bezier(.16,1,.3,1) .08s both;
 }
 
 .cvp-rule {
   height: 1.5px;
   background: var(--ink);
-  margin-bottom: clamp(40px, 6vw, 64px); /* ↑ was 52px max — the gap after the rule is where hierarchy lives */
+  margin-bottom: clamp(44px, 6vw, 72px);
+  transform-origin: left;
+  animation: cvpWipe .6s cubic-bezier(.16,1,.3,1) .12s both;
 }
 
 /* Sections */
 .cvp-section {
-  margin-bottom: clamp(32px, 5vw, 56px); /* ↑ slightly more generous */
-  padding-bottom: clamp(24px, 4vw, 44px);
+  margin-bottom: clamp(40px, 5vw, 64px);
+  padding-bottom: clamp(28px, 4vw, 48px);
   border-bottom: 1px solid var(--rule);
 }
-.cvp-section:last-child { border-bottom: none; }
+.cvp-section:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+  margin-bottom: 0;
+}
 
 .cvp-sec-head {
   font-family: var(--serif);
-  font-size: clamp(1rem, 1.8vw, 1.3rem);
+  font-size: clamp(1.35rem, 2.4vw, 1.8rem);
   font-weight: 400;
   color: var(--ink);
-  margin-bottom: clamp(16px, 2.2vw, 24px); /* ↑ a touch more space before list items */
+  margin-bottom: clamp(16px, 2.4vw, 24px);
   letter-spacing: -0.01em;
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 18px;
 }
 .cvp-sec-head::after {
   content: '';
@@ -59,48 +98,66 @@
   background: var(--rule);
 }
 
-/* List */
-.cvp-list { display: flex; flex-direction: column; list-style: none; }
+/* Year-column list */
+.cvp-list { display: flex; flex-direction: column; }
 
 .cvp-item {
   display: grid;
-  grid-template-columns: 16px 1fr;
-  gap: 10px;
+  grid-template-columns: clamp(74px, 9vw, 104px) 1fr;
+  gap: clamp(14px, 2.6vw, 34px);
   align-items: baseline;
-  padding: clamp(10px, 1.4vw, 13px) 0;
-  border-bottom: 1px solid rgba(219,214,206,0.5);
+  padding: clamp(12px, 1.6vw, 16px) 0;
+  border-bottom: 1px solid rgba(219, 214, 206, 0.55);
+  transition: padding-left .18s ease;
+}
+.cvp-item:first-child { border-top: 1px solid rgba(219, 214, 206, 0.55); }
+.cvp-item:last-child { border-bottom: none; }
+.cvp-item:hover { padding-left: 6px; }
+
+/* Sections with no per-entry years: drop the empty column */
+.cvp-list--plain .cvp-item { grid-template-columns: 1fr; }
+
+.cvp-year {
   font-family: var(--body);
-  font-size: clamp(1rem, 1.3vw, 1.05rem);
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--muted);
+  white-space: nowrap;
+  line-height: 1.6;
+}
+
+.cvp-text {
+  font-family: var(--body);
+  font-size: clamp(1.05rem, 1.35vw, 1.15rem);
   font-weight: 400;
   color: var(--sub);
-  line-height: 1.6;
-  transition: padding-left .16s, color .16s;
+  line-height: 1.62;
+  transition: color .18s ease;
 }
-.cvp-item:last-child { border-bottom: none; }
-.cvp-item:hover { padding-left: 4px; color: var(--ink); }
+.cvp-item:hover .cvp-text { color: var(--ink); }
 
-.cvp-dot {
-  width: 4px; height: 4px;
-  background: var(--muted);
-  border-radius: 50%;
-  flex-shrink: 0;
-  margin-top: 8px;
-  justify-self: center;
-  transition: background .16s;
+/* =====================================================
+   ANIMATION
+===================================================== */
+@keyframes cvpFade {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
-.cvp-item:hover .cvp-dot { background: var(--ink); }
+@keyframes cvpWipe {
+  from { opacity: 0; transform: scaleX(0); }
+  to   { opacity: 1; transform: scaleX(1); }
+}
 
 /* =====================================================
    RESPONSIVE
 ===================================================== */
-@media (max-width: 1200px) {
-  .cvp-inner { padding: 64px 64px 0; max-width: 100%; } /* ↑ was 48px */
-}
 @media (max-width: 768px) {
-  .cvp-inner { padding: 52px 32px 0; } /* ↑ was 40px */
   .cvp-title { font-size: var(--fs-h1-sm); letter-spacing: var(--title-tracking-sm); }
+  .cvp-sec-head { font-size: clamp(1.2rem, 4.5vw, 1.5rem); }
 }
+
 @media (max-width: 540px) {
-  .cvp-inner { padding: 40px 20px 0; } /* ↑ was 36px */
-  .cvp-item { grid-template-columns: 14px 1fr; gap: 8px; }
+  /* Stack the year above the entry, like the main résumé does on phones */
+  .cvp-item { grid-template-columns: 1fr; gap: 3px; }
+  .cvp-item:hover { padding-left: 0; }
 }

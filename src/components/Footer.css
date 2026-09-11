@@ -94,11 +94,22 @@
 .ft-bottom p {
   font-family: var(--body);
   font-size: 1rem;
-  color: rgba(255,255,255,.4);
+  /* .4 measured ~3.8:1 against --ink — below WCAG AA's 4.5:1 for text.
+     .6 clears it with room to spare. */
+  color: rgba(255,255,255,.6);
 }
 
 @media (max-width: 640px) {
   .ft-inner { flex-direction: column; gap: 32px; }
+}
+
+/* The global focus ring is accent-blue, which sits at ~2.5:1 against this
+   footer's --ink background — well under the 3:1 WCAG wants for a focus
+   indicator's contrast against its surroundings. White clears it easily
+   here, where a link's neighborhood is reliably dark. */
+.ft a:focus-visible,
+.ft button:focus-visible {
+  outline-color: #fff;
 }
 
 @media (prefers-reduced-motion: reduce) {

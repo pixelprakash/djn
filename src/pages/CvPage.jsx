@@ -1,4 +1,5 @@
-import { useParams } from 'react-router-dom'
+import { useParams, Link } from 'react-router-dom'
+import Reveal from '../components/Reveal'
 import './CvPage.css'
 
 /* ── All CV content ── */
@@ -6,7 +7,7 @@ const PAGES = {
 
   'educational-qualifications': {
     title: 'Educational Qualifications',
-    parent: { label: 'About Me', path: '/about' },
+    parent: { label: 'Resume', path: '/resume' },
     sections: [
       {
         heading: 'Professional',
@@ -39,7 +40,7 @@ const PAGES = {
 
   'scholarships-awards': {
     title: 'Scholarships & Awards',
-    parent: { label: 'About Me', path: '/about' },
+    parent: { label: 'Resume', path: '/resume' },
     sections: [
       {
         heading: 'Grants & Fellowships',
@@ -68,7 +69,7 @@ const PAGES = {
 
   'professional-experience': {
     title: 'Professional Experience',
-    parent: { label: 'About Me', path: '/about' },
+    parent: { label: 'Resume', path: '/resume' },
     sections: [
       {
         heading: 'Logo & Identity Design',
@@ -127,7 +128,7 @@ const PAGES = {
 
   'teaching-experience': {
     title: 'Teaching Experience & Permanent Posts',
-    parent: { label: 'Academics', path: '/cv/teaching-experience' },
+    parent: { label: 'Resume', path: '/resume' },
     sections: [
       {
         heading: 'Permanent Positions',
@@ -145,7 +146,7 @@ const PAGES = {
 
   'thesis-guidance': {
     title: 'Thesis Guidance',
-    parent: { label: 'Academics', path: '/cv/teaching-experience' },
+    parent: { label: 'Resume', path: '/resume' },
     sections: [
       {
         heading: 'PhD & Masters Supervision',
@@ -162,7 +163,7 @@ const PAGES = {
 
   'visiting-appointments': {
     title: 'Visiting Appointments',
-    parent: { label: 'Academics', path: '/cv/teaching-experience' },
+    parent: { label: 'Resume', path: '/resume' },
     sections: [
       {
         heading: 'Visiting Roles',
@@ -186,7 +187,7 @@ const PAGES = {
 
   'sponsored-projects': {
     title: 'Sponsored Projects',
-    parent: { label: 'Projects', path: '/cv/sponsored-projects' },
+    parent: { label: 'Work', path: '/work' },
     sections: [
       {
         heading: 'As Principal Investigator',
@@ -211,7 +212,7 @@ const PAGES = {
 
   'solo-shows': {
     title: 'Solo Shows',
-    parent: { label: 'Projects', path: '/cv/sponsored-projects' },
+    parent: { label: 'Work', path: '/work' },
     sections: [
       {
         heading: 'Solo Exhibitions',
@@ -228,7 +229,7 @@ const PAGES = {
 
   'selected-exhibitions': {
     title: 'Selected Exhibitions',
-    parent: { label: 'Projects', path: '/cv/sponsored-projects' },
+    parent: { label: 'Work', path: '/work' },
     sections: [
       {
         heading: 'Group Shows & Exhibitions',
@@ -262,7 +263,7 @@ const PAGES = {
 
   'books': {
     title: 'Books',
-    parent: { label: 'Publications', path: '/cv/books' },
+    parent: { label: 'Resume', path: '/resume' },
     sections: [
       {
         heading: 'Authored & Contributed Books',
@@ -276,7 +277,7 @@ const PAGES = {
 
   'papers-publications': {
     title: 'Papers & Publications',
-    parent: { label: 'Publications', path: '/cv/books' },
+    parent: { label: 'Resume', path: '/resume' },
     sections: [
       {
         heading: 'Selected Papers (2019–2023)',
@@ -312,7 +313,7 @@ const PAGES = {
 
   'training-programs': {
     title: 'Training Programs',
-    parent: { label: 'Publications', path: '/cv/books' },
+    parent: { label: 'Resume', path: '/resume' },
     sections: [
       {
         heading: 'Workshops & Training',
@@ -337,7 +338,7 @@ const PAGES = {
 
   'conferences-journals': {
     title: 'Conferences & Journals',
-    parent: { label: 'Publications', path: '/cv/books' },
+    parent: { label: 'Resume', path: '/resume' },
     sections: [
       {
         heading: '2023',
@@ -384,6 +385,19 @@ const PAGES = {
   },
 }
 
+/* Most entries read "2012 — …" / "2010–2014 — …" / "1992 onwards — …".
+   Peel that prefix off so the year can sit in its own column. Entries
+   without a clean leading-year prefix — and whole sections that have none
+   (e.g. Thesis Guidance, or Conferences where the year is the heading) —
+   fall back to a plain full-width list. */
+function splitYear(item) {
+  const i = item.indexOf(' — ')
+  if (i > 0 && i <= 24 && /^\d{4}/.test(item)) {
+    return { year: item.slice(0, i), text: item.slice(i + 3) }
+  }
+  return { year: null, text: item }
+}
+
 export default function CvPage() {
   const { slug } = useParams()
   const page = PAGES[slug]
@@ -392,7 +406,9 @@ export default function CvPage() {
     return (
       <div className="cvp">
         <div className="cvp-inner">
-          <p style={{ fontFamily: 'var(--body)', color: 'var(--muted)', marginTop: '40px' }}>Page not found.</p>
+          <p className="cvp-missing">
+            That page doesn’t exist. <Link to="/resume">Back to résumé →</Link>
+          </p>
         </div>
       </div>
     )
@@ -402,24 +418,32 @@ export default function CvPage() {
     <div className="cvp">
       <div className="cvp-inner">
 
-        {/* Page title */}
-        <h1 className="cvp-title">{page.title}</h1>
-        <div className="cvp-rule" />
+        {page.parent && (
+          <Link to={page.parent.path} className="cvp-back">
+            <span aria-hidden="true">←</span> {page.parent.label}
+          </Link>
+        )}
 
-        {/* Content sections */}
-        {page.sections.map((sec, i) => (
-          <section key={i} className="cvp-section">
-            <h2 className="cvp-sec-head">{sec.heading}</h2>
-            <ul className="cvp-list">
-              {sec.items.map((item, j) => (
-                <li key={j} className="cvp-item">
-                  <span className="cvp-dot" />
-                  <span>{item}</span>
-                </li>
-              ))}
-            </ul>
-          </section>
-        ))}
+        <h1 className="cvp-title">{page.title}</h1>
+        <div className="cvp-rule" aria-hidden="true" />
+
+        {page.sections.map((sec, si) => {
+          const rows = sec.items.map(splitYear)
+          const hasYears = rows.some(r => r.year)
+          return (
+            <Reveal as="section" key={si} className="cvp-section">
+              <h2 className="cvp-sec-head">{sec.heading}</h2>
+              <ul className={`cvp-list${hasYears ? '' : ' cvp-list--plain'}`}>
+                {rows.map(({ year, text }, j) => (
+                  <li key={j} className="cvp-item">
+                    {hasYears && <span className="cvp-year">{year}</span>}
+                    <span className="cvp-text">{text}</span>
+                  </li>
+                ))}
+              </ul>
+            </Reveal>
+          )
+        })}
 
       </div>
     </div>

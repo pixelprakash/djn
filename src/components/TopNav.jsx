@@ -4,51 +4,78 @@ import { NavLink } from 'react-router-dom'
 import { preloadForPath } from '../routePreload'
 import './TopNav.css'
 
+// Information architecture note (see TopNav.jsx history for the fuller
+// writeup): this used to be 8 flat top-level items — About Me, Work,
+// Resume, DIC Lab, Blog, Academics, Projects, Publications — four of
+// which (About Me's dropdown, Academics, Projects, Publications) were
+// really just facets of one CV, presented as unrelated peers with no
+// structural link to "Resume," the page that already summarizes them.
+// "Projects" was worse than redundant-looking: it hard-coded its own copy
+// of sponsored-projects/solo-shows/exhibitions data that had already
+// drifted out of sync with Work's real source (exhibitionData.js) — e.g.
+// its "Selected Exhibitions" list is missing entries Work's is not.
+//
+// Fix: Work already covers projects/exhibitions in full, so "Projects" is
+// dropped from the nav entirely (its /cv/* routes still resolve, just
+// unlinked — no broken bookmarks). The other three collapse into Resume's
+// own dropdown, grouped, so the nav now says what's actually true: Resume
+// is the CV, and everything under it is that CV's detail.
 const NAV_ITEMS = [
+  { label: 'About Me', path: '/about' },
+  { label: 'Work',      path: '/work' },
   {
-    label: 'About Me',
-    path: '/about',
-    children: [
-      { label: 'Educational Qualifications', path: '/cv/educational-qualifications' },
-      { label: 'Scholarships & Awards',      path: '/cv/scholarships-awards' },
-      { label: 'Professional Experience',    path: '/cv/professional-experience' },
+    label: 'Resume',
+    path: '/resume',
+    groups: [
+      {
+        heading: 'Background',
+        items: [
+          { label: 'Educational Qualifications', path: '/cv/educational-qualifications' },
+          { label: 'Scholarships & Awards',      path: '/cv/scholarships-awards' },
+          { label: 'Professional Experience',    path: '/cv/professional-experience' },
+        ],
+      },
+      {
+        heading: 'Teaching',
+        items: [
+          { label: 'Teaching Experience',   path: '/cv/teaching-experience' },
+          { label: 'Thesis Guidance',       path: '/cv/thesis-guidance' },
+          { label: 'Visiting Appointments', path: '/cv/visiting-appointments' },
+        ],
+      },
+      {
+        heading: 'Publications',
+        items: [
+          { label: 'Books',                  path: '/cv/books' },
+          { label: 'Papers & Publications',  path: '/cv/papers-publications' },
+          { label: 'Training Programs',      path: '/cv/training-programs' },
+          { label: 'Conferences & Journals', path: '/cv/conferences-journals' },
+        ],
+      },
     ],
   },
-  // Merged in from the removed floating dock nav, for now — plain links, no dropdown.
-  // Contact is intentionally not here — it renders as the CTA button instead.
-  { label: 'Work',    path: '/work' },
-  { label: 'Resume',  path: '/resume' },
-  { label: 'DIC Lab', path: '/lab' },
-  { label: 'Blog',    path: '/blog' },
-  {
-    label: 'Academics',
-    path: '/cv/teaching-experience',
-    children: [
-      { label: 'Teaching Experience',   path: '/cv/teaching-experience' },
-      { label: 'Thesis Guidance',       path: '/cv/thesis-guidance' },
-      { label: 'Visiting Appointments', path: '/cv/visiting-appointments' },
-    ],
-  },
-  {
-    label: 'Projects',
-    path: '/cv/sponsored-projects',
-    children: [
-      { label: 'Sponsored Projects',   path: '/cv/sponsored-projects' },
-      { label: 'Solo Shows',           path: '/cv/solo-shows' },
-      { label: 'Selected Exhibitions', path: '/cv/selected-exhibitions' },
-    ],
-  },
-  {
-    label: 'Publications',
-    path: '/cv/books',
-    children: [
-      { label: 'Books',                  path: '/cv/books' },
-      { label: 'Papers & Publications',  path: '/cv/papers-publications' },
-      { label: 'Training Programs',      path: '/cv/training-programs' },
-      { label: 'Conferences & Journals', path: '/cv/conferences-journals' },
-    ],
-  },
+  { label: 'Blog', path: '/blog' },
+  // Points off-site to the DIC Nodal centre's own site rather than the
+  // in-repo /lab page — external, so it's a plain <a>, not a NavLink, and
+  // gets the "leaves this site" arrow instead of participating in the
+  // active-route highlighting the internal items use.
+  { label: 'DIC Lab', href: 'https://dic-site.vercel.app', external: true },
 ]
+
+// "Leaves this site" indicator for external nav items — a plain diagonal
+// arrow, not the dropdown chevron, so the two affordances stay visually
+// distinct (one says "opens a submenu here," the other "takes you away").
+function ExternalArrow({ width = 13, height = 13 }) {
+  return (
+    <svg
+      className="tn-external-arrow"
+      width={width} height={height}
+      viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+    >
+      <path d="M6 18L18 6M18 6H10M18 6V14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  )
+}
 
 export default function TopNav() {
   const [scrolled, setScrolled]       = useState(false)
@@ -100,36 +127,53 @@ export default function TopNav() {
               key={item.label}
               className="tn-item"
             >
-              <NavLink
-                to={item.path}
-                className={({ isActive }) =>
-                  `tn-link${isActive ? ' tn-link--active' : ''}`
-                }
-                onMouseEnter={() => preloadForPath(item.path)}
-                onFocus={() => preloadForPath(item.path)}
-              >
-                {item.label}
-                {item.children && (
-                  <svg className="tn-chevron" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-                    <polyline points="6 9 12 15 18 9"/>
-                  </svg>
-                )}
-              </NavLink>
+              {item.external ? (
+                <a
+                  href={item.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="tn-link"
+                >
+                  {item.label}
+                  <ExternalArrow />
+                </a>
+              ) : (
+                <NavLink
+                  to={item.path}
+                  className={({ isActive }) =>
+                    `tn-link${isActive ? ' tn-link--active' : ''}`
+                  }
+                  onMouseEnter={() => preloadForPath(item.path)}
+                  onFocus={() => preloadForPath(item.path)}
+                >
+                  {item.label}
+                  {item.groups && (
+                    <svg className="tn-chevron" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                      <polyline points="6 9 12 15 18 9"/>
+                    </svg>
+                  )}
+                </NavLink>
+              )}
 
-              {item.children && (
+              {item.groups && (
                 <div className="tn-drop">
                   <div className="tn-drop-inner">
-                    {item.children.map(child => (
-                      <NavLink
-                        key={child.label}
-                        to={child.path}
-                        className="tn-drop-link"
-                        onMouseEnter={() => preloadForPath(child.path)}
-                        onFocus={() => preloadForPath(child.path)}
-                      >
-                        <span className="tn-drop-arrow">&#8594;</span>
-                        {child.label}
-                      </NavLink>
+                    {item.groups.map(group => (
+                      <div className="tn-drop-group" key={group.heading}>
+                        <span className="tn-drop-heading">{group.heading}</span>
+                        {group.items.map(child => (
+                          <NavLink
+                            key={child.label}
+                            to={child.path}
+                            className="tn-drop-link"
+                            onMouseEnter={() => preloadForPath(child.path)}
+                            onFocus={() => preloadForPath(child.path)}
+                          >
+                            <span className="tn-drop-arrow">&#8594;</span>
+                            {child.label}
+                          </NavLink>
+                        ))}
+                      </div>
                     ))}
                   </div>
                 </div>
@@ -166,7 +210,18 @@ export default function TopNav() {
         <div className="tn-mobile-inner">
           {NAV_ITEMS.map(item => (
             <div key={item.label} className="tn-mobile-item">
-              {item.children ? (
+              {item.external ? (
+                <a
+                  href={item.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="tn-mobile-link"
+                  onClick={() => { setMobileOpen(false); setMobileExp(null) }}
+                >
+                  {item.label}
+                  <ExternalArrow width={14} height={14} />
+                </a>
+              ) : item.groups ? (
                 <>
                   <button
                     className={`tn-mobile-link${mobileExp === item.label ? ' tn-mobile-link--open' : ''}`}
@@ -182,16 +237,35 @@ export default function TopNav() {
                     className={`tn-mobile-sub${mobileExp === item.label ? ' tn-mobile-sub--open' : ''}`}
                     inert={mobileExp !== item.label}
                   >
-                    {item.children.map(child => (
+                    {/* The button above only expands/collapses (matches the
+                        established pattern for grouped items) — without this,
+                        tapping "Resume" on mobile would have no way to reach
+                        the summary page itself, only its detail sub-pages. */}
+                    {item.path && (
                       <NavLink
-                        key={child.label}
-                        to={child.path}
-                        className="tn-mobile-sublink"
+                        to={item.path}
+                        className="tn-mobile-sublink tn-mobile-sublink--overview"
                         onClick={() => { setMobileOpen(false); setMobileExp(null) }}
-                        onFocus={() => preloadForPath(child.path)}
+                        onFocus={() => preloadForPath(item.path)}
                       >
-                        {child.label}
+                        View full résumé &#8594;
                       </NavLink>
+                    )}
+                    {item.groups.map(group => (
+                      <div className="tn-mobile-group" key={group.heading}>
+                        <span className="tn-mobile-group-heading">{group.heading}</span>
+                        {group.items.map(child => (
+                          <NavLink
+                            key={child.label}
+                            to={child.path}
+                            className="tn-mobile-sublink"
+                            onClick={() => { setMobileOpen(false); setMobileExp(null) }}
+                            onFocus={() => preloadForPath(child.path)}
+                          >
+                            {child.label}
+                          </NavLink>
+                        ))}
+                      </div>
                     ))}
                   </div>
                 </>
