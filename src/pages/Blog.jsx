@@ -1,58 +1,24 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import Reveal from '../components/Reveal'
+import { BLOG_POSTS } from './blogData'
+import { preloadForPath } from '../routePreload'
 import './Blog.css'
 
-const POSTS = [
-  {
-    date: 'Aug 2021',
-    tag: 'Academic',
-    title: '9th and 10th Convocation -- IIT Hyderabad',
-    desc: 'Photographs and reflections from the 9th and 10th Convocation ceremony at IIT Hyderabad -- a celebration of students, mentors, and the years of work behind every degree.',
-    href: 'http://djmphotography.blogspot.com/2021/08/9th-and-10th-convocation-iith.html',
-    img: 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=900&h=600&fit=crop&q=85',
-    featured: true,
-  },
-  {
-    date: 'Aug 2021',
-    tag: 'Talk',
-    title: 'WDO Education Forum -- Talk by Prof. Deepak John Mathew',
-    desc: 'A talk at the World Design Organisation Research and Education Forum -- exploring the role of design education in shaping a sustainable and equitable future.',
-    href: 'http://djmphotography.blogspot.com/2021/08/wdo-education-forum-talk-by-prof-deepak.html',
-    img: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=700&h=440&fit=crop&q=80',
-  },
-  {
-    date: 'Apr 2021',
-    tag: 'Talk',
-    title: 'UX India 2017 -- Keynote Talk',
-    desc: 'Notes and photographs from the UX India 2017 conference talk -- on bridging user research, visual communication, and design thinking in the Indian context.',
-    href: 'http://djmphotography.blogspot.com/2021/04/ux-india-talk.html',
-    img: 'https://images.unsplash.com/photo-1475721027785-f74eccf877e2?w=700&h=440&fit=crop&q=80',
-  },
-  {
-    date: 'Oct 2016',
-    tag: 'Education',
-    title: 'Department of Design Offers Minor in Design at IIT Hyderabad',
-    desc: 'The Department of Design at IIT Hyderabad now offers a Minor in Design for B.Tech students -- an opportunity to develop design thinking and creative problem-solving alongside engineering.',
-    href: 'http://djmphotography.blogspot.com/2016/10/department-of-design-offers-minor-in.html',
-    img: 'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=700&h=440&fit=crop&q=80',
-  },
-  {
-    date: 'Feb 2014',
-    tag: 'Announcement',
-    title: 'IIT Hyderabad Launches New MDes and PhD Programs',
-    desc: 'IIT Hyderabad is launching a two-year full-time M.Des. programme offering broad-based design understanding with student-driven specialisation, alongside a new PhD in Design.',
-    href: 'http://djmphotography.blogspot.com/2014/02/iit-hyderabad-is-starting-new-mdes-and.html',
-    img: 'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=700&h=440&fit=crop&q=80',
-  },
-  {
-    date: 'Jan 2025',
-    tag: 'Research',
-    title: 'Why Design Education Needs VR -- Now',
-    desc: 'A reflection on three years of immersive classroom experiments and what we have learned about embodied learning in design studios.',
-    href: 'http://djmphotography.blogspot.com',
-    img: 'https://images.unsplash.com/photo-1593508512255-86ab42a8e620?w=700&h=440&fit=crop&q=80',
-  },
-]
+/* Listing cards read straight off the shared post data (src/pages/blogData.js)
+   -- each post's own cover photo (images[0]) and its internal /blog/:slug
+   page, instead of a separate placeholder dataset that links out. */
+const POSTS = BLOG_POSTS.map(function(p, i) {
+  return {
+    date: p.date,
+    tag: p.tag,
+    title: p.title,
+    desc: p.desc,
+    href: '/blog/' + p.slug,
+    img: p.images[0],
+    featured: i === 0,
+  }
+})
 
 const ALL_TAGS = ['All', ...Array.from(new Set(POSTS.map(function(p) { return p.tag })))]
 
@@ -88,7 +54,7 @@ export default function Blog() {
           )
         })}
         <a
-          href="http://djmphotography.blogspot.com"
+          href="https://djmphotography.blogspot.com"
           target="_blank"
           rel="noreferrer"
           className="bl-external"
@@ -101,7 +67,13 @@ export default function Blog() {
 
         {/* -- FEATURED POST -- */}
         {active === 'All' && featured && (
-          <a href={featured.href} target="_blank" rel="noreferrer" className="bl-featured">
+          <Link
+            to={featured.href}
+            className="bl-featured"
+            onMouseEnter={() => preloadForPath(featured.href)}
+            onFocus={() => preloadForPath(featured.href)}
+            onTouchStart={() => preloadForPath(featured.href)}
+          >
             <div className="bl-featured-img">
               <img
                 src={featured.img}
@@ -109,7 +81,6 @@ export default function Blog() {
                 loading="eager"
                 decoding="async"
                 fetchPriority="high"
-                onError={function(e) { e.currentTarget.src = 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=900&h=600&fit=crop&q=85' }}
               />
               <div className="bl-featured-overlay" />
             </div>
@@ -122,7 +93,7 @@ export default function Blog() {
               <p className="bl-featured-desc">{featured.desc}</p>
               <span className="bl-read-cta">Read post &#8594;</span>
             </div>
-          </a>
+          </Link>
         )}
 
         {/* -- POST GRID -- */}
@@ -130,13 +101,14 @@ export default function Blog() {
           {(active === 'All' ? rest : visible).map(function(p, i) {
             return (
               <Reveal
-                as="a"
+                as={Link}
                 key={i}
-                href={p.href}
-                target="_blank"
-                rel="noreferrer"
+                to={p.href}
                 className="bl-card"
                 delay={(i % 3) * 0.05}
+                onMouseEnter={() => preloadForPath(p.href)}
+                onFocus={() => preloadForPath(p.href)}
+                onTouchStart={() => preloadForPath(p.href)}
               >
                 <div className="bl-card-img">
                   <img src={p.img} alt={p.title} loading="lazy" />
@@ -158,7 +130,7 @@ export default function Blog() {
         {/* -- ARCHIVE BANNER -- */}
         <Reveal
           as="a"
-          href="http://djmphotography.blogspot.com"
+          href="https://djmphotography.blogspot.com"
           target="_blank"
           rel="noreferrer"
           className="bl-banner"

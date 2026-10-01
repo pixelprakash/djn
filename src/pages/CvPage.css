@@ -48,13 +48,15 @@
 }
 .cvp-back:hover { color: var(--accent); gap: 12px; }
 
-/* Display title */
+/* Display title -- Literata sitewide now (see About.css for the original
+   trial); --title-tracking (-5px) was tuned for DM Sans and is far too
+   tight for a serif, eased to -0.01em like every other Literata heading. */
 .cvp-title {
-  font-family: var(--serif);
+  font-family: 'Literata', var(--serif);
   font-size: var(--fs-h1);
   font-weight: 400;
   line-height: 1.04;
-  letter-spacing: var(--title-tracking);
+  letter-spacing: -0.01em;
   color: var(--ink);
   margin-bottom: clamp(16px, 2vw, 22px);
   animation: titleReveal .7s cubic-bezier(.16,1,.3,1) .08s both;
@@ -81,7 +83,7 @@
 }
 
 .cvp-sec-head {
-  font-family: var(--serif);
+  font-family: 'Literata', var(--serif);
   font-size: clamp(1.35rem, 2.4vw, 1.8rem);
   font-weight: 400;
   color: var(--ink);
@@ -152,7 +154,7 @@
    RESPONSIVE
 ===================================================== */
 @media (max-width: 768px) {
-  .cvp-title { font-size: var(--fs-h1-sm); letter-spacing: var(--title-tracking-sm); }
+  .cvp-title { font-size: var(--fs-h1-sm); }
   .cvp-sec-head { font-size: clamp(1.2rem, 4.5vw, 1.5rem); }
 }
 

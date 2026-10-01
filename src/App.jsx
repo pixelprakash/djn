@@ -17,6 +17,7 @@ const ProjectDetail = lazy(routeImports.projectDetail)
 const Resume       = lazy(routeImports.resume)
 const Lab          = lazy(routeImports.lab)
 const Blog         = lazy(routeImports.blog)
+const BlogPost     = lazy(routeImports.blogPost)
 const Contact      = lazy(routeImports.contact)
 const CvPage       = lazy(routeImports.cv)
 
@@ -49,6 +50,15 @@ function AnimatedRoutes() {
     // before the incoming one even started entering, roughly doubling the
     // visible transition time on every navigation. Default (sync) mode lets
     // both run at once, like a crossfade.
+    //
+    // Suspense lives *inside* each motion.div (one per route key), not
+    // wrapped around the whole AnimatePresence. A lazy route whose chunk
+    // hasn't loaded yet (first visit, too fast for the hover/idle preload
+    // to have won the race) suspends — if that Suspense boundary wrapped
+    // every child, the still-exiting previous page would suspend too and
+    // get stuck in the DOM mid-crossfade instead of animating out. Scoped
+    // per-child, only the entering page's own content falls back to
+    // PageLoader; the exiting page, already rendered, is unaffected.
     <AnimatePresence initial={false}>
       <motion.div
         key={location.pathname}
@@ -57,6 +67,7 @@ function AnimatedRoutes() {
         exit={reduceMotion ? undefined : { opacity: 0 }}
         transition={{ duration: 0.16, ease: [0.4, 0, 0.2, 1] }}
       >
+        <Suspense fallback={<PageLoader />}>
         <Routes location={location}>
           {/* Default page → About */}
           <Route path="/"        element={<Navigate to="/about" replace />} />
@@ -66,9 +77,11 @@ function AnimatedRoutes() {
           <Route path="/resume"  element={<Resume />} />
           <Route path="/lab"     element={<Lab />} />
           <Route path="/blog"    element={<Blog />} />
+          <Route path="/blog/:slug" element={<BlogPost />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/cv/:slug" element={<CvPage />} />
         </Routes>
+        </Suspense>
       </motion.div>
     </AnimatePresence>
   )
@@ -99,9 +112,7 @@ function App() {
       <ScrollToTop />
 
       <main id="main-content" tabIndex={-1}>
-        <Suspense fallback={<PageLoader />}>
-          <AnimatedRoutes />
-        </Suspense>
+        <AnimatedRoutes />
       </main>
 
       <Footer />

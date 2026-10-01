@@ -35,13 +35,15 @@
   min-width: 0;
 }
 
-/* Title -- Bree Serif, NO italic, NO accent color */
+/* Title -- Literata sitewide now (see About.css for the original trial);
+   --title-tracking (-5px) was tuned for DM Sans and is far too tight for
+   a serif, eased to -0.01em like every other Literata heading. */
 .wp-heading {
-  font-family: var(--serif);
+  font-family: 'Literata', var(--serif);
   font-size: var(--fs-h1);
   font-weight: 400;
   line-height: 1.0;
-  letter-spacing: var(--title-tracking);
+  letter-spacing: -0.01em;
   color: var(--ink);
   animation: titleReveal .7s cubic-bezier(.16,1,.3,1) .08s both;
 }
@@ -210,7 +212,7 @@
 
 /* Title -- 3rem Bree Serif like sec-head */
 .proj-title {
-  font-family: var(--serif);
+  font-family: 'Literata', var(--serif);
   font-size: clamp(1.5rem, 2.5vw, 2.2rem);
   font-weight: 400;
   line-height: 1.2;
@@ -291,7 +293,7 @@
 
 /* Title -- Bree Serif, clearly bigger */
 .sp-title {
-  font-family: var(--serif);
+  font-family: 'Literata', var(--serif);
   font-size: clamp(1.1rem, 1.8vw, 1.5rem);
   font-weight: 400;
   color: var(--ink);
@@ -320,7 +322,7 @@
 
 /* Section label -- matches About's SectionRule */
 .seg-lbl {
-  font-family: var(--serif);
+  font-family: 'Literata', var(--serif);
   font-size: 3rem;           /* 48px -- matches sec-head */
   font-weight: 400;
   color: var(--ink);
@@ -373,7 +375,7 @@
 
 /* Solo title -- Bree Serif prominent */
 .solo-title {
-  font-family: var(--serif);
+  font-family: 'Literata', var(--serif);
   font-size: clamp(1.1rem, 1.8vw, 1.5rem);
   font-weight: 400;
   color: var(--ink);
@@ -421,7 +423,7 @@
   /* --hero-h is tuned for a desktop hero with room to breathe; on mobile
      it left ~150px of dead space below the short title+subtitle here. */
   .wp-head { min-height: 0; }
-  .wp-heading { font-size: var(--fs-h1-sm); letter-spacing: var(--title-tracking-sm); }
+  .wp-heading { font-size: var(--fs-h1-sm); }
 
   /* All 3 tabs visible at once -- equal width, no scroll needed */
   .tab-nav {

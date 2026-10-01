@@ -32,13 +32,15 @@
   gap: 6px;
 }
 
-/* Title -- no italic, no accent, clean */
+/* Title -- Literata sitewide now (see About.css for the original trial);
+   --title-tracking (-5px) was tuned for DM Sans and is far too tight for
+   a serif, eased to -0.01em like every other Literata heading. */
 .bl-title {
-  font-family: var(--serif);
+  font-family: 'Literata', var(--serif);
   font-size: var(--fs-h1);
   font-weight: 400;
   line-height: 1.0;
-  letter-spacing: var(--title-tracking);
+  letter-spacing: -0.01em;
   color: var(--ink);
   animation: titleReveal .7s cubic-bezier(.16,1,.3,1) .08s both;
 }
@@ -183,7 +185,7 @@
 
 /* Featured title -- big Bree Serif */
 .bl-featured-title {
-  font-family: var(--serif);
+  font-family: 'Literata', var(--serif);
   font-size: clamp(1.4rem, 2.5vw, 2rem);
   font-weight: 400;
   line-height: 1.2;
@@ -272,7 +274,7 @@
 
 /* Card title -- Bree Serif, prominent */
 .bl-card-title {
-  font-family: var(--serif);
+  font-family: 'Literata', var(--serif);
   font-size: clamp(1rem, 1.6vw, 1.3rem);
   font-weight: 400;
   line-height: 1.3;
@@ -332,7 +334,7 @@
   justify-content: space-between;
   gap: 24px;
   padding: clamp(28px, 4vw, 48px) clamp(28px, 4vw, 52px);
-  background: #024F46;
+  background: var(--green);
   border-radius: 16px;
   text-decoration: none;
   transition: transform .3s cubic-bezier(.34,1.56,.64,1), box-shadow .3s, opacity .5s ease;
@@ -355,11 +357,11 @@
 }
 
 .bl-banner-title {
-  font-family: var(--serif);
+  font-family: 'Literata', var(--serif);
   font-size: clamp(1.2rem, 2.5vw, 1.8rem);
   font-weight: 400;
   font-style: italic;
-  color: #fff;
+  color: var(--white);
   line-height: 1.2;
   margin-bottom: 8px;
   letter-spacing: -0.01em;
@@ -415,7 +417,7 @@
 
 @media (max-width: 640px) {
   .bl-grid { grid-template-columns: 1fr; }
-  .bl-title { font-size: var(--fs-h1-sm); letter-spacing: var(--title-tracking-sm); }
+  .bl-title { font-size: var(--fs-h1-sm); }
   .bl-sub { font-size: 1rem; }
   .bl-banner { flex-direction: column; align-items: flex-start; }
   .bl-banner-arrow { display: none; }

@@ -75,28 +75,32 @@
   line-height: 1.05;
   letter-spacing: -0.01em;
   color: var(--ink);
-  margin-bottom: 6px;
+  margin-bottom: 10px;
   animation: titleReveal .7s cubic-bezier(.16,1,.3,1) .08s both;
 }
 
-/* Role line under the name */
+/* Role line under the name -- tight to the name (margin-bottom here, not
+   on .r-name) since the two read as one unit: who, then what. */
 .r-role {
   font-family: var(--body);
   font-size: var(--fs-subtitle);
   font-weight: 400;
   color: var(--sub);
   line-height: 1.4;
-  margin-bottom: 6px;
+  margin-bottom: 20px;
 }
 
-/* Secondary role line -- the DIC / Ministry appointment */
+/* Secondary role line -- the DIC / Ministry appointment. A distinct fact
+   from the role above (hence the wider gap before it) and from the links
+   below (hence the wider gap after) -- proximity should read as grouping,
+   and these three blocks aren't the same group. */
 .r-nodal {
   font-family: var(--body);
   font-size: clamp(1rem, 1.3vw, 1.05rem);
   font-weight: 400;
   color: var(--sub);
   line-height: 1.65;
-  margin-bottom: 16px;
+  margin-bottom: 28px;
 }
 
 /* Profile links row */

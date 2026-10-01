@@ -51,21 +51,37 @@ function buildRailItems(projects) {
       color: PROJECT_COLORS[pIndex % PROJECT_COLORS.length],
     })
 
-    const gallery = (p.sections || []).flatMap(s => s.images || [])
+    // Keep each gallery photo's section membership + position in it, not
+    // just its URL -- ProjectDetail's own PhotoGrid opens its slideshow
+    // the same way (section.images, index within that section), so a
+    // click here can hand it the exact same two numbers and land on the
+    // exact photo instead of just the top of the page.
+    const gallery = (p.sections || []).flatMap(s =>
+      (s.images || []).map((src, i) => ({ src, sectionImages: s.images, indexInSection: i }))
+    )
     const seen = new Set()
-    const sources = [p.cover, ...gallery].filter(src => {
-      if (!src || seen.has(src)) return false
-      seen.add(src)
-      return true
-    }).slice(0, PER_PROJECT)
+    const sources = [{ src: p.cover, sectionImages: null, indexInSection: -1 }, ...gallery]
+      .filter(entry => {
+        if (!entry.src || seen.has(entry.src)) return false
+        seen.add(entry.src)
+        return true
+      })
+      .slice(0, PER_PROJECT)
 
-    sources.forEach(src => {
+    sources.forEach((entry, i) => {
       items.push({
         type: 'image',
         key: `${p.slug}-${n}`,
-        src,
+        src: entry.src,
         size: SIZE_CYCLE[n % SIZE_CYCLE.length],
         project: p,
+        // The cover (always sources[0] -- see the [p.cover, ...gallery]
+        // above) is the one photo that also appears on the project's own
+        // detail page, so it's the one that gets a view-transition-name
+        // below -- see the comment on .pd-hero-img in ProjectDetail.jsx.
+        isCover: i === 0,
+        sectionImages: entry.sectionImages,
+        indexInSection: entry.indexInSection,
       })
       n += 1
     })
@@ -142,10 +158,6 @@ export default function WorksTimeline({ projects }) {
       ro = new ResizeObserver(recalc)
       ro.observe(railRef.current)
     }
-    // Images arrive async and change the rail's natural width as they do;
-    // recalc again once everything currently in the DOM has settled.
-    const imgs = railRef.current ? railRef.current.querySelectorAll('img') : []
-    imgs.forEach(img => { if (!img.complete) img.addEventListener('load', recalc, { once: true }) })
     return () => {
       window.removeEventListener('resize', recalc)
       if (ro) ro.disconnect()
@@ -165,26 +177,61 @@ export default function WorksTimeline({ projects }) {
     // 'scroll' event here, so listening on window would silently never
     // run this at all.
     const scroller = document.getElementById('root') || window
-    function onScroll() {
+    let current = 0
+    let target = 0
+    let raf = null
+
+    // Scroll sets the *target*; a short rAF-driven ease chases it each
+    // frame rather than snapping the rail straight to the raw scroll
+    // value. That little bit of lag is what makes the rail feel like
+    // it has real weight gliding behind the scroll instead of being
+    // rigidly welded to it -- the single biggest thing that makes a
+    // scroll-driven section feel considered rather than mechanical.
+    // The loop stops itself once it converges and only restarts on the
+    // next scroll event, so it's not spinning while the user is reading
+    // a title card at rest.
+    function computeTarget() {
       const sec = outerRef.current
       if (!sec) return
       const rect = sec.getBoundingClientRect()
       const progress = Math.min(1, Math.max(0, -rect.top / pinHeight))
-      setOffset(progress * metrics.scrollDistance)
+      target = progress * metrics.scrollDistance
+      if (raf == null) raf = requestAnimationFrame(tick)
     }
-    scroller.addEventListener('scroll', onScroll, { passive: true })
-    onScroll()
-    return () => scroller.removeEventListener('scroll', onScroll)
+    function tick() {
+      const diff = target - current
+      if (Math.abs(diff) < 0.4) {
+        current = target
+        setOffset(current)
+        raf = null
+        return
+      }
+      current += diff * 0.15
+      setOffset(current)
+      raf = requestAnimationFrame(tick)
+    }
+
+    computeTarget()
+    scroller.addEventListener('scroll', computeTarget, { passive: true })
+    return () => {
+      scroller.removeEventListener('scroll', computeTarget)
+      if (raf != null) cancelAnimationFrame(raf)
+    }
   }, [pinned, pinHeight, metrics.scrollDistance])
 
-  // Which project is "active" right now -- the backdrop switches to its
-  // color a little before its title card actually reaches the left edge
-  // (viewport's own half-width as a lead-in), so the room changes as you
-  // arrive rather than only after you've already scrolled past the card.
+  // Which project is "active" right now -- the backdrop (and the spotlight
+  // on photos below) switches a little before its title card actually
+  // reaches the left edge (viewport's own half-width as a lead-in), so the
+  // room changes as you arrive rather than only after scrolling past it.
+  let activeSlug = metrics.labels[0] && metrics.labels[0].slug
   let activeColor = PROJECT_COLORS[0]
+  let activeTitle = metrics.labels[0] && metrics.labels[0].title
+  let activeNum = 1
   if (metrics.labels.length) {
     const threshold = offset + metrics.viewportWidth * 0.5
-    metrics.labels.forEach(l => { if (l.x <= threshold) activeColor = l.color })
+    metrics.labels.forEach((l, i) => {
+      if (l.x <= threshold) { activeSlug = l.slug; activeColor = l.color; activeTitle = l.title; activeNum = i + 1 }
+    })
   }
 
   function renderItem(item) {
@@ -195,6 +242,12 @@ export default function WorksTimeline({ projects }) {
           key={item.key}
           className="wt-title-card"
           ref={el => { firstItemRefs.current[item.project.slug] = el }}
+          // See the comment on .pd-hero-img in ProjectDetail.jsx -- this
+          // just wraps the navigation in a View Transition (a no-op,
+          // completely normal navigation in browsers that don't support
+          // it yet); the morph itself only engages for the cover photo
+          // below, which carries the matching viewTransitionName.
+          viewTransition
         >
           <span className="wt-title-card-index">{String(item.index).padStart(2, '0')}</span>
           <span className="wt-title-card-meta">{item.project.category} · {item.project.year}</span>
@@ -208,11 +261,29 @@ export default function WorksTimeline({ projects }) {
         </Link>
       )
     }
+    // Spotlight: photos belonging to whichever project is active stay at
+    // full color/brightness; every other project's photos recede into
+    // dim grayscale -- the same grayscale-to-color language the hero
+    // portraits already use elsewhere on the site, here reused as a
+    // scroll-driven "this is the one you're looking at" cue instead of a
+    // hover state. Pinned mode only -- in the native-scroll fallback
+    // every project is already its own clearly-colored block, and there's
+    // no single scroll position to call "active" there anyway.
+    const dim = pinned && item.project.slug !== activeSlug
+    // Land on the actual photo that was clicked, not just the top of the
+    // project page -- every non-cover image here came from a specific
+    // section's gallery (see sectionImages/indexInSection above), so
+    // ProjectDetail can open its existing slideshow straight to it. The
+    // cover has nowhere more specific to go: it already opens right on
+    // the hero it morphs into (view-transition-name below).
+    const openAt = item.isCover ? undefined : { images: item.sectionImages, startIdx: item.indexInSection }
     return (
       <Link
         to={`/work/${item.project.slug}`}
         key={item.key}
-        className={`wt-item wt-item--${item.size}`}
+        className={`wt-item wt-item--${item.size}${dim ? ' wt-item--dim' : ''}`}
+        viewTransition
+        state={openAt ? { openSlideshow: openAt } : undefined}
       >
         <img
           src={item.src}
@@ -221,6 +292,13 @@ export default function WorksTimeline({ projects }) {
           decoding="async"
           draggable="false"
           onError={e => { if (e.currentTarget.src !== PH) e.currentTarget.src = PH }}
+          // Only the cover photo carries this -- see isCover above and
+          // .pd-hero-img in ProjectDetail.jsx. Every other photo in the
+          // rail just gets the page-level cross-fade from `viewTransition`
+          // on the Link; tagging more than one element per project here
+          // would give them all the same name, which the View Transitions
+          // API doesn't allow.
+          style={item.isCover ? { viewTransitionName: `work-cover-${item.project.slug}` } : undefined}
         />
       </Link>
     )
@@ -244,7 +322,19 @@ export default function WorksTimeline({ projects }) {
         style={pinned ? { backgroundColor: activeColor } : undefined}
       >
         <div className="wt-head">
-          <h2 className="wt-heading" id="wt-heading">Works</h2>
+          <div className="wt-head-left">
+            <h2 className="wt-heading" id="wt-heading">Works</h2>
+            {/* Live "now viewing" readout -- updates with activeSlug/
+                activeTitle as you scroll, so there's always a plain-text
+                answer to "which project is this" even if someone's
+                looking at the photos rather than the title card. */}
+            {pinned && (
+              <p className="wt-now" aria-live="polite">
+                <span className="wt-now-num">{String(activeNum).padStart(2, '0')} / {String(projects.length).padStart(2, '0')}</span>
+                <span className="wt-now-title">{activeTitle}</span>
+              </p>
+            )}
+          </div>
           <Link to="/work" className="wt-viewall">View all work</Link>
         </div>
 

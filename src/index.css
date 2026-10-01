@@ -128,6 +128,39 @@ textarea:focus-visible,
   .js-ready .reveal .seg-lbl::after { transform: scaleX(1); }
 }
 
+/* ─────────────────────────────────────────────────────────────
+   View Transitions -- currently used for the Works timeline on
+   the Home page linking into a project's detail page (see
+   src/components/WorksTimeline.jsx and .pd-hero-img in
+   ProjectDetail.jsx), but these rules are unscoped on purpose:
+   any future `<Link viewTransition>` anywhere on the site picks
+   up this same timing automatically instead of the browser's
+   un-styled default cross-fade. React Router only invokes
+   document.startViewTransition() when the browser actually
+   supports it, so this is pure enhancement -- nothing here can
+   break navigation in a browser that doesn't.
+   ───────────────────────────────────────────────────────────── */
+::view-transition-old(*),
+::view-transition-new(*) {
+  animation-duration: .5s;
+  animation-timing-function: cubic-bezier(.16, 1, .3, 1);
+}
+::view-transition-group(*) {
+  animation-duration: .5s;
+  animation-timing-function: cubic-bezier(.16, 1, .3, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* The blanket *, *::before, *::after rule above doesn't reach these --
+     they live in the browser's own view-transition pseudo-element tree,
+     not the normal DOM, so they need naming explicitly. */
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}
+
 /* Extra top spacing on mobile for ALL page first sections */
 @media (max-width: 768px) {
   .hp-hero, .wp-head, .r-header, .lab-head, .bl-head, .contact-header {

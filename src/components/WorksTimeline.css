@@ -36,8 +36,14 @@
   flex-direction: column;
   justify-content: center;
   gap: clamp(16px, 2.4vw, 28px);
+  /* Same top/bottom rhythm as every other page's hero header (.wp-head,
+     .bl-head, etc. all use this exact clamp) -- without it "Works" sat
+     flush against the nav bar's bottom edge with zero breathing room,
+     the one header on the site that did. */
+  padding: clamp(32px, 4vw, 48px) 0;
   overflow: hidden;
   background: var(--ink);
+  transition: background-color .7s ease;
 }
 
 /* Mobile / reduced-motion fallback: normal block in the page flow, no
@@ -52,10 +58,16 @@
 
 .wt-head {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   justify-content: space-between;
   gap: 16px;
   padding: 0 var(--g);
+}
+.wt-head-left {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
 }
 
 .wt-heading {
@@ -64,6 +76,28 @@
   font-size: clamp(1.6rem, 3vw, 2.4rem);
   letter-spacing: -0.01em;
   color: var(--bg);
+}
+
+/* Live "now viewing" readout -- see activeSlug/activeTitle/activeNum in
+   the component. A plain-text answer to "which project is this" that
+   stays correct even if someone arrived at a photo without noticing its
+   title card go by. */
+.wt-now {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  font-family: var(--body);
+}
+.wt-now-num {
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: .04em;
+  color: rgba(245,243,238,.56);
+}
+.wt-now-title {
+  font-size: 1rem;
+  font-weight: 500;
+  color: rgba(245,243,238,.82);
 }
 
 .wt-viewall {
@@ -95,6 +129,18 @@
   position: relative;
   display: flex;
   align-items: center;
+  /* Soft fade at both edges instead of a hard clip -- photos ease in and
+     out of view rather than snapping into existence at the viewport
+     boundary. Pinned mode only; the scroll fallback below removes it so
+     a swiped-to item is never left partially transparent. */
+  -webkit-mask-image: linear-gradient(to right,
+    transparent 0, black 64px, black calc(100% - 64px), transparent 100%);
+  mask-image: linear-gradient(to right,
+    transparent 0, black 64px, black calc(100% - 64px), transparent 100%);
+}
+.wt-rail-viewport--scroll {
+  -webkit-mask-image: none;
+  mask-image: none;
 }
 
 /* Fallback: a real horizontally-scrollable row, swipeable on touch,
@@ -156,7 +202,6 @@
   height: min(40vh, 360px);
   margin-left: clamp(28px, 4vw, 56px);
   padding: clamp(20px, 2.4vw, 28px);
-  border-radius: var(--radius-md);
   background: var(--bg);
   color: var(--ink);
   text-decoration: none;
@@ -214,12 +259,12 @@
 .wt .wt-item {
   flex-shrink: 0;
   display: block;
-  border-radius: var(--radius-md);
   overflow: hidden;
   background: rgba(245,243,238,.08);
   box-shadow: 0 6px 20px rgba(0,0,0,.3);
   scroll-snap-align: start;
-  transition: transform .35s cubic-bezier(.34,1.56,.64,1), box-shadow .35s;
+  transition: transform .35s cubic-bezier(.34,1.56,.64,1), box-shadow .35s,
+              filter .6s ease, opacity .6s ease;
 }
 .wt-item:hover,
 .wt-item:focus-visible {
@@ -227,24 +272,51 @@
   box-shadow: 0 18px 40px rgba(0,0,0,.4);
 }
 .wt-item img {
+  width: 100%;
   height: 100%;
-  width: auto;
   display: block;
   object-fit: cover;
   transition: transform .6s ease;
 }
 .wt-item:hover img { transform: scale(1.06); }
 
+/* Spotlight: dim + desaturate every photo that isn't part of the active
+   project (see dim/activeSlug in the component) -- the same grayscale
+   -to-color language the hero portraits use elsewhere on the site,
+   reused here as a scroll cue instead of a hover state. Still hoverable
+   on its own merits (a dimmed photo can still be clicked through to its
+   project), so this only touches filter/opacity, never pointer-events. */
+.wt-item--dim {
+  filter: grayscale(.85) brightness(.55);
+  opacity: .6;
+}
+.wt-item--dim:hover,
+.wt-item--dim:focus-visible {
+  filter: grayscale(.4) brightness(.75);
+  opacity: .85;
+}
+
 /* Height tiers in vh (see SIZE_CYCLE in the component) -- real frames
-   landing at different sizes, not a uniform grid. Widths follow
-   naturally from each photo's own aspect ratio since img height is
-   fixed and width is auto. vh, not a percentage of .wt-rail-viewport's
-   height, deliberately -- see the comment on that rule above. Capped
-   with min() so a very tall viewport doesn't blow past the sticky
-   box's own 100vh and push the ruler out of it. */
-.wt-item--lg { height: min(40vh, 360px); }
-.wt-item--md { height: min(30vh, 270px); }
-.wt-item--sm { height: min(22vh, 200px); }
+   landing at different sizes, not a uniform grid. vh, not a percentage
+   of .wt-rail-viewport's height, deliberately -- see the comment on
+   that rule above. Capped with min() so a very tall viewport doesn't
+   blow past the sticky box's own 100vh and push the ruler out of it.
+   Width is a fixed 3:2 aspect-ratio (the large majority of the actual
+   photos' own ratio -- object-fit:cover on the img crops the rest to
+   match) rather than following the image's intrinsic size: the rail is
+   horizontally scroll-driven, and every item's width feeds directly
+   into the total scroll distance the pinned section maps itself to
+   (see pinHeight in the component). Sizing each item from its <img>'s
+   natural width meant that width was 0 until that specific lazy-loaded
+   image actually finished downloading -- which, for photos further
+   along the rail, often happened *while the user was mid-scroll*,
+   changing the rail's total width (and therefore pinHeight) under
+   them and making the scroll position jump. A fixed aspect-ratio makes
+   every item's width -- and the rail's total width -- known the moment
+   it mounts, independent of image load timing. */
+.wt-item--lg { height: min(40vh, 360px); aspect-ratio: 3 / 2; }
+.wt-item--md { height: min(30vh, 270px); aspect-ratio: 3 / 2; }
+.wt-item--sm { height: min(22vh, 200px); aspect-ratio: 3 / 2; }
 
 /* Here .wt-rail-viewport--scroll *does* have an explicit height, so
    percentages are the right tool. */

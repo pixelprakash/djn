@@ -336,8 +336,10 @@
 .tn-mobile-sublink:last-child { border-bottom: none; }
 .tn-mobile-sublink:hover { color: var(--accent); padding-left: 22px; }
 
-/* Offset spacer */
-.tn-offset { height: 96px; flex-shrink: 0; }
+/* Offset spacer -- reserves exactly the fixed nav's real height (.tn-inner
+   plus its 1px border-bottom) so content below it doesn't inherit a dead
+   gap; kept in sync with .tn-inner's height at each breakpoint below. */
+.tn-offset { height: 65px; flex-shrink: 0; }
 
 /* =====================================================
    RESPONSIVE
@@ -350,7 +352,7 @@
 @media (max-width: 640px) {
   .tn-inner { height: 56px; }
   .tn-logo { font-size: 1.5rem; margin-right: 0; }
-  .tn-offset { height: 82px; }
+  .tn-offset { height: 57px; }
   .tn-cta { padding: 8px 16px; font-size: 1rem; }
   .tn-mobile { top: 56px; }
 }

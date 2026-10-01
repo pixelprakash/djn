@@ -1,118 +1,9 @@
 import { useParams, Link, useNavigate, useLocation } from 'react-router-dom'
-import { useState, useEffect, useCallback, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import { PROJECTS } from './projectData'
 import Reveal from '../components/Reveal'
+import { Slideshow, PhotoGrid } from '../components/PhotoGallery'
 import './ProjectDetail.css'
-
-/* ═══════════════════════════════════════════
-   Fullscreen Slideshow
-═══════════════════════════════════════════ */
-function Slideshow({ images, startIdx, onClose }) {
-  const [idx, setIdx] = useState(startIdx)
-  const total     = images.length
-  const stripRef  = useRef(null)
-
-  const prev = useCallback(() => setIdx(i => (i - 1 + total) % total), [total])
-  const next = useCallback(() => setIdx(i => (i + 1) % total), [total])
-
-  /* keyboard */
-  useEffect(() => {
-    const k = e => {
-      if (e.key === 'ArrowLeft')  prev()
-      if (e.key === 'ArrowRight') next()
-      if (e.key === 'Escape')     onClose()
-    }
-    window.addEventListener('keydown', k)
-    return () => window.removeEventListener('keydown', k)
-  }, [prev, next, onClose])
-
-  /* auto-scroll strip to active thumb */
-  useEffect(() => {
-    const strip = stripRef.current
-    if (!strip) return
-    const thumb = strip.children[idx]
-    if (thumb) thumb.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' })
-  }, [idx])
-
-  /* lock body scroll */
-  useEffect(() => {
-    document.body.style.overflow = 'hidden'
-    return () => { document.body.style.overflow = '' }
-  }, [])
-
-  return (
-    <div className="ss-bg" onClick={onClose}>
-      <div className="ss-wrap" onClick={e => e.stopPropagation()}>
-
-        <button className="ss-x" onClick={onClose} aria-label="Close slideshow">✕</button>
-
-        <div className="ss-stage">
-          <button className="ss-btn ss-btn--prev" onClick={prev} aria-label="Previous photo">‹</button>
-          <img
-            key={idx}
-            src={images[idx]}
-            alt=""
-            className="ss-photo"
-            loading="eager"
-            decoding="async"
-          />
-          <button className="ss-btn ss-btn--next" onClick={next} aria-label="Next photo">›</button>
-        </div>
-
-        <div className="ss-foot">
-          <span className="ss-idx">
-            {String(idx + 1).padStart(2,'0')}
-            <span style={{margin:'0 5px',opacity:.25}}>/</span>
-            {String(total).padStart(2,'0')}
-          </span>
-          <div className="ss-strip" ref={stripRef}>
-            {images.map((src, i) => (
-              <button
-                key={i}
-                className={`ss-tn${i === idx ? ' active' : ''}`}
-                onClick={() => setIdx(i)}
-                aria-label={`Photo ${i + 1}`}
-              >
-                <img src={src} alt="" loading="lazy" />
-              </button>
-            ))}
-          </div>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-/* ═══════════════════════════════════════════
-   Photo Grid — 4 layout variants
-═══════════════════════════════════════════ */
-function PhotoGrid({ images, onOpen }) {
-  const variant =
-    images.length === 1 ? 'pg-1' :
-    images.length === 2 ? 'pg-2' :
-    images.length <= 4  ? 'pg-4' :
-    'pg-many'
-
-  return (
-    <div className={`pg ${variant}`}>
-      {images.map((src, i) => (
-        <div
-          key={i}
-          className="pg-item"
-          onClick={() => onOpen(i)}
-          role="button"
-          tabIndex={0}
-          aria-label={`Open photo ${i + 1}`}
-          onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onOpen(i) } }}
-        >
-          <img src={src} alt="" loading="lazy" decoding="async" />
-          <div className="pg-veil" aria-hidden />
-          <span className="pg-num">{String(i + 1).padStart(2,'0')}</span>
-        </div>
-      ))}
-    </div>
-  )
-}
 
 /* ═══════════════════════════════════════════
    Notebook text block with ruled-paper effect
@@ -171,6 +62,22 @@ export default function ProjectDetail() {
 
   /* Scroll to top on slug change */
   useEffect(() => { window.scrollTo({ top: 0 }) }, [slug])
+
+  /* Arriving from a specific photo in the Home page's Works timeline
+     (src/components/WorksTimeline.jsx) opens straight to that photo's
+     slideshow instead of just landing on the hero -- same mechanism
+     PhotoGrid's own onOpen already uses (a section's images + an index
+     into it), just handed over via navigation state instead of a click.
+     Keyed on location.key (unique per history entry, unlike slug) so it
+     fires again if a second Works-timeline click lands on the same
+     project from a different photo. */
+  useEffect(() => {
+    const openAt = location.state && location.state.openSlideshow
+    if (openAt && openAt.images && openAt.images.length) {
+      setSlideshow({ images: openAt.images, startIdx: openAt.startIdx || 0 })
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.key])
 
   /* Bar becomes "stuck" after hero scrolls past */
   useEffect(() => {
@@ -243,6 +150,14 @@ export default function ProjectDetail() {
           loading="eager"
           decoding="async"
           fetchPriority="high"
+          // Matches the same name set on that project's cover photo in
+          // the home page's Works timeline (src/components/WorksTimeline
+          // .jsx) -- when a click there arrives here via a View
+          // Transition, the browser morphs that exact thumbnail straight
+          // into this hero instead of just cross-fading the whole page.
+          // Harmless when arriving any other way (direct link, Work.jsx
+          // grid, back button): an unmatched name just transitions alone.
+          style={{ viewTransitionName: `work-cover-${project.slug}` }}
         />
         <div className="pd-hero-grad" aria-hidden />
         <div className="pd-hero-info">
