@@ -280,6 +280,35 @@ const PAGES = {
     parent: { label: 'Resume', path: '/resume' },
     sections: [
       {
+        heading: 'Selected Papers (2023–2026)',
+        items: [
+          '2026 — Visual Ethnography of the Dandari Gusadi Festival of the Raj Gonds of Telangana, India: Focusing on the Social and Ceremonial Cultural Expressions — Visual Studies, Taylor & Francis',
+          '2026 — Cover photograph, "Gusai Mauk Dancing at the Dandari Gusadi Festival, Adilabad Telangana," published on the cover of Visual Studies, Vol. 41, Issue 2 — Taylor & Francis',
+          '2026 — Rethinking Craft Identity through the Case of Dhoolpet Idol Makers in Hyderabad — 20th International Conference on Design Principles & Practices',
+          '2026 — Reclaiming the Canvas: Evaluating Design Assessment and Creative Capital in Telangana’s Specialized Welfare Schools — UC-HDSF 2026',
+          '2026 — Frugal Immersion: A Low-Cost, Smartphone-Based Virtual Reality Physics Lesson for Equitable Learning in Telangana Government Schools — UC-HDSF 2026',
+          '2025 — Human-Centred Design Approach: A Comprehensive Review on Enhancing the UAM Aircraft Experience for Indian Passengers — ICoRD 2025',
+          '2025 — Displaying Indigenous Heritage: Analysing Discourse on Cultural Heritage, Community Involvement, and Indigenous Representation in Museum Exhibition Design — ICoRD 2025',
+          '2025 — Empowering Dhokra Artisans: A Design-led Intervention Workshop for Enhancing Sustainable Livelihoods in the Ojha Community of Adilabad, Telangana — ICoRD 2025',
+          '2025 — Immersive Learning in Indian Schools: Exploring Approaches to Education Using AR and VR — Futuring Design Education 2024, IIT Delhi',
+          '2025 — A Comprehensive Assessment of Technology-Enhanced Experiential Learning in Education — ICoRD 2025',
+          '2025 — Exploring Urban Air Mobility: A Proposal for Dual Landing Capabilities on Different Surfaces — ICoRD 2025',
+          '2025 — Study and Evaluation of User Perception of Light and Shadow on the Shape and Form of Physical Products in Industrial Product Design — ICoRD 2025',
+          '2025 — Bio-Wiz Framework for Industrial Design Practices: Bio-wisdom to Product Innovation — The International Journal of Designed Objects, Common Ground Research Network',
+          '2025 — Designing Futures: A Scoping Review and a Canvas for Scenario Building — Futuring Design Education Conference, Springer Nature Singapore',
+          '2025 — Innovating Air Traffic Management for Urban Air Mobility in Indian Cities: A Literature Review and Hypothetical Alternative Solutions for Low-Altitude Airspace — ServDes.2025 Service Design and Innovation Conference',
+          '2024 — Transforming Education through Virtual Reality in Indian Middle Schools in Telangana: Development and Testing Their Effectiveness — DAAD iHED Conference 2024',
+          '2023 — Transforming Education through Virtual Reality: A Study of Integrating VR in Indian Government Schools — JoLII-GINTL Global Conference 2023, Finland',
+        ],
+      },
+      {
+        heading: 'Patents',
+        items: [
+          '2025 — Autonomous Advanced Air Mobility — Design Patent Granted, India',
+          '2024 — Urban Air Mobility Aircraft — Design Patent Granted, India',
+        ],
+      },
+      {
         heading: 'Selected Papers (2019–2023)',
         items: [
           '2023 — Virtual reality for creativity practice and art and design education: a literature review — ICoRD 2023',

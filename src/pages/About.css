@@ -11,7 +11,14 @@
   -webkit-font-smoothing: antialiased;
   display: flex;
   flex-direction: column;
-  gap: clamp(20px, 3vw, 36px);
+  /* No gap here (was clamp(20px,3vw,36px)): .hp-hero and WorksTimeline
+     (.wt) are its only two children, so that gap only ever showed up in
+     one place -- as a cream sliver between the full-bleed hero photo's
+     flush bottom edge and the Works section's own dark backdrop right
+     below it, breaking what should read as one continuous edge. The
+     hero's own min-height/padding already give the *text* side of the
+     row plenty of room before Works; nothing here actually needed the
+     extra gap. */
   padding-bottom: clamp(40px, 6vw, 72px);
   animation: hpFadeUp .4s ease both;
 }
@@ -99,14 +106,17 @@
   border-top: 1px solid var(--rule);
   max-width: 68ch;
 }
+/* A real heading, not a small uppercase eyebrow label -- DM Sans bold
+   rather than the Literata used for every other heading on the page, so
+   it still reads as a heading (size, weight, full color) without
+   competing with .hp-title's serif voice right above it. */
 .hp-interests-label {
   font-family: var(--body);
-  font-size: 1rem;
-  font-weight: 600;
-  letter-spacing: .08em;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin-bottom: 8px;
+  font-size: clamp(1.1rem, 1.6vw, 1.35rem);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  margin-bottom: 10px;
 }
 .hp-interests-list {
   font-family: var(--body);
@@ -287,18 +297,32 @@
 @media (max-width: 860px) {
   /* The full-bleed photo treatment is a wide-viewport trick (negative
      margins canceling the hero's own padding, stretched to the row's
-     height) -- below this it reverts to the original compact portrait:
-     fixed aspect ratio, rounded, back in normal flow above the text. */
+     height) -- below this it reverts to a compact portrait stacked under
+     the text, back in normal flow. .hp-hero's own min-height (set to
+     match the full-bleed layout) is usually taller than the text content
+     alone needs, though, and a flex column doesn't hand that leftover
+     space to anyone unless told to -- previously the photo just sat at
+     its own fixed aspect ratio and left that leftover space empty below
+     it, well short of the hero's actual bottom edge. flex:1 on the photo
+     column claims that leftover space instead, so the photo's bottom
+     edge always lands flush with the hero's, whatever height the text
+     above it happens to need. */
   .hp-hero { flex-direction: column; align-items: flex-start; padding-right: var(--g); }
   .hp-hero-text { width: 100%; align-self: auto; } /* column layout + align-items:flex-start would otherwise shrink this to its nowrap subtitle's intrinsic width, overflowing the viewport */
   .hp-hero-photo-col {
     width: clamp(140px, 40vw, 220px);
     align-self: flex-start;
-    margin: 0;
+    /* Bleeds through the hero's own bottom padding (same trick as the
+       desktop full-bleed column's margin, scoped to just the bottom
+       edge here) -- flex:1 alone only fills the content box, which left
+       the hero's padding-bottom sitting below the photo as a dead gap
+       before the section actually ended. */
+    margin: 0 0 calc(-1 * var(--hero-pad-y));
+    flex: 1;
+    min-height: 240px;
   }
   .hp-hero-photo {
-    height: auto;
-    aspect-ratio: 1 / 1.08;
+    height: 100%;
     border-radius: var(--radius-lg);
   }
 }
