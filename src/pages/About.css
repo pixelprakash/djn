@@ -4,12 +4,6 @@
 .hp, .hp * { background: transparent; }
 
 .hp {
-  --hp-blue:        #1c5d8c;
-  --hp-blue-card:   #2f78ab;
-  --hp-purple:      #7a2c8c;
-  --hp-purple-card: #9542a3;
-  --hp-accent:      #7fe6e2;
-
   background: var(--bg) !important;
   min-height: 100%;
   font-family: var(--body);
@@ -30,43 +24,59 @@
 /* ══════════════════════════════════════════
    HERO
 ══════════════════════════════════════════ */
+/* Trial: full-bleed portrait, top-to-bottom on the right (see
+   .hp-hero-photo-col) -- the hero is a stretch-height row so the photo
+   column can fill it edge to edge, while the text column stays centered
+   within that same tall row via its own align-self below. */
 .hp-hero {
+  --hero-pad-y: clamp(48px, 7vw, 96px);
   display: flex;
-  align-items: center;
+  align-items: stretch;
   justify-content: space-between;
-  gap: clamp(24px, 4vw, 56px);
-  min-height: var(--hero-h);
-  padding: clamp(32px, 5vw, 56px) var(--g);
+  gap: clamp(32px, 5vw, 72px);
+  min-height: calc(var(--hero-h) + clamp(40px, 6vw, 90px));
+  padding: var(--hero-pad-y) 0 var(--hero-pad-y) var(--g);
 }
 
-.hp-hero-text { min-width: 0; }
+.hp-hero-text { min-width: 0; align-self: center; }
 
 .hp-title {
-  font-family: var(--body);
+  /* Trial: Literata on headings, Home page only for now. DM Sans's
+     --title-tracking (-5px) was tuned for a sans display face at this
+     size -- far too tight for a serif, whose letterforms need more room
+     to read clean, so it's eased way off here rather than reused as-is. */
+  font-family: 'Literata', var(--serif);
   font-weight: 400;
-  font-size: var(--fs-h1);
-  line-height: 1.03;
-  letter-spacing: var(--title-tracking);
+  /* Own clamp instead of the shared --fs-h1 (5vw/72px): the full-bleed
+     photo column eats into this column's width at common laptop sizes
+     (e.g. 907px of text needed at 72px, but only ~820px free at 1512px
+     wide) -- 5vw hit its 72px ceiling well before the text column had
+     room for it, wrapping "Mathew" onto its own line. 4vw reaches the
+     same 72px ceiling only once the column is actually wide enough
+     (confirmed one line from 900px through 2560px). */
+  font-size: clamp(36px, 4vw, 72px);
+  line-height: 1.05;
+  letter-spacing: -0.01em;
   color: var(--ink);
   animation: titleReveal .7s cubic-bezier(.16,1,.3,1) .08s both;
 }
 
 .hp-sub {
-  margin-top: clamp(14px, 2.2vw, 20px);
+  margin-top: clamp(18px, 2.6vw, 26px);
   font-family: var(--body);
   font-weight: 400;
-  font-size: clamp(1.1rem, 2.3vw, 2.05rem); /* one-line on desktop; sized with margin so the "Design Dept" / "IIT Hyderabad" links never clip against the photo column */
+  /* Wraps naturally rather than forcing one line + ellipsis -- the
+     full-bleed photo trial narrowed this column enough that "at IIT
+     Hyderabad" was silently clipping off the end at common widths. */
+  font-size: clamp(1.1rem, 2.3vw, 2.05rem);
   line-height: 1.25;
   letter-spacing: -0.01em;
   color: var(--sub);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
   max-width: 100%;
 }
 
 .hp-bio {
-  margin-top: clamp(20px, 2.6vw, 28px);
+  margin-top: clamp(24px, 3.2vw, 36px);
   font-family: var(--body);
   font-weight: 400;
   font-size: clamp(1.1rem, 1.4vw, 1.2rem); /* a notch up from --fs-body */
@@ -76,107 +86,47 @@
 }
 .hp-bio em { font-style: italic; color: var(--ink); }
 
-/* ── Areas of interest — deliberately chip-shaped, not another line of
-   prose, so it reads as a distinct block from the bio paragraph above. ── */
+/* ── Areas of interest — set apart as its own block (hairline rule +
+   real margin above) rather than reading as a third paragraph of the
+   bio. Label and list are split onto separate lines with opposite
+   weighting on purpose: the label is a quiet, small-caps category tag
+   (it names the field, nothing more), while the list -- the actual
+   content someone reads this for -- gets real size and body-text
+   contrast instead of being dimmed down to a caption color. ── */
 .hp-interests {
-  margin-top: clamp(20px, 2.8vw, 28px);
+  margin-top: clamp(32px, 4vw, 44px);
+  padding-top: clamp(20px, 2.6vw, 28px);
+  border-top: 1px solid var(--rule);
+  max-width: 68ch;
 }
-/* Sits inline as the first item in the chip row instead of on its own
-   line above — saves a full line of hero height without losing context. */
 .hp-interests-label {
-  display: flex;
-  align-items: center;
   font-family: var(--body);
   font-size: 1rem;
-  font-weight: 500;
-  letter-spacing: .1em;
+  font-weight: 600;
+  letter-spacing: .08em;
   text-transform: uppercase;
   color: var(--muted);
-  white-space: nowrap;
+  margin-bottom: 8px;
 }
 .hp-interests-list {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 10px;
-}
-
-/* Flip card: .hp-interest is just the 3D stage; .hp-interest-inner is the
-   piece that rotates; front/back are two faces of equal size stacked with
-   backface-visibility:hidden so only one shows at a time. The front (icon
-   + label) sizes the whole card — the back is absolutely positioned to
-   match it exactly, so both faces occupy the same footprint. */
-.hp-interest {
-  display: inline-block;
-  perspective: 900px;
-}
-.hp-interest-inner {
-  /* button reset — this is a real <button> now (see About.jsx) so touch
-     devices without :hover can still reveal the back face by tapping */
-  appearance: none;
-  border: none;
-  background: none;
-  padding: 0;
-  margin: 0;
-  font: inherit;
-  cursor: pointer;
-  position: relative;
-  display: inline-block;
-  transform-style: preserve-3d;
-  transition: transform .55s cubic-bezier(.34,1.56,.64,1);
-}
-.hp-interest:hover .hp-interest-inner,
-.hp-interest:focus-within .hp-interest-inner {
-  transform: rotateX(180deg);
-}
-
-.hp-interest-front,
-.hp-interest-back {
-  backface-visibility: hidden;
-  border-radius: 100px;
   font-family: var(--body);
-}
-.hp-interest-front {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  min-width: 220px; /* bumped alongside .hp-interest-back's font-size so its longer detail strings ("Digital Heritage & AR/VR") still fit without ellipsis-truncating */
-  padding: 8px 16px 8px 12px;
-  border: 1px solid var(--rule);
-  background: var(--white);
+  font-weight: 400;
+  font-size: clamp(1.05rem, 1.3vw, 1.15rem);
+  line-height: 1.7;
   color: var(--sub);
-  font-size: 1rem;
-  font-weight: 500;
-  white-space: nowrap;
-}
-.hp-interest-front svg { flex-shrink: 0; transition: transform .35s cubic-bezier(.34,1.56,.64,1); }
-.hp-interest:hover .hp-interest-front svg { transform: rotate(10deg) scale(1.12); }
-
-.hp-interest-back {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 8px 16px;
-  background: var(--accent);
-  color: #fff;
-  font-size: 1rem;
-  font-weight: 500;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  transform: rotateX(180deg);
 }
 
 /* ── Social links — filled brand marks, a different register from the
-   thin-stroke interest icons above (logos vs. glyphs). ── */
+   rest of the hero. ── */
 .hp-socials {
   display: flex;
-  flex-wrap: wrap; /* the photo column is narrower than 4 icons+gaps on small screens — wrap to a second row instead of squishing */
-  justify-content: center;
+  flex-wrap: wrap;
+  /* Left-aligned now that this sits in the text column (previously
+     centered under the narrow photo column it used to live in) --
+     matches every other left-aligned block above it. */
+  justify-content: flex-start;
   gap: 10px;
-  margin-top: 18px;
+  margin-top: clamp(24px, 3vw, 32px);
 }
 .hp-social {
   flex-shrink: 0; /* without this, flex would compress width only (not height) once .hp-socials runs out of row space, stretching each circle into an oval */
@@ -298,17 +248,19 @@
   transform-origin: left;
 }
 
+/* Negative top/bottom margin cancels the hero's own vertical padding so
+   this column spans the full height of the row, flush top and bottom;
+   .hp-hero already dropped its right-side padding so this sits flush
+   against the viewport edge too -- a true edge-to-edge bleed. */
 .hp-hero-photo-col {
   flex-shrink: 0;
-  display: flex;
-  flex-direction: column;
-  width: clamp(160px, 20vw, 280px);
+  width: clamp(320px, 38vw, 560px);
+  margin: calc(-1 * var(--hero-pad-y)) 0;
 }
 
 .hp-hero-photo {
   width: 100%;
-  aspect-ratio: 1 / 1.08;
-  border-radius: var(--radius-lg);
+  height: 100%;
   overflow: hidden;
   background: var(--rule);
 }
@@ -326,229 +278,41 @@
   transform: scale(1.03);
 }
 
-/* ══════════════════════════════════════════
-   PANEL — Works / Research
-══════════════════════════════════════════ */
-.hp-panel {
-  margin: 0 var(--g);
-  border-radius: var(--radius-lg);
-  padding: clamp(40px, 6vw, 72px) 0;
-}
-.hp-panel--blue   { background: var(--hp-blue); }
-.hp-panel--purple { background: var(--hp-purple); }
-
-/* The global focus ring is accent-blue — which is *literally* --hp-blue,
-   this panel's own background, so a focused card/control here would be
-   outlined in a color indistinguishable from what it's sitting on. Swap
-   in --hp-accent (already used for the panel titles precisely because it
-   reads clearly on both panel colors) inside either panel. */
-.hp-panel--blue .hp-card:focus-visible,
-.hp-panel--blue .hp-panel-link:focus-visible,
-.hp-panel--purple .hp-card:focus-visible,
-.hp-panel--purple .hp-panel-link:focus-visible {
-  outline-color: var(--hp-accent);
-}
-
-.hp-panel-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  padding: 0 clamp(32px, 5vw, 64px);
-  margin-bottom: clamp(28px, 4vw, 40px);
-}
-
-.hp-panel-title {
-  font-family: var(--body);
-  font-weight: 700;
-  font-size: clamp(1.6rem, 3vw, 2.4rem);
-  letter-spacing: -0.02em;
-  color: var(--hp-accent);
-}
-
-/* "View all work" — ties the home-page teaser back to the full page it's
-   drawn from, same register as the panel title but quieter. */
-.hp-panel-link {
-  font-family: var(--body);
-  font-size: 1rem;
-  font-weight: 500;
-  color: rgba(255,255,255,.78);
-  text-decoration: none;
-  white-space: nowrap;
-  border-bottom: 1px solid rgba(255,255,255,.32);
-  padding-bottom: 2px;
-  transition: color .2s ease, border-color .2s ease;
-}
-.hp-panel-link:hover,
-.hp-panel-link:focus-visible {
-  color: #fff;
-  border-color: #fff;
-}
-
-/* ── Works grid: a static "featured + supporting" bento, not a carousel ──
-   One large lead project (the first in PROJECTS — his flagship show) plus
-   four smaller ones, all visible at once. Scannable at a glance, no
-   play/pause/prev/next chrome needed, and reveals in with a stagger on
-   scroll instead of looping motion. */
-.hp-works-wrap {
-  padding: 0 clamp(32px, 5vw, 64px);
-}
-
-.hp-works-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  grid-auto-rows: minmax(150px, 1fr);
-  gap: 20px;
-}
-
-.hp-work-0 { grid-column: 1 / 3; grid-row: 1 / 3; }
-.hp-work-1 { grid-column: 3 / 4; grid-row: 1 / 2; }
-.hp-work-2 { grid-column: 4 / 5; grid-row: 1 / 2; }
-.hp-work-3 { grid-column: 3 / 4; grid-row: 2 / 3; }
-.hp-work-4 { grid-column: 4 / 5; grid-row: 2 / 3; }
-
-.hp-card {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  border-radius: var(--radius-md);
-  overflow: hidden;
-  text-decoration: none;
-  box-shadow: 0 6px 20px rgba(0,0,0,.12);
-  /* Reveal renders straight onto this element (Reveal as={Link}), so its
-     own transition shorthand fully replaces .reveal's — opacity has to be
-     listed here too or the scroll-in fade would just snap instead of
-     animating. Same fix already used on .proj-card in Work.css. */
-  transition: transform .35s cubic-bezier(.34,1.56,.64,1), box-shadow .35s, opacity .5s ease;
-}
-.hp-card:hover, .hp-card:focus-visible {
-  transform: translateY(-6px);
-  box-shadow: 0 20px 44px rgba(0,0,0,.28);
-}
-.hp-card--blue   { background: var(--hp-blue-card); }
-.hp-card--purple { background: var(--hp-purple-card); }
-
-.hp-card-img {
-  overflow: hidden;
-  background: rgba(255,255,255,.08);
-  line-height: 0;
-}
-.hp-work-0 .hp-card-img { height: clamp(260px, 30vw, 420px); }
-.hp-work-1 .hp-card-img,
-.hp-work-2 .hp-card-img,
-.hp-work-3 .hp-card-img,
-.hp-work-4 .hp-card-img { height: clamp(100px, 11vw, 140px); }
-
-.hp-card-img img {
-  width: 100%; height: 100%;
-  object-fit: cover; display: block;
-  transition: transform .6s ease;
-}
-.hp-card:hover .hp-card-img img { transform: scale(1.08); }
-
-.hp-work-0 .hp-card-title { font-size: clamp(1.4rem, 2.2vw, 1.8rem); }
-
-.hp-card-body {
-  flex: 1;
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 16px;
-  padding: clamp(22px, 2.6vw, 32px);
-}
-
-.hp-card-title {
-  font-family: var(--body);
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: #fff;
-  line-height: 1.3;
-  margin-bottom: 8px;
-}
-
-.hp-card-desc {
-  font-family: var(--body);
-  font-size: 1rem;
-  font-weight: 400;
-  /* Solid white, not translucent — .72 measured under 4:1 against both
-     --hp-blue-card and --hp-purple-card (the blue card alone tops out
-     around 4.8:1 even at full white, so there's little opacity headroom
-     to give up here). Weight/size vs. the bold title carry the hierarchy
-     that opacity used to. */
-  color: #fff;
-  line-height: 1.45;
-}
-
-.hp-card-arrow {
-  flex-shrink: 0;
-  width: 42px; height: 42px;
-  border-radius: 50%;
-  background: rgba(255,255,255,.16);
-  color: #fff;
-  display: flex; align-items: center; justify-content: center;
-  transition: background .3s, color .3s, transform .35s cubic-bezier(.34,1.56,.64,1);
-}
-.hp-card:hover .hp-card-arrow { transform: rotate(45deg) scale(1.08); }
-.hp-card--blue:hover .hp-card-arrow   { background: #fff; color: var(--hp-blue); }
-.hp-card--purple:hover .hp-card-arrow { background: #fff; color: var(--hp-purple); }
+/* Works panel now lives in WorksTimeline.css, mounted via
+   src/components/WorksTimeline.jsx. */
 
 /* ══════════════════════════════════════════
    RESPONSIVE
 ══════════════════════════════════════════ */
 @media (max-width: 860px) {
-  .hp-hero { flex-direction: column; align-items: flex-start; }
-  .hp-hero-text { width: 100%; } /* column layout + align-items:flex-start would otherwise shrink this to its nowrap subtitle's intrinsic width, overflowing the viewport */
-  .hp-hero-photo-col { width: clamp(140px, 40vw, 220px); align-self: flex-start; }
-  /* Single-line + ellipsis is a desktop-only flourish — on a narrow column
-     it would silently hide "at IIT Hyderabad", so let it wrap here instead. */
-  .hp-sub { white-space: normal; overflow: visible; text-overflow: clip; }
-}
-
-@media (max-width: 768px) {
-  /* Bento collapses to 2 columns: featured project spans the full width
-     on its own row, the four supporting ones pair up below it. */
-  .hp-works-grid { grid-template-columns: repeat(2, 1fr); }
-  .hp-work-0 { grid-column: 1 / 3; grid-row: 1; }
-  .hp-work-1 { grid-column: 1 / 2; grid-row: 2; }
-  .hp-work-2 { grid-column: 2 / 3; grid-row: 2; }
-  .hp-work-3 { grid-column: 1 / 2; grid-row: 3; }
-  .hp-work-4 { grid-column: 2 / 3; grid-row: 3; }
-  .hp-work-0 .hp-card-img { height: clamp(220px, 42vw, 320px); }
-  .hp-work-1 .hp-card-img,
-  .hp-work-2 .hp-card-img,
-  .hp-work-3 .hp-card-img,
-  .hp-work-4 .hp-card-img { height: clamp(150px, 26vw, 220px); }
+  /* The full-bleed photo treatment is a wide-viewport trick (negative
+     margins canceling the hero's own padding, stretched to the row's
+     height) -- below this it reverts to the original compact portrait:
+     fixed aspect ratio, rounded, back in normal flow above the text. */
+  .hp-hero { flex-direction: column; align-items: flex-start; padding-right: var(--g); }
+  .hp-hero-text { width: 100%; align-self: auto; } /* column layout + align-items:flex-start would otherwise shrink this to its nowrap subtitle's intrinsic width, overflowing the viewport */
+  .hp-hero-photo-col {
+    width: clamp(140px, 40vw, 220px);
+    align-self: flex-start;
+    margin: 0;
+  }
+  .hp-hero-photo {
+    height: auto;
+    aspect-ratio: 1 / 1.08;
+    border-radius: var(--radius-lg);
+  }
 }
 
 @media (max-width: 540px) {
-  .hp-title { letter-spacing: var(--title-tracking-sm); }
+  /* No letter-spacing override here (unlike the other pages' --fs-h1-sm
+     titles) -- .hp-title's own -0.01em is already em-relative, tuned for
+     the Literata trial, and scales fine at the smaller mobile size. */
   .hp-sub { font-size: 1rem; }
-  .hp-panel-title { font-size: 1.4rem; }
-  /* "Works" + "View all work" wraps to its own row if it ever doesn't
-     fit — cheap safety net now that the head only holds two items. */
-  .hp-panel-head { flex-wrap: wrap; row-gap: 10px; }
-  /* One column, full-width cards, natural DOM order (featured first). */
-  .hp-works-grid { grid-template-columns: 1fr; }
-  .hp-work-0, .hp-work-1, .hp-work-2, .hp-work-3, .hp-work-4 {
-    grid-column: 1 / 2;
-    grid-row: auto;
-  }
-  .hp-work-0 .hp-card-img,
-  .hp-work-1 .hp-card-img,
-  .hp-work-2 .hp-card-img,
-  .hp-work-3 .hp-card-img,
-  .hp-work-4 .hp-card-img { height: clamp(190px, 55vw, 280px); }
-  /* Interest chips: dropping the 195px min-width lets flex-wrap pack two
-     shorter labels onto a row where they fit, instead of forcing every
-     chip full-width regardless of how short its text is. Font-size stays
-     at 1rem — the site-wide 16px minimum applies here too. */
-  .hp-interests-label { width: 100%; margin-bottom: 2px; }
-  .hp-interest-front { min-width: 0; padding: 8px 14px 8px 11px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .hp { animation: none; }
-  .hp-card, .hp-card-arrow, .hp-hero-photo img,
+  .hp-hero-photo img,
   .hp-link::before, .hp-link-word-real, .hp-link-word::before,
-  .hp-interest-inner, .hp-interest-front svg, .hp-social { transition: none; }
+  .hp-social { transition: none; }
 }

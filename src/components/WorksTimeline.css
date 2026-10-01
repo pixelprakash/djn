@@ -1,0 +1,305 @@
+/* =====================================================
+   WORKS TIMELINE — scroll-driven filmstrip through all 5
+   projects' real photos, with a tick-mark ruler scrubbing
+   in sync underneath. See the component file for how the
+   scroll-linked pin works (plain translateX driven by
+   normal document scroll -- never a wheel hijack).
+
+   Deliberately dark (var(--ink)), unlike the rest of the page -- a
+   screening-room backdrop that (a) makes the section read as its own
+   place rather than more homepage, and (b) lets each project's bright
+   title card interrupt it clearly instead of blending into a page that's
+   already the same cream color as everything around it.
+
+   This section mounts inside .hp (the Home page root), which carries a
+   blanket ".hp, .hp * { background: transparent; }" reset -- a bare
+   single-class selector ties that rule's specificity exactly, so every
+   background declaration below is qualified with the ".wt" ancestor to
+   safely outrank it regardless of CSS source order.
+===================================================== */
+.wt {
+  position: relative;
+}
+
+/* top/height offset by the fixed TopNav's own height (.tn-inner, 64px)
+   -- without it the sticky box pins at the literal viewport top and
+   "Works" + the ruler sit directly under the nav bar for the entire
+   scroll through this section, not just the momentary overlap a normal
+   (non-pinned) hero gets at the very top of the page. Only relevant
+   while pinned: the nav is always 64px here since .pinned never applies
+   below the 960px breakpoint where TopNav itself shrinks. */
+.wt .wt-sticky {
+  position: sticky;
+  top: 64px;
+  height: calc(100vh - 64px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: clamp(16px, 2.4vw, 28px);
+  overflow: hidden;
+  background: var(--ink);
+}
+
+/* Mobile / reduced-motion fallback: normal block in the page flow, no
+   pin, no sticky viewport -- the rail becomes a native horizontal
+   scroller instead (see .wt-rail-viewport--scroll below). */
+.wt .wt-sticky--static {
+  position: static;
+  height: auto;
+  overflow: visible;
+  padding: clamp(32px, 6vw, 56px) 0;
+}
+
+.wt-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 0 var(--g);
+}
+
+.wt-heading {
+  font-family: 'Literata', var(--serif);
+  font-weight: 700;
+  font-size: clamp(1.6rem, 3vw, 2.4rem);
+  letter-spacing: -0.01em;
+  color: var(--bg);
+}
+
+.wt-viewall {
+  font-family: var(--body);
+  font-size: 1rem;
+  font-weight: 500;
+  color: rgba(245,243,238,.68);
+  text-decoration: none;
+  white-space: nowrap;
+  border-bottom: 1px solid rgba(245,243,238,.32);
+  padding-bottom: 2px;
+  transition: color .2s ease, border-color .2s ease;
+}
+.wt-viewall:hover,
+.wt-viewall:focus-visible {
+  color: var(--bg);
+  border-color: var(--bg);
+}
+
+/* flex:1 inside a column means this box's height is only resolved
+   *after* flex layout runs -- percentage heights on descendants chained
+   through a flex-resolved (not explicitly-lengthed) box are exactly the
+   kind of thing browsers disagree on, so .wt-item's own height is set in
+   vh units below instead of resting on this box's computed height. */
+.wt-rail-viewport {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+/* Fallback: a real horizontally-scrollable row, swipeable on touch,
+   scrollable with a trackpad/wheel without any JS driving it. This one
+   *does* get an explicit height, so percentage heights on .wt-item
+   below are safe here. */
+.wt-rail-viewport--scroll {
+  flex: none;
+  height: clamp(240px, 42vw, 420px);
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x proximity;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+}
+/* In the scroll fallback, .wt-rail's direct children are .wt-group
+   blocks (not items), and groups should butt up against each other with
+   no gap -- that seam is what makes the color change read clearly as
+   you swipe from one project into the next. */
+.wt-rail-viewport--scroll .wt-rail { height: 100%; gap: 0; padding: 0; }
+
+.wt-rail {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: clamp(12px, 1.6vw, 20px);
+  width: max-content;
+  padding: 0 var(--g);
+  will-change: transform;
+}
+
+/* One per project, scroll-fallback only (see .wt in the component) --
+   carries that project's own color since there's no scroll position
+   here to drive a shared backdrop from. */
+.wt-group {
+  display: flex;
+  align-items: center;
+  gap: clamp(12px, 1.6vw, 20px);
+  height: 100%;
+  padding: 0 clamp(20px, 4vw, 32px);
+}
+.wt-group:first-child { padding-left: var(--g); }
+.wt-group:last-child { padding-right: var(--g); }
+
+/* ── Title card: one per project, always first in its group -- a real
+   slide in the strip (not a caption underneath) so a new project reads
+   as a clean break instead of just more photos. Bright against the dark
+   section (inverse of the old treatment) so it physically interrupts the
+   run of photos instead of just sitting among them. The extra left
+   margin (not on .wt-item) is what actually separates one project's
+   photos from the next; everything inside one project just uses the
+   rail's normal gap. ── */
+.wt .wt-title-card {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: clamp(220px, 20vw, 300px);
+  height: min(40vh, 360px);
+  margin-left: clamp(28px, 4vw, 56px);
+  padding: clamp(20px, 2.4vw, 28px);
+  border-radius: var(--radius-md);
+  background: var(--bg);
+  color: var(--ink);
+  text-decoration: none;
+  box-shadow: 0 6px 24px rgba(0,0,0,.35);
+  scroll-snap-align: start;
+  transition: transform .35s cubic-bezier(.34,1.56,.64,1), box-shadow .35s;
+}
+.wt-title-card:first-child { margin-left: 0; }
+.wt-title-card:hover,
+.wt-title-card:focus-visible {
+  transform: translateY(-6px);
+  box-shadow: 0 18px 40px rgba(0,0,0,.45);
+}
+.wt-title-card-index {
+  font-family: var(--body);
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: .08em;
+  color: var(--muted);
+}
+.wt-title-card-meta {
+  font-family: var(--body);
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--sub);
+  margin-bottom: 6px;
+}
+.wt-title-card-name {
+  font-family: 'Literata', var(--serif);
+  font-weight: 700;
+  font-size: clamp(1.5rem, 2.4vw, 2.1rem);
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+.wt .wt-title-card-arrow {
+  align-self: flex-end;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  margin-top: 14px;
+  border-radius: 50%;
+  background: rgba(26,24,20,.08);
+  color: var(--ink);
+  transition: background .3s, color .3s, transform .35s cubic-bezier(.34,1.56,.64,1);
+}
+.wt .wt-title-card:hover .wt-title-card-arrow {
+  transform: rotate(45deg) scale(1.08);
+  background: var(--ink);
+  color: var(--bg);
+}
+
+.wt .wt-item {
+  flex-shrink: 0;
+  display: block;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: rgba(245,243,238,.08);
+  box-shadow: 0 6px 20px rgba(0,0,0,.3);
+  scroll-snap-align: start;
+  transition: transform .35s cubic-bezier(.34,1.56,.64,1), box-shadow .35s;
+}
+.wt-item:hover,
+.wt-item:focus-visible {
+  transform: translateY(-6px);
+  box-shadow: 0 18px 40px rgba(0,0,0,.4);
+}
+.wt-item img {
+  height: 100%;
+  width: auto;
+  display: block;
+  object-fit: cover;
+  transition: transform .6s ease;
+}
+.wt-item:hover img { transform: scale(1.06); }
+
+/* Height tiers in vh (see SIZE_CYCLE in the component) -- real frames
+   landing at different sizes, not a uniform grid. Widths follow
+   naturally from each photo's own aspect ratio since img height is
+   fixed and width is auto. vh, not a percentage of .wt-rail-viewport's
+   height, deliberately -- see the comment on that rule above. Capped
+   with min() so a very tall viewport doesn't blow past the sticky
+   box's own 100vh and push the ruler out of it. */
+.wt-item--lg { height: min(40vh, 360px); }
+.wt-item--md { height: min(30vh, 270px); }
+.wt-item--sm { height: min(22vh, 200px); }
+
+/* Here .wt-rail-viewport--scroll *does* have an explicit height, so
+   percentages are the right tool. */
+.wt-rail-viewport--scroll .wt-item--lg { height: 92%; }
+.wt-rail-viewport--scroll .wt-item--md { height: 74%; }
+.wt-rail-viewport--scroll .wt-item--sm { height: 56%; }
+.wt-rail-viewport--scroll .wt-title-card { height: 92%; width: clamp(200px, 56vw, 260px); }
+
+/* ── Ruler: tick marks (a repeating background, not hundreds of nodes)
+   + one label per project, translated in lockstep with the rail; a
+   fixed playhead marks the current scroll position. ── */
+.wt-ruler {
+  position: relative;
+  height: 44px;
+  border-top: 1px solid rgba(245,243,238,.16);
+  overflow: hidden;
+}
+.wt .wt-ruler-track {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  padding-left: var(--g);
+  background-image: repeating-linear-gradient(
+    to right, rgba(245,243,238,.22) 0 1px, transparent 1px 28px
+  );
+  background-position: top left;
+}
+.wt-ruler-label {
+  position: absolute;
+  top: 12px;
+  transform: translateX(2px);
+  font-family: var(--body);
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: .01em;
+  color: rgba(245,243,238,.78);
+  white-space: nowrap;
+}
+.wt .wt-ruler-playhead {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 1px;
+  background: var(--bg);
+  opacity: .5;
+}
+
+@media (max-width: 860px) {
+  .wt-rail { padding: 0 var(--g); gap: 14px; }
+  .wt-title-card { margin-left: 20px; padding: 18px 20px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wt-item, .wt-item img, .wt-title-card, .wt-title-card-arrow { transition: none; }
+  .wt-item:hover, .wt-title-card:hover { transform: none; }
+}

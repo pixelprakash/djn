@@ -88,6 +88,19 @@ export default function Resume() {
             ))}
           </div>
         </div>
+        {/* Placeholder: same portrait as the Home page hero, reused here
+            until a dedicated photo is provided for this page. */}
+        <div className="r-header-photo-col">
+          <div className="r-header-photo">
+            <img
+              src="/profliepic.webp"
+              alt="Portrait of Prof. Deepak John Mathew"
+              draggable="false"
+              loading="eager"
+              decoding="async"
+            />
+          </div>
+        </div>
       </header>
 
       {/* -- RESEARCH AREAS -- */}

@@ -6,7 +6,7 @@ export const PROJECTS = [
     "year": "2013",
     "category": "Solo Show",
     "venue": "Alliance Fran\u00e7aise Gallery, Ahmedabad",
-    "cover": "https://deepakjohnmathew.net/wp-content/uploads/2024/06/L1002216-1160x680.jpg",
+    "cover": "https://deepakjohnmathew.net/wp-content/uploads/2024/06/L1002216-1024x681.jpg",
     "sections": [
       {
         "text": "Water has always been a mirror \u2014 it reflects not just light but longing, memory, and the human desire to belong. This series documents the slow submergence of familiar landscapes and the communities tied to them.\n\nThe title, translating loosely as 'We drowned, and we drowned it,' carries within it both lament and complicity \u2014 an acknowledgment that we are both victim and agent of loss.",
@@ -78,7 +78,7 @@ export const PROJECTS = [
     "year": "2012",
     "category": "Solo Show",
     "venue": "Corner Stone Gallery, Hope University, Manchester",
-    "cover": "https://deepakjohnmathew.net/wp-content/uploads/2024/09/A-_0121-3-1160x680.jpg",
+    "cover": "https://deepakjohnmathew.net/wp-content/uploads/2024/09/A-_0121-3-1024x768.jpg",
     "sections": [
       {
         "text": "Human beings are supposed to be social animals \u2014 we live together and share things that are commonly used. But in reality, there is a tendency to demarcate our spaces. In a larger spectrum, the division of countries and states is evidence of it.\n\nWhen one takes a closer look, it is evident that beyond political convenience there is an underlying reason: personalising and owning.",
@@ -148,7 +148,7 @@ export const PROJECTS = [
     "year": "2024",
     "category": "Photography",
     "venue": "Photography Series",
-    "cover": "https://deepakjohnmathew.net/wp-content/uploads/2024/09/DJM0881-1160x680.jpg",
+    "cover": "https://deepakjohnmathew.net/wp-content/uploads/2024/09/DJM0881-1024x692.jpg",
     "sections": [
       {
         "text": "Objects carry memory. A found thing is rarely without history \u2014 it arrived somewhere by chance, by loss, by the slow drift of time.\n\nThis series explores the intimate relationship between people and the objects they leave behind, accumulate, and sometimes rediscover.",
@@ -198,7 +198,7 @@ export const PROJECTS = [
     "year": "2012",
     "category": "Group Exhibition",
     "venue": "Ojas Art Gallery, New Delhi \u00b7 Curated by Anubhav Nath",
-    "cover": "https://deepakjohnmathew.net/wp-content/uploads/2024/09/DJM5950-1-1160x680.jpg",
+    "cover": "https://deepakjohnmathew.net/wp-content/uploads/2024/09/DJM5950-1-1024x683.jpg",
     "sections": [
       {
         "text": "Food, clothing, shelter \u2014 the three essentials of human existence, reduced to a political slogan, but lived as something far more complex.\n\nThis body of work looks at how these basics are negotiated across class, community, and geography in contemporary India.",
@@ -230,7 +230,7 @@ export const PROJECTS = [
     "year": "2024",
     "category": "Photography",
     "venue": "Photography Series",
-    "cover": "https://deepakjohnmathew.net/wp-content/uploads/2024/09/DJM0148-1160x680.jpg",
+    "cover": "https://deepakjohnmathew.net/wp-content/uploads/2024/09/DJM0148-1024x683.jpg",
     "sections": [
       {
         "text": "A memorial is not always stone and marble. Sometimes it is light falling across an ordinary afternoon.\n\nThis series is an act of witnessing \u2014 photographs made in the presence of grief, of love that has no object left to hold onto.",

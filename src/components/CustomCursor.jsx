@@ -13,7 +13,7 @@ import './CustomCursor.css'
      - default     everything else — resting viewfinder                  */
 
 const VIEW_SELECTOR =
-  '.pg-item, .hp-card, .bl-card, .bl-featured, .lab-video, .proj-card, .lab-slider-img'
+  '.pg-item, .wt-item, .wt-title-card, .bl-card, .bl-featured, .lab-video, .proj-card, .lab-slider-img'
 const INTERACTIVE_SELECTOR =
   'a, button, [role="button"], select, label, .tn-link, .tn-cta, .tab-btn, .ss-btn, .ss-tn'
 const TEXT_SELECTOR = 'input, textarea, [contenteditable="true"]'

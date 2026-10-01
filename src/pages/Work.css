@@ -46,16 +46,16 @@
   animation: titleReveal .7s cubic-bezier(.16,1,.3,1) .08s both;
 }
 
-/* Subtitle -- Rubik 300 */
+/* Subtitle -- Rubik 300. Wraps naturally rather than a fixed single line +
+   ellipsis: now that the stat panel shares the header row, the space left
+   for this text varies with viewport width, so a hard nowrap was liable
+   to clip mid-sentence at in-between widths. */
 .wp-sub {
   font-family: var(--body);
   font-size: var(--fs-subtitle);
   font-weight: 300;
   color: var(--sub);
   line-height: 1.4;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 /* ==========================================
@@ -422,9 +422,6 @@
      it left ~150px of dead space below the short title+subtitle here. */
   .wp-head { min-height: 0; }
   .wp-heading { font-size: var(--fs-h1-sm); letter-spacing: var(--title-tracking-sm); }
-  /* Nowrap+ellipsis is a desktop-only flourish — on a narrow screen it was
-     silently cutting the subtitle down to about half its words. */
-  .wp-sub { white-space: normal; overflow: visible; text-overflow: clip; }
 
   /* All 3 tabs visible at once -- equal width, no scroll needed */
   .tab-nav {

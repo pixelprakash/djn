@@ -7,6 +7,9 @@
   z-index: 99998;
   transition: background .3s ease, box-shadow .3s ease;
   background: transparent;
+  /* Always-on hairline, not just once .tn--scrolled kicks in -- a quiet
+     edge for the nav to sit on even over a transparent hero. */
+  border-bottom: 1px solid var(--rule);
 }
 
 .tn--scrolled {
