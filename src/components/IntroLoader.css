@@ -1,0 +1,151 @@
+.il {
+  position: fixed;
+  inset: 0;
+  z-index: 100000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--ink);
+  overflow: hidden;
+}
+
+/* Subtle film-grain texture -- static, low-opacity, just enough to keep
+   the flat ink background from reading as a plain color swatch; a
+   quietly filmic touch for a photographer's site. */
+.il-grain {
+  position: absolute;
+  inset: 0;
+  opacity: .05;
+  mix-blend-mode: overlay;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ── The frame: a layout grid's margins doubling as a photo proof
+   sheet's crop marks -- the one visual idea the whole intro is built
+   from, not incidental decoration. ── */
+.il-frame {
+  position: relative;
+  width: clamp(340px, 62vw, 760px);
+  height: clamp(230px, 40vh, 340px);
+}
+
+.il-guide {
+  position: absolute;
+  background: rgba(var(--accent-rgb), .4);
+}
+.il-guide--t, .il-guide--b {
+  left: 0; right: 0;
+  height: 1px;
+  transform-origin: center;
+  transform: scaleX(0);
+}
+.il-guide--t { top: 0; }
+.il-guide--b { bottom: 0; }
+.il-guide--l, .il-guide--r {
+  top: 0; bottom: 0;
+  width: 1px;
+  transform-origin: center;
+  transform: scaleY(0);
+}
+.il-guide--l { left: 0; }
+.il-guide--r { right: 0; }
+
+/* Printer's crop marks -- two short strokes meeting at a corner point,
+   sitting just outside the frame's own corner, pointing away from the
+   content, exactly as they would on a proof sheet. */
+.il-crop {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  opacity: 0;
+}
+.il-crop--tl { top: -9px;  left: -9px;  border-top: 1.5px solid var(--bg); border-left: 1.5px solid var(--bg); }
+.il-crop--tr { top: -9px;  right: -9px; border-top: 1.5px solid var(--bg); border-right: 1.5px solid var(--bg); }
+.il-crop--bl { bottom: -9px; left: -9px;  border-bottom: 1.5px solid var(--bg); border-left: 1.5px solid var(--bg); }
+.il-crop--br { bottom: -9px; right: -9px; border-bottom: 1.5px solid var(--bg); border-right: 1.5px solid var(--bg); }
+
+.il-counter {
+  position: absolute;
+  top: -34px;
+  left: 0;
+  opacity: 0;
+  font-family: var(--body);
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: .06em;
+  color: rgba(245,243,238,.56);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Stage: the content the frame brackets. ── */
+.il-stage {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  height: 100%;
+  padding: 0 clamp(20px, 4vw, 40px);
+}
+
+.il-name-wrap,
+.il-facts-wrap {
+  position: relative;
+  overflow: hidden;
+}
+
+.il-name {
+  font-family: 'Literata', var(--serif);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(26px, 4.4vw, 48px);
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  color: var(--bg);
+  white-space: nowrap;
+}
+.il-name-bar {
+  position: absolute;
+  inset: 0;
+  background: var(--accent);
+  transform-origin: right;
+}
+
+.il-rule {
+  width: clamp(48px, 7vw, 84px);
+  height: 1.5px;
+  margin: clamp(14px, 2vw, 20px) 0;
+  background: rgba(245, 243, 238, .4);
+  transform-origin: left;
+  transform: scaleX(0);
+}
+
+.il-facts {
+  font-family: var(--body);
+  font-size: clamp(0.95rem, 1.6vw, 1.1rem);
+  font-weight: 500;
+  letter-spacing: .02em;
+  color: rgba(245,243,238,.82);
+  white-space: nowrap;
+}
+.il-facts-bar {
+  position: absolute;
+  inset: 0;
+  background: var(--accent);
+  transform-origin: right;
+}
+
+/* prefers-reduced-motion skips this component entirely at the React
+   level (see IntroLoader.jsx, which also never builds the GSAP timeline
+   in that case) -- this rule is just a second line of defense in case
+   CSS ends up cached ahead of a JS update. */
+@media (prefers-reduced-motion: reduce) {
+  .il { display: none; }
+}
+
+@media (max-width: 560px) {
+  .il-frame { width: 86vw; height: clamp(260px, 52vh, 380px); }
+  .il-name { white-space: normal; }
+  .il-facts { white-space: normal; }
+  .il-counter { top: -28px; }
+}

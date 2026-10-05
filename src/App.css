@@ -3,6 +3,13 @@
   background: var(--bg);
 }
 
+/* position:relative so the exiting page's position:absolute (see
+   RouteTransition in App.jsx) resolves against this box, not some
+   further-out ancestor. */
+#main-content {
+  position: relative;
+}
+
 /* Route-chunk loading fallback — shown only on the rare cold fetch of a
    not-yet-cached page chunk; kept minimal on purpose. */
 .page-loader {
@@ -24,4 +31,31 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .page-loader-mark { animation: none; opacity: 0.4; }
+}
+
+/* Route-change sweep -- a thin accent-colored bar that fills left to
+   right then dissolves at the start of every page-to-page navigation
+   (see RouteTransition's enter timeline in App.jsx, which now drives
+   scaleX/opacity directly via GSAP rather than a CSS @keyframes).
+   Fixed positioning pins it to the viewport regardless of where
+   RouteTransition nests it in the DOM. Sits just under IntroLoader's
+   own z-index so it stays hidden behind that overlay on the very first
+   load instead of doubling up with it. scaleX(0) here is just the
+   pre-JS safe default -- GSAP sets the real starting value itself once
+   its effect runs. Purely decorative chrome, not a real progress
+   indicator -- there's nothing it's waiting on, it's just a considered
+   beat before the new page settles in, the same way a shutter fires
+   before the frame locks. */
+.route-sweep {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 2.5px;
+  z-index: 99999;
+  background: var(--accent);
+  transform-origin: left;
+  transform: scaleX(0);
+  pointer-events: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .route-sweep { display: none; }
 }

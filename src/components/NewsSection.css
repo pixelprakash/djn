@@ -1,0 +1,131 @@
+.ns {
+  background: var(--bg);
+  padding: clamp(48px, 7vw, 88px) 0;
+}
+
+/* Gutter-padded, not margin:auto-centered -- max-width still caps the
+   line length on very wide screens, but the column starts flush at the
+   page's left gutter (var(--g)) so its heading lines up with the hero
+   title and the Works heading right above it, instead of floating in
+   the middle of the viewport while they stay flush-left. */
+.ns-inner {
+  max-width: 880px;
+  padding: 0 var(--g);
+}
+
+.ns-head {
+  margin-bottom: clamp(28px, 4vw, 44px);
+}
+
+.ns-heading {
+  font-family: 'Literata', var(--serif);
+  font-weight: 400;
+  font-size: clamp(1.8rem, 3.4vw, 2.6rem);
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+
+.ns-sub {
+  margin-top: 8px;
+  font-family: var(--body);
+  font-size: 1.05rem;
+  font-weight: 300;
+  color: var(--sub);
+}
+
+.ns-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.ns-item {
+  display: grid;
+  grid-template-columns: clamp(64px, 8vw, 90px) 1fr auto;
+  align-items: start;
+  gap: clamp(16px, 2.6vw, 32px);
+  padding: clamp(20px, 2.6vw, 26px) 0;
+  border-bottom: 1px solid var(--rule);
+  text-decoration: none;
+  color: inherit;
+  transition: padding-left .2s ease, background .2s ease;
+}
+.ns-item:first-child { border-top: 1px solid var(--rule); }
+
+.ns-item--link {
+  cursor: pointer;
+}
+.ns-item--link:hover,
+.ns-item--link:focus-visible {
+  padding-left: 10px;
+  background: rgba(var(--accent-rgb), .04);
+}
+
+.ns-date {
+  font-family: var(--body);
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--muted);
+  padding-top: 2px;
+}
+
+.ns-body { min-width: 0; }
+
+.ns-tag {
+  display: inline-block;
+  font-family: var(--body);
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--accent);
+  background: rgba(var(--accent-rgb), .08);
+  border: 1px solid rgba(var(--accent-rgb), .18);
+  border-radius: 100px;
+  padding: 3px 11px;
+  margin-bottom: 8px;
+}
+
+.ns-title {
+  font-family: var(--body);
+  font-weight: 600;
+  font-size: clamp(1.05rem, 1.6vw, 1.2rem);
+  line-height: 1.35;
+  color: var(--ink);
+}
+
+.ns-desc {
+  margin-top: 4px;
+  font-family: var(--body);
+  font-weight: 300;
+  font-size: 1rem;
+  line-height: 1.55;
+  color: var(--sub);
+}
+
+.ns-arrow {
+  font-size: 1.2rem;
+  color: var(--muted);
+  padding-top: 4px;
+  transition: color .2s ease, transform .2s ease;
+}
+.ns-item--link:hover .ns-arrow,
+.ns-item--link:focus-visible .ns-arrow {
+  color: var(--accent);
+  transform: translate(2px, -2px);
+}
+
+@media (max-width: 640px) {
+  .ns-item {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+  .ns-arrow { justify-self: flex-end; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ns-item { transition: none; }
+  .ns-item--link:hover { padding-left: 0; }
+  .ns-arrow { transition: none; }
+  .ns-item--link:hover .ns-arrow { transform: none; }
+}

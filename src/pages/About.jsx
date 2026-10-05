@@ -3,6 +3,7 @@ import { PROJECTS } from './projectData'
 import { SOCIALS } from '../data/socials'
 import SocialIcon from '../components/SocialIcon'
 import WorksTimeline from '../components/WorksTimeline'
+import NewsSection from '../components/NewsSection'
 import './About.css'
 
 const PH = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300'%3E%3Crect fill='%23d8d8d8' width='400' height='300'/%3E%3C/svg%3E"
@@ -108,6 +109,10 @@ export default function About() {
           see src/components/WorksTimeline.jsx. RESEARCH (removed above)
           was placeholder data; this pulls only from real PROJECTS. */}
       <WorksTimeline projects={PROJECTS} />
+
+      {/* Admissions, openings, talks, recent work -- see
+          src/data/newsData.js to add/edit entries. */}
+      <NewsSection />
     </div>
   )
 }
