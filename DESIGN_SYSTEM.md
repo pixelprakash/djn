@@ -198,3 +198,34 @@ from it should keep steering future copy decisions:
 - **Audience**: students and designers are primary; academics/researchers
   secondary; general public/gallerists occasional. When in doubt about
   which reader a piece of copy is for, write for a student first.
+
+## Accessibility (target: WCAG 2.2 Level AA)
+
+Conventions every page and component follows -- keep them when adding to the site:
+
+- **Every page sets its title** with `usePageTitle('Page name')` (`src/hooks/usePageTitle.js`).
+  Detail pages pass their own name (project, article, CV section).
+- **Page changes are announced.** `PageTransition` fires `route-shown` after each swap;
+  `RouteAnnouncer` (App.jsx) reads the new title in a live region and focuses `#main-content`.
+  Only one `<main>` per page -- it lives in App.jsx, never in a page.
+- **Tabs use the real tabs pattern** (`role=tablist/tab/tabpanel`, roving tabindex, arrow keys):
+  see Work.jsx. `aria-selected` is invalid on plain buttons.
+- **Modals are real dialogs** (`role=dialog`, `aria-modal`, focus in on open, Tab kept inside,
+  Escape closes, focus returned to the opener): see `Slideshow` in PhotoGallery.jsx. They sit above
+  the navbar (z-index 99999).
+- **Forms:** a visible `<label>` per field, `autoComplete` where it applies, validation messages
+  tied to fields with `aria-describedby` + `aria-invalid`, focus moved to the first problem
+  (Contact.jsx). Field borders must be >= 3:1 (`#86817a`), placeholders >= 4.5:1.
+- **Target size:** >= 24px always, 44px on touch / <= 860px (`src/styles/a11y.css`). Add new small
+  links/buttons to that list.
+- **Text:** nothing under 14px; body copy >= 1.05rem; `--muted` is #534e48 (7.4:1).
+- **Motion:** respect `prefers-reduced-motion` (intro, page transitions, stacking and the Lab strip
+  all switch off); anything that moves by itself for more than 5s can be paused or skipped
+  (the intro has a "Skip intro" button and Escape).
+- **Focus is never hidden:** `#root` has `scroll-padding-top` for the fixed navbar and pinned tabs.
+- **Names:** an accessible name must contain the visible text (e.g. "Slide Show", not an unrelated
+  aria-label).
+
+**How to test:** `npm install --no-save axe-core`, then in the browser load
+`/node_modules/axe-core/axe.min.js` on a page (after skipping the intro) and run
+`axe.run(document, {runOnly: {type: 'tag', values: ['wcag2a','wcag2aa','wcag21aa','wcag22aa']}})`.

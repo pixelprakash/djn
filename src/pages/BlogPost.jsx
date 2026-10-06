@@ -5,6 +5,7 @@ import { BLOG_POSTS } from './blogData'
 import { useCms, POSTS_QUERY, mapPosts } from '../lib/cms'
 import Reveal from '../components/Reveal'
 import { Slideshow, PhotoGrid } from '../components/PhotoGallery'
+import usePageTitle from '../hooks/usePageTitle'
 import './BlogPost.css'
 
 // Body text from Sanity is rich text: paragraphs (rendered with the page's
@@ -32,6 +33,7 @@ export default function BlogPost() {
 
   const idx  = posts.findIndex(p => p.slug === slug)
   const post = posts[idx]
+  usePageTitle(post ? post.title : 'Blogs')
   const prevP = idx > 0 ? posts[idx - 1] : null
   const nextP = idx >= 0 && idx < posts.length - 1 ? posts[idx + 1] : null
 
@@ -159,6 +161,7 @@ export default function BlogPost() {
         <Reveal as="section" className="bp-gallery-sec" aria-label="More photographs">
           <p className="bp-gallery-label">More from this post &mdash; {gallery.length} photo{gallery.length === 1 ? '' : 's'}</p>
           <PhotoGrid
+            label={post.title}
             images={gallery}
             onOpen={i => setSlideshow({ images: gallery, startIdx: i })}
           />

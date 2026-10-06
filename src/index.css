@@ -52,6 +52,24 @@ textarea:focus-visible,
   outline-offset: 2px;
 }
 
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  margin: -1px; padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+/* main is focused programmatically after a page change (RouteAnnouncer);
+   it is not a control, so it gets no outline. */
+#main-content:focus { outline: none; }
+
+/* WCAG 2.4.11 Focus Not Obscured: the page scrolls inside #root, under a fixed
+   navbar (65px) and, on Work, a pinned tab bar. Keep focused controls clear
+   of both when the browser scrolls them into view. */
+#root { scroll-padding-top: 140px; scroll-padding-bottom: 24px; }
+
 .skip-link {
   position: fixed;
   top: -100%;

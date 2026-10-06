@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import gsap from 'gsap'
 import ShutterBlades from './ShutterBlades'
 import { applyShutter, makeShutterRefs, shutterRegistrar } from '../utils/shutter'
@@ -134,6 +135,7 @@ export default function IntroLoader() {
   const fillRef = useRef(null)
   const meterRef = useRef(null)
   const shutterRefs = useRef(makeShutterRefs())
+  const tlRef = useRef(null)
   const veilRefs = useRef([])
   const markerRef = useRef(null)
   const [visible, setVisible] = useState(
@@ -190,7 +192,7 @@ export default function IntroLoader() {
         // Which way each corner travels in from (toward the centre).
         const IN = [[1, 1], [-1, 1], [1, -1], [-1, -1]]
 
-        const tl = gsap.timeline({ onComplete: () => { setVisible(false); removeUnlock(); if (snd) setTimeout(snd.close, 800) } })
+        const tl = tlRef.current = gsap.timeline({ onComplete: () => { setVisible(false); removeUnlock(); if (snd) setTimeout(snd.close, 800) } })
 
         // 1 -- The frame finds its edges: brackets slide out to the
         // corners, the thirds grid draws from the centre.
@@ -270,9 +272,32 @@ export default function IntroLoader() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  // The intro is decorative and can run past 5 seconds on a slow connection
+  // (WCAG 2.2.2): anyone can skip it with the button, or with Escape.
+  const skip = () => {
+    const tl = tlRef.current
+    if (tl) tl.progress(1, false) // false: still run onComplete, which unmounts it
+    else setVisible(false)
+  }
+
+  // While it covers the page, nothing behind it can take keyboard focus (focus
+  // would otherwise land on controls nobody can see: WCAG 2.4.3 / 2.4.7).
+  useEffect(() => {
+    if (!visible) return
+    const behind = [...document.querySelectorAll('.tn, #main-content, footer, .skip-link')]
+    behind.forEach(el => { el.inert = true })
+    const onKey = e => { if (e.key === 'Escape') skip() }
+    window.addEventListener('keydown', onKey)
+    return () => {
+      behind.forEach(el => { el.inert = false })
+      window.removeEventListener('keydown', onKey)
+    }
+  }, [visible])
+
   if (!visible) return null
 
   return (
+    <>
     <div className="il" ref={rootRef} aria-hidden="true">
       {/* Shutter blades: the ink surface itself. Edges and sheen stay
           invisible until the blades start to part. */}
@@ -334,5 +359,10 @@ export default function IntroLoader() {
       </div>
 
     </div>
+    {createPortal(
+      <button type="button" className="il-skip" onClick={skip}>Skip intro</button>,
+      document.body
+    )}
+    </>
   )
 }

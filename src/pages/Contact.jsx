@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react'
 import PageHero from '../components/PageHero'
+import usePageTitle from '../hooks/usePageTitle'
 import useStackedLayers from '../hooks/useStackedLayers'
 import './Contact.css'
 
@@ -19,18 +20,51 @@ const links = [
 
 const MAP_URL = 'https://www.google.com/maps/search/?api=1&query=Indian+Institute+of+Technology+Hyderabad+Kandi+Sangareddy'
 
+const FIELD_ORDER = ['firstName', 'lastName', 'email', 'subject', 'message']
 const EMPTY = { firstName: '', lastName: '', email: '', subject: '', message: '' }
 
+function FieldError({ id, message }) {
+  return message ? <p className="form-field-error" id={`${id}-error`}>{message}</p> : null
+}
+
 export default function Contact() {
+  usePageTitle('Contact')
   const pageRef = useRef(null)
   useStackedLayers(pageRef)
   const [form, setForm]     = useState(EMPTY)
   const [status, setStatus] = useState('idle') // idle | sending | success | error
+  const [errors, setErrors] = useState({})       // field name -> message
 
-  const change = e => setForm(prev => ({ ...prev, [e.target.name]: e.target.value }))
+  const change = e => {
+    const { name, value } = e.target
+    setForm(prev => ({ ...prev, [name]: value }))
+    // clear that field's message as soon as it is being corrected
+    setErrors(prev => (prev[name] ? { ...prev, [name]: undefined } : prev))
+  }
+
+  // WCAG 3.3.1 / 3.3.3: say which fields are wrong and how to fix them, tie
+  // each message to its field, and put focus on the first problem.
+  const validate = () => {
+    const e = {}
+    if (!form.firstName.trim()) e.firstName = 'Please enter your first name.'
+    if (!form.lastName.trim())  e.lastName  = 'Please enter your last name.'
+    if (!form.email.trim())     e.email     = 'Please enter your email address.'
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim())) e.email = 'Please enter a valid email address, like name@example.com.'
+    if (!form.subject.trim())   e.subject   = 'Please enter a subject.'
+    if (!form.message.trim())   e.message   = 'Please write a message.'
+    return e
+  }
 
   const submit = async e => {
     e.preventDefault()
+    const found = validate()
+    setErrors(found)
+    const first = FIELD_ORDER.find(f => found[f])
+    if (first) {
+      setStatus('idle')
+      document.getElementById(first)?.focus()
+      return
+    }
     setStatus('sending')
     try {
       const res = await fetch(FORM_ENDPOINT, {
@@ -53,6 +87,15 @@ export default function Contact() {
       setStatus('error')
     }
   }
+
+  const errorCount = Object.values(errors).filter(Boolean).length
+  const errorSummary = errorCount > 0
+  // aria attributes that tie a field to its message
+  const fieldA11y = name => ({
+    'aria-required': true,
+    'aria-invalid': errors[name] ? true : undefined,
+    'aria-describedby': errors[name] ? `${name}-error` : undefined,
+  })
 
   return (
     <div className="contact-page" ref={pageRef}>
@@ -84,30 +127,41 @@ export default function Contact() {
             ) : (
               <form onSubmit={submit} className="contact-form" noValidate>
 
+                {errorSummary && (
+                  <p className="form-error form-error--summary" role="alert">
+                    Please fix {errorCount} {errorCount === 1 ? 'field' : 'fields'} below.
+                  </p>
+                )}
+
                 <div className="form-row">
                   <div className="form-group">
                     <label className="form-label" htmlFor="firstName">First name <span aria-hidden="true">*</span></label>
-                    <input id="firstName" type="text" name="firstName" value={form.firstName} onChange={change} required autoComplete="given-name" className="form-input" placeholder="Deepak" />
+                    <input id="firstName" type="text" name="firstName" value={form.firstName} onChange={change} required autoComplete="given-name" className="form-input" placeholder="Deepak" {...fieldA11y('firstName')} />
+                    <FieldError id="firstName" message={errors.firstName} />
                   </div>
                   <div className="form-group">
                     <label className="form-label" htmlFor="lastName">Last name <span aria-hidden="true">*</span></label>
-                    <input id="lastName" type="text" name="lastName" value={form.lastName} onChange={change} required autoComplete="family-name" className="form-input" placeholder="Mathew" />
+                    <input id="lastName" type="text" name="lastName" value={form.lastName} onChange={change} required autoComplete="family-name" className="form-input" placeholder="Mathew" {...fieldA11y('lastName')} />
+                    <FieldError id="lastName" message={errors.lastName} />
                   </div>
                 </div>
 
                 <div className="form-group">
                   <label className="form-label" htmlFor="email">Email address <span aria-hidden="true">*</span></label>
-                  <input id="email" type="email" name="email" value={form.email} onChange={change} required autoComplete="email" className="form-input" placeholder="you@example.com" />
+                  <input id="email" type="email" name="email" value={form.email} onChange={change} required autoComplete="email" className="form-input" placeholder="you@example.com" {...fieldA11y('email')} />
+                  <FieldError id="email" message={errors.email} />
                 </div>
 
                 <div className="form-group">
                   <label className="form-label" htmlFor="subject">Subject <span aria-hidden="true">*</span></label>
-                  <input id="subject" type="text" name="subject" value={form.subject} onChange={change} required className="form-input" placeholder="e.g. Research collaboration" />
+                  <input id="subject" type="text" name="subject" value={form.subject} onChange={change} required className="form-input" placeholder="e.g. Research collaboration" {...fieldA11y('subject')} />
+                  <FieldError id="subject" message={errors.subject} />
                 </div>
 
                 <div className="form-group">
                   <label className="form-label" htmlFor="message">Message <span aria-hidden="true">*</span></label>
-                  <textarea id="message" name="message" value={form.message} onChange={change} required className="form-input form-textarea" placeholder="What would you like to discuss?" rows={6} />
+                  <textarea id="message" name="message" value={form.message} onChange={change} required className="form-input form-textarea" placeholder="What would you like to discuss?" rows={6} {...fieldA11y('message')} />
+                  <FieldError id="message" message={errors.message} />
                 </div>
 
                 {status === 'error' && (

@@ -8,6 +8,8 @@ export function Slideshow({ images, startIdx, onClose }) {
   const [idx, setIdx] = useState(startIdx)
   const total     = images.length
   const stripRef  = useRef(null)
+  const dialogRef = useRef(null)
+  const closeRef  = useRef(null)
 
   const prev = useCallback(() => setIdx(i => (i - 1 + total) % total), [total])
   const next = useCallback(() => setIdx(i => (i + 1) % total), [total])
@@ -17,10 +19,27 @@ export function Slideshow({ images, startIdx, onClose }) {
       if (e.key === 'ArrowLeft')  prev()
       if (e.key === 'ArrowRight') next()
       if (e.key === 'Escape')     onClose()
+      // Keep Tab inside the dialog (WCAG 2.4.3): wrap at either end.
+      if (e.key === 'Tab' && dialogRef.current) {
+        const items = [...dialogRef.current.querySelectorAll('button')].filter(b => b.offsetParent !== null || b === document.activeElement)
+        if (!items.length) return
+        const first = items[0], last = items[items.length - 1]
+        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus() }
+        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus() }
+        else if (!dialogRef.current.contains(document.activeElement)) { e.preventDefault(); first.focus() }
+      }
     }
     window.addEventListener('keydown', k)
     return () => window.removeEventListener('keydown', k)
   }, [prev, next, onClose])
+
+  // Focus moves into the dialog when it opens and returns to whatever opened
+  // it when it closes.
+  useEffect(() => {
+    const opener = document.activeElement
+    if (closeRef.current) closeRef.current.focus({ preventScroll: true })
+    return () => { if (opener && opener.focus) opener.focus({ preventScroll: true }) }
+  }, [])
 
   useEffect(() => {
     const strip = stripRef.current
@@ -43,16 +62,23 @@ export function Slideshow({ images, startIdx, onClose }) {
 
   return (
     <div className="ss-bg" onClick={onClose}>
-      <div className="ss-wrap" onClick={e => e.stopPropagation()}>
+      <div
+        className="ss-wrap"
+        ref={dialogRef}
+        role="dialog"
+        aria-modal="true"
+        aria-label={`Photo viewer, photo ${idx + 1} of ${total}`}
+        onClick={e => e.stopPropagation()}
+      >
 
-        <button className="ss-x" onClick={onClose} aria-label="Close slideshow">✕</button>
+        <button className="ss-x" ref={closeRef} onClick={onClose} aria-label="Close slideshow">✕</button>
 
         <div className="ss-stage">
           <button className="ss-btn ss-btn--prev" onClick={prev} aria-label="Previous photo">‹</button>
           <img
             key={idx}
             src={images[idx]}
-            alt=""
+            alt={`Photograph ${idx + 1} of ${total}`}
             className="ss-photo"
             loading="eager"
             decoding="async"
@@ -61,7 +87,7 @@ export function Slideshow({ images, startIdx, onClose }) {
         </div>
 
         <div className="ss-foot">
-          <span className="ss-idx">
+          <span className="ss-idx" aria-hidden="true">
             {String(idx + 1).padStart(2,'0')}
             <span style={{margin:'0 5px',opacity:.25}}>/</span>
             {String(total).padStart(2,'0')}
@@ -84,7 +110,7 @@ export function Slideshow({ images, startIdx, onClose }) {
   )
 }
 
-export function PhotoGrid({ images, onOpen }) {
+export function PhotoGrid({ images, onOpen, label }) {
   const variant =
     images.length === 1 ? 'pg-1' :
     images.length === 2 ? 'pg-2' :
@@ -100,7 +126,7 @@ export function PhotoGrid({ images, onOpen }) {
           onClick={() => onOpen(i)}
           role="button"
           tabIndex={0}
-          aria-label={`Open photo ${i + 1}`}
+          aria-label={`Open photo ${i + 1} of ${images.length}${label ? ` from ${label}` : ''}`}
           onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onOpen(i) } }}
         >
           <img src={src} alt="" loading="lazy" decoding="async" />

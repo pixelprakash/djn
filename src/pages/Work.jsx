@@ -4,10 +4,18 @@ import { SPONSORED, SOLO_SHOWS, EXHIBITIONS } from './exhibitionData'
 import { useRef, useState } from 'react'
 import Reveal from '../components/Reveal'
 import PageHero from '../components/PageHero'
+import usePageTitle from '../hooks/usePageTitle'
 import useStackedLayers from '../hooks/useStackedLayers'
 import './Work.css'
 
+const TABS = [
+  ['projects',    'Photography Projects'],
+  ['sponsored',   'Sponsored Projects'],
+  ['exhibitions', 'Exhibitions'],
+]
+
 export default function Work() {
+  usePageTitle('Work')
   const [tab, setTab] = useState('projects')
   const pageRef = useRef(null)
   useStackedLayers(pageRef)
@@ -17,6 +25,20 @@ export default function Work() {
   // can switch category from anywhere. Switching swaps in a list of a different
   // length, so if they are scrolled down, bring the new list back to its start
   // (just under the pinned tabs) instead of leaving them mid-way or past the end.
+  // Arrow keys / Home / End move between tabs (WAI-ARIA tabs pattern).
+  const onTabKey = e => {
+    const i = TABS.findIndex(([id]) => id === tab)
+    let n = -1
+    if (e.key === 'ArrowRight') n = (i + 1) % TABS.length
+    else if (e.key === 'ArrowLeft') n = (i - 1 + TABS.length) % TABS.length
+    else if (e.key === 'Home') n = 0
+    else if (e.key === 'End') n = TABS.length - 1
+    if (n < 0) return
+    e.preventDefault()
+    chooseTab(TABS[n][0])
+    document.getElementById(`tab-${TABS[n][0]}`)?.focus()
+  }
+
   const chooseTab = id => {
     setTab(id)
     const root = document.getElementById('root')
@@ -40,25 +62,26 @@ export default function Work() {
       <div className="wp-sheet-top" ref={sheetTop} aria-hidden="true" />
 
       {/* -- TABS -- */}
-      <nav className="tab-nav" aria-label="Work sections">
-        {[
-          ['projects',    'Photography Projects'],
-          ['sponsored',   'Sponsored Projects'],
-          ['exhibitions', 'Exhibitions'],
-        ].map(([id, label]) => (
+      <div className="tab-nav" role="tablist" aria-label="Work sections" onKeyDown={onTabKey}>
+        {TABS.map(([id, label]) => (
           <button
             key={id}
+            id={`tab-${id}`}
+            type="button"
+            role="tab"
             className={`tab-btn${tab === id ? ' active' : ''}`}
-            onClick={() => chooseTab(id)}
             aria-selected={tab === id}
+            aria-controls="work-panel"
+            tabIndex={tab === id ? 0 : -1}
+            onClick={() => chooseTab(id)}
           >
             {label}
           </button>
         ))}
-      </nav>
+      </div>
 
       {/* -- TAB BODY -- */}
-      <div className="wp-body">
+      <div className="wp-body" id="work-panel" role="tabpanel" aria-labelledby={`tab-${tab}`}>
 
         {tab === 'projects' && (
           <div className="proj-list">

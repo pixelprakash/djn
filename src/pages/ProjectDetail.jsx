@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import { PROJECTS } from './projectData'
 import Reveal from '../components/Reveal'
 import { Slideshow, PhotoGrid } from '../components/PhotoGallery'
+import usePageTitle from '../hooks/usePageTitle'
 import './ProjectDetail.css'
 
 /* ═══════════════════════════════════════════
@@ -54,6 +55,7 @@ export default function ProjectDetail() {
   /* Find project */
   const pIdx   = PROJECTS.findIndex(p => p.slug === slug)
   const project = PROJECTS[pIdx]
+  usePageTitle(project ? project.title : 'Work')
   const prevP   = pIdx > 0 ? PROJECTS[pIdx - 1] : null
   const nextP   = pIdx < PROJECTS.length - 1 ? PROJECTS[pIdx + 1] : null
 
@@ -87,22 +89,22 @@ export default function ProjectDetail() {
     return () => root.removeEventListener('scroll', fn)
   }, [])
 
-  if (!project) return (
-    <div className="pd-404">
-      Project not found. <Link to="/work">← Back to Work</Link>
-    </div>
-  )
-
   // Hide TopNav on project detail for clean viewing
   useEffect(() => {
     document.documentElement.classList.add('hide-topnav')
     return () => document.documentElement.classList.remove('hide-topnav')
   }, [])
 
+  if (!project) return (
+    <div className="pd-404">
+      Project not found. <Link to="/work">← Back to Work</Link>
+    </div>
+  )
+
   return (
     <div className="pd">
       {/* ── TOP NAV BAR ── */}
-      <header className={`pd-bar${stuck ? ' stuck' : ''}`} role="navigation">
+      <header className={`pd-bar${stuck ? ' stuck' : ''}`}>
         {/* Back */}
         <button
           className="pd-back"
@@ -130,7 +132,6 @@ export default function ProjectDetail() {
         <button
           className="pd-ss-btn"
           onClick={() => setSlideshow({ images: allImages, startIdx: 0 })}
-          aria-label="Open full slideshow"
         >
           <span className="pd-ss-dot">
             <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor">
@@ -160,7 +161,7 @@ export default function ProjectDetail() {
       </section>
 
       {/* ── EDITORIAL SECTIONS ── */}
-      <main className="pd-body">
+      <div className="pd-body">
         {project.sections.map((sec, si) => (
           <Reveal
             as="article"
@@ -177,6 +178,7 @@ export default function ProjectDetail() {
 
             {/* Photo grid */}
             <PhotoGrid
+              label={project.title}
               images={sec.images}
               onOpen={i => setSlideshow({ images: sec.images, startIdx: i })}
             />
@@ -187,7 +189,7 @@ export default function ProjectDetail() {
             )}
           </Reveal>
         ))}
-      </main>
+      </div>
 
       {/* ── PREV / NEXT ── */}
       <Reveal as="nav" className="pd-pn" aria-label="Adjacent projects">

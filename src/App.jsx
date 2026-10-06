@@ -154,6 +154,8 @@ function PageTransition() {
     shownRef.current = next
     flushSync(() => setShown(next))
     document.getElementById('root')?.scrollTo({ top: 0 })
+    // Tell assistive technology the page changed (see RouteAnnouncer).
+    window.dispatchEvent(new Event('route-shown'))
   }
 
   // Re-pointed every render so the timeline's callbacks (below) never
@@ -309,6 +311,29 @@ function PageTransition() {
   )
 }
 
+/* WCAG 2.4.3 / 4.1.3: in a single-page app the browser does not announce a
+   navigation. After each page swap this announces the new page's title in a
+   live region and moves focus to the main landmark, so a screen-reader or
+   keyboard user lands at the top of the new content instead of staying on a
+   link from the previous page. (Not on the first load: nothing changed.) */
+function RouteAnnouncer() {
+  const [msg, setMsg] = useState('')
+  useEffect(() => {
+    let t
+    const onShown = () => {
+      clearTimeout(t)
+      t = setTimeout(() => {
+        setMsg(document.title)
+        const main = document.getElementById('main-content')
+        if (main) main.focus({ preventScroll: true })
+      }, 200)
+    }
+    window.addEventListener('route-shown', onShown)
+    return () => { window.removeEventListener('route-shown', onShown); clearTimeout(t) }
+  }, [])
+  return <div className="sr-only" role="status" aria-live="polite" aria-atomic="true">{msg}</div>
+}
+
 // Warms every other route's chunk once the browser is idle, so clicking any
 // nav link is instant afterwards — not just when a hover happened to fire
 // preloadForPath first (e.g. touch devices, or a click too fast to hover).
@@ -329,6 +354,7 @@ function App() {
       <a href="#main-content" className="skip-link">Skip to main content</a>
 
       <IdlePreload />
+      <RouteAnnouncer />
       <CustomCursor />
       <TopNav />
       <div className="tn-offset" aria-hidden="true" />

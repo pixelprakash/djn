@@ -1,0 +1,39 @@
+/* Accessibility overrides that apply across pages (WCAG 2.2 AA). Loaded last,
+   with `:root` in front of each selector so they win over page stylesheets
+   regardless of load order. */
+
+/* ── Target size (2.5.8 Target Size, AA: at least 24 x 24 CSS px; on touch we
+   go to the 44px that fingers actually need). Links that were plain text were
+   as short as 21px. ── */
+:root :is(.ft-link, .ft-logo, .wt-viewall, .contact-maplink, .pc-link, .pc-more, .bp-back, .pd-back) {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+}
+@media (pointer: coarse), (max-width: 860px) {
+  :root :is(
+    .ft-link, .ft-logo, .wt-viewall, .contact-maplink, .pc-link, .pc-more,
+    .bp-back, .pd-back, .tn-logo, .tn-cta, .bl-filter-btn, .cvp-jump-link,
+    .r-links a, .r-profile-links a, .ns-more, .tab-btn, .bp-btn, .cta-primary
+  ) {
+    min-height: 44px;
+  }
+  :root :is(.r-links a, .r-profile-links a, .bl-filter-btn, .cvp-jump-link, .ns-more) {
+    display: inline-flex;
+    align-items: center;
+  }
+  :root .ft-social { width: 44px; height: 44px; }
+  :root .tn-burger { width: 44px; height: 44px; }
+}
+
+/* ── Small text: the category tag was 13px ── */
+:root .ns .ns-tag { font-size: 0.875rem; }
+
+/* ── 2.2.2 Pause, Stop, Hide: the Lab page's strip scrolls by itself for 100s.
+   It pauses while hovered or while anything inside has focus, and does not
+   move at all for visitors who ask for reduced motion. ── */
+:root .lab-slider:focus-within { animation-play-state: paused; }
+@media (prefers-reduced-motion: reduce) {
+  :root .lab-slider { animation: none; }
+  :root .lab-slider-wrap { overflow-x: auto; }
+}

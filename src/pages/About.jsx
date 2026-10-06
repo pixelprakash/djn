@@ -5,6 +5,7 @@ import SocialIcon from '../components/SocialIcon'
 import WorksTimeline from '../components/WorksTimeline'
 import NewsSection from '../components/NewsSection'
 import Portrait from '../components/Portrait'
+import usePageTitle from '../hooks/usePageTitle'
 import './About.css'
 
 const PH = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300'%3E%3Crect fill='%23d8d8d8' width='400' height='300'/%3E%3C/svg%3E"
@@ -41,6 +42,7 @@ function MotionLink({ href, label }) {
 }
 
 export default function About() {
+  usePageTitle()
   return (
     <div className="hp">
       <header className="hp-hero">

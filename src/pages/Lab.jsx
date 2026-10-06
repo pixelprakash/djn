@@ -1,6 +1,7 @@
 import { useState, useCallback, useRef, useEffect } from 'react'
 import Reveal from '../components/Reveal'
 import CountUp from '../components/CountUp'
+import usePageTitle from '../hooks/usePageTitle'
 import './Lab.css'
 
 /* ── Data ── */
@@ -157,7 +158,7 @@ function VideoCard({ videoId, title }) {
     <div className="lab-video" role="button" tabIndex={0} aria-label={'Play video: ' + title} onClick={play} onKeyDown={function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); play() } }}>
       <img
         src={'https://img.youtube.com/vi/' + videoId + '/maxresdefault.jpg'}
-        alt={title}
+        alt=""
         loading="lazy"
         className="lab-video-thumb"
         onLoad={function () { setLoaded(true) }}
@@ -176,6 +177,7 @@ function VideoCard({ videoId, title }) {
 
 /* ── Main ── */
 export default function Lab() {
+  usePageTitle('DIC Lab')
   return (
     <div className="lab">
 

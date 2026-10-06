@@ -72,7 +72,7 @@ export default function PostCard({ post }) {
               type="button"
               className="pc-cell"
               onClick={() => setSlide({ startIdx: i })}
-              aria-label={`Open photo ${i + 1} of ${post.images.length}`}
+              aria-label={`Open photo ${i + 1} of ${post.images.length}${extra > 0 && i === shown.length - 1 ? ` (+${extra} more)` : ''}`}
             >
               <img src={img.thumb} alt={img.alt} loading="lazy" decoding="async" />
               {extra > 0 && i === shown.length - 1 && (
