@@ -9,51 +9,8 @@
   color: var(--ink);
   padding-bottom: var(--nav-safe);
   width: 100%;
-  overflow-x: hidden;
-}
-
-/* =============================================
-   HEADER
-============================================= */
-.bl-head {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  min-height: var(--hero-h);
-  padding: clamp(32px, 4vw, 48px) var(--g);
-  border-bottom: 1.5px solid var(--ink);
-  animation: fadeUp .5s ease both;
-}
-
-.bl-head-left {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-/* Title -- Literata sitewide now (see About.css for the original trial);
-   --title-tracking (-5px) was tuned for DM Sans and is far too tight for
-   a serif, eased to -0.01em like every other Literata heading. */
-.bl-title {
-  font-family: 'Literata', var(--serif);
-  font-size: var(--fs-h1);
-  font-weight: 400;
-  line-height: 1.0;
-  letter-spacing: -0.01em;
-  color: var(--ink);
-  animation: titleReveal .7s cubic-bezier(.16,1,.3,1) .08s both;
-}
-
-/* Subtitle -- wraps naturally rather than a fixed single line + ellipsis:
-   now that the stat panel shares the header row, the space left for this
-   text varies with viewport width, so a hard nowrap was liable to clip
-   mid-sentence at in-between widths. */
-.bl-sub {
-  font-family: var(--body);
-  font-size: var(--fs-subtitle);
-  font-weight: 400;
-  color: var(--sub);
-  line-height: 1.4;
+  overflow-x: clip;
+  isolation: isolate;
 }
 
 /* ==========================================
@@ -404,20 +361,14 @@
 }
 
 @media (max-width: 860px) {
-  /* --hero-h assumes a desktop-height hero; centering short header
-     content inside it left a large empty band above the title. */
-  .bl-head { min-height: 0; }
-  .bl-featured {
+    .bl-featured {
     grid-template-columns: 1fr;
   }
   .bl-featured-img { min-height: clamp(220px, 40vw, 320px); }
-  .bl-sub { font-size: 1rem; }
 }
 
 @media (max-width: 640px) {
   .bl-grid { grid-template-columns: 1fr; }
-  .bl-title { font-size: var(--fs-h1-sm); }
-  .bl-sub { font-size: 1rem; }
   .bl-banner { flex-direction: column; align-items: flex-start; }
   .bl-banner-arrow { display: none; }
   .bl-external { margin-left: 0; }
@@ -425,4 +376,87 @@
 @media (prefers-reduced-motion: reduce) {
   .bl-card, .bl-featured { transition: none; }
   .bl-card:hover, .bl-featured:hover { transform: none; }
+}
+
+/* ==========================================
+   FROM LINKEDIN -- short-update feed (PostCard)
+========================================== */
+.bl-feed {
+  padding: clamp(36px, 4.5vw, 60px) var(--g) 0;
+}
+.bl-feed-head {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 6px 20px;
+  margin-bottom: clamp(20px, 2.6vw, 32px);
+}
+.bl-section-title {
+  font-family: 'Literata', var(--serif);
+  font-weight: 400;
+  font-size: clamp(1.5rem, 2.6vw, 2rem);
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+.bl-section-title--articles { padding: clamp(40px, 5vw, 64px) var(--g) 0; }
+.bl-feed-sub { font-family: var(--body); font-size: 1rem; color: var(--sub); }
+.bl-feed-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 680px) minmax(260px, 360px);
+  justify-content: space-between;
+  align-items: start;
+  gap: clamp(28px, 5vw, 80px);
+}
+.bl-feed-list { display: flex; flex-direction: column; gap: clamp(18px, 2.4vw, 28px); min-width: 0; }
+
+/* Follow panel -- a card per the site's card pattern (resting shadow). */
+.bl-follow {
+  position: sticky;
+  top: 96px;
+  background: #fff;
+  border: 1px solid rgba(26,24,20,.08);
+  border-radius: var(--radius-lg);
+  padding: clamp(20px, 2.2vw, 28px);
+  box-shadow: 0 1px 2px rgba(26,24,20,.06), 0 8px 24px rgba(26,24,20,.08);
+}
+.bl-follow-title {
+  font-family: 'Literata', var(--serif);
+  font-size: 1.3rem;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  margin-bottom: 8px;
+}
+.bl-follow-text {
+  font-family: var(--body);
+  font-size: 1.05rem;
+  line-height: 1.55;
+  color: var(--sub);
+  margin-bottom: 18px;
+}
+.bl-follow-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--body);
+  font-size: 1rem;
+  font-weight: 600;
+  color: #fff;
+  background: var(--accent);
+  border-radius: 100px;
+  padding: 10px 22px;
+  text-decoration: none;
+  transition: background .2s, transform .25s cubic-bezier(.34,1.56,.64,1);
+}
+.bl-follow-btn:hover { background: #164a70; transform: translateY(-2px); }
+.bl-follow-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+@media (max-width: 1000px) {
+  .bl-feed-grid { grid-template-columns: minmax(0, 1fr); }
+  .bl-follow { position: static; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bl-follow-btn { transition: none; }
+  .bl-follow-btn:hover { transform: none; }
 }

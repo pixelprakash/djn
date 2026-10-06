@@ -20,40 +20,20 @@
 .bp-missing a:hover { text-decoration: underline; }
 
 /* ==========================================
-   COVER
+   HERO -- a tinted title band (the same family as the page heroes), with the
+   cover photograph straddling its lower edge: title and image stack, so the
+   band is never split into a left half and a right half.
 ========================================== */
-.bp-hero {
-  position: relative;
-  width: 100%;
-  height: clamp(260px, 44vw, 560px);
-  overflow: hidden;
-  background: var(--rule);
+.bp-band {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: clamp(36px, 5vw, 64px) var(--g) clamp(40px, 5vw, 64px);
+  background: linear-gradient(180deg, #e8eef3 0%, #dce6ee 100%);
+  border-bottom: 1.5px solid var(--ink);
 }
-.bp-hero-img {
-  width: 100%; height: 100%;
-  object-fit: cover;
-  display: block;
-  animation: bpKen 10s ease forwards;
-}
-@keyframes bpKen {
-  from { transform: scale(1.06); }
-  to   { transform: scale(1.0); }
-}
-.bp-hero-grad {
-  position: absolute; inset: 0;
-  background: linear-gradient(to top, rgba(26,24,20,.14) 0%, transparent 32%);
-  pointer-events: none;
-}
-
-/* ==========================================
-   BODY
-========================================== */
-/* Gutter-padded, not margin:auto-centered -- see the same fix/reasoning
-   on .cvp-inner in CvPage.css. */
-.bp-inner {
-  max-width: 820px;
-  padding: clamp(32px, 5vw, 52px) var(--g) 0;
-}
+/* With a cover, the band is padded further so the photo can overlap it. */
+.bp-hero--cover .bp-band { padding-bottom: clamp(110px, 13vw, 190px); }
 
 .bp-back {
   display: inline-flex;
@@ -66,7 +46,7 @@
   text-transform: uppercase;
   color: var(--muted);
   text-decoration: none;
-  margin-bottom: clamp(20px, 3vw, 32px);
+  margin-bottom: clamp(24px, 3.4vw, 40px);
   transition: color .2s ease, gap .2s ease;
   animation: bpFade .5s ease both;
 }
@@ -75,11 +55,11 @@
 .bp-meta {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 14px;
+  flex-wrap: wrap;
+  gap: 10px 14px;
+  margin-bottom: 18px;
   animation: bpFade .5s ease .04s both;
 }
-
 .bp-tag {
   font-family: var(--body);
   font-size: 1rem;
@@ -87,45 +67,100 @@
   letter-spacing: .04em;
   text-transform: uppercase;
   color: var(--accent);
-  background: rgba(var(--accent-rgb),.08);
-  border: 1px solid rgba(var(--accent-rgb),.18);
+  background: rgba(255, 255, 255, .7);
+  border: 1px solid rgba(var(--accent-rgb), .22);
   border-radius: 100px;
-  padding: 4px 13px;
+  padding: 4px 14px;
 }
-
 .bp-date {
   font-family: var(--body);
-  font-size: 1rem;
-  font-weight: 400;
-  color: var(--muted);
+  font-size: 1.05rem;
+  font-weight: 500;
+  color: var(--sub);
 }
 
 .bp-title {
+  max-width: 17em;
   font-family: 'Literata', var(--serif);
-  font-size: clamp(2rem, 4.5vw, 3.2rem);
+  font-size: clamp(2.2rem, 5.2vw, 4.4rem);
   font-weight: 400;
-  line-height: 1.08;
-  letter-spacing: -0.01em;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
   color: var(--ink);
-  margin-bottom: 10px;
+  text-wrap: balance;
   animation: titleReveal .7s cubic-bezier(.16,1,.3,1) .08s both;
 }
 
 .bp-venue {
+  margin-top: clamp(14px, 1.8vw, 22px);
+  max-width: 34em;
   font-family: var(--body);
-  font-size: 1.1rem;
+  font-size: clamp(1.15rem, 1.6vw, 1.45rem);
   font-weight: 400;
+  line-height: 1.5;
   color: var(--sub);
-  margin-bottom: clamp(28px, 4vw, 40px);
+  text-wrap: pretty;
   animation: bpFade .5s ease .1s both;
 }
 
-.bp-rule {
-  height: 1.5px;
-  background: var(--ink);
-  margin-bottom: clamp(32px, 4.5vw, 48px);
-  transform-origin: left;
-  animation: bpWipe .6s cubic-bezier(.16,1,.3,1) .14s both;
+/* Cover: a wide framed photograph over the band's lower edge, with the site's
+   card shadow; opens the slideshow (so it joins the "view" cursor state). */
+.bp-cover {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: calc(100% - 2 * var(--g));
+  margin: calc(-1 * clamp(78px, 9.5vw, 140px)) var(--g) 0;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: var(--rule);
+  aspect-ratio: 16 / 8;
+  max-height: 600px;
+  cursor: pointer;
+  box-shadow: 0 1px 2px rgba(26,24,20,.06), 0 14px 44px rgba(26,24,20,.16);
+  transition: transform .4s cubic-bezier(.34,1.56,.64,1), box-shadow .3s ease;
+  animation: bpFade .6s ease .12s both;
+}
+.bp-cover:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 2px 4px rgba(26,24,20,.08), 0 22px 56px rgba(26,24,20,.22);
+}
+.bp-cover:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+.bp-cover-img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  object-position: center 30%;
+  display: block;
+  transition: transform .6s cubic-bezier(.25,.46,.45,.94);
+}
+.bp-cover:hover .bp-cover-img { transform: scale(1.03); }
+.bp-cover-count {
+  position: absolute;
+  right: 16px; bottom: 16px;
+  font-family: var(--body);
+  font-size: 1rem;
+  font-weight: 500;
+  color: #fff;
+  background: rgba(26,24,20,.62);
+  border-radius: 100px;
+  padding: 5px 14px;
+}
+
+/* ==========================================
+   BODY: article text + details rail.
+   The text column keeps a readable measure (~70 characters); the rail docks
+   to the right gutter, so the page's right edge lines up with the navbar's
+   Contact button instead of trailing off into empty space.
+========================================== */
+.bp-layout {
+  display: grid;
+  grid-template-columns: minmax(0, clamp(720px, 40vw, 840px)) minmax(280px, clamp(380px, 22vw, 460px));
+  justify-content: space-between;
+  align-items: start;
+  gap: clamp(40px, 6vw, 96px);
+  padding: clamp(36px, 5vw, 64px) var(--g) 0;
 }
 
 /* ==========================================
@@ -135,11 +170,21 @@
   display: flex;
   flex-direction: column;
   gap: 1.3em;
+  min-width: 0;
   margin-bottom: clamp(40px, 5vw, 64px);
+}
+/* The opening paragraph reads as the lede: larger and in full ink, so the
+   page has a clear step from title to summary to body. */
+.bp-article > .bp-p:first-child {
+  font-size: clamp(1.2rem, 1rem + 0.6vw, 1.55rem);
+  line-height: 1.6;
+  color: var(--ink);
 }
 .bp-p {
   font-family: var(--body);
-  font-size: clamp(1.05rem, 1.3vw, 1.15rem);
+  /* Grows a little on very wide screens so the column keeps a comfortable
+     ~70-80 characters per line as it widens, instead of leaving more air. */
+  font-size: clamp(1.05rem, 0.95rem + 0.35vw, 1.3rem);
   font-weight: 400;
   color: var(--sub);
   line-height: 1.75;
@@ -154,7 +199,7 @@
    GALLERY
 ========================================== */
 .bp-gallery-sec {
-  margin: 0 calc(-1 * var(--g)) clamp(40px, 5vw, 64px);
+  margin: clamp(8px, 2vw, 24px) 0 clamp(40px, 5vw, 64px);
 }
 .bp-gallery-label {
   font-family: var(--body);
@@ -167,28 +212,86 @@
 }
 
 /* ==========================================
-   ORIGINAL-POST LINK
+   DETAILS RAIL -- a card, per the site's card pattern (resting shadow,
+   --radius-lg). Sticky on desktop so it stays beside the text as it
+   scrolls; static under the article on narrow screens.
 ========================================== */
-.bp-original {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
+.bp-rail {
+  position: sticky;
+  top: 96px;
+  min-width: 0;
+}
+.bp-card {
+  background: #fff;
+  border: 1px solid rgba(26,24,20,.08);
+  border-radius: var(--radius-lg);
+  padding: clamp(20px, 2.2vw, 28px);
+  box-shadow: 0 1px 2px rgba(26,24,20,.06), 0 8px 24px rgba(26,24,20,.08);
+}
+.bp-card-title {
+  font-family: 'Literata', var(--serif);
+  font-size: 1.3rem;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  margin-bottom: 14px;
+}
+.bp-facts { display: flex; flex-direction: column; }
+.bp-facts > div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 12px 0;
+  border-top: 1px solid var(--rule);
+}
+.bp-facts dt {
   font-family: var(--body);
   font-size: 1rem;
   font-weight: 500;
-  color: var(--accent);
-  text-decoration: none;
-  border: 1.5px solid rgba(var(--accent-rgb),.25);
-  border-radius: 100px;
-  padding: 9px 20px;
-  margin-bottom: clamp(40px, 5vw, 64px);
-  transition: background .2s, color .2s, border-color .2s;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--muted);
 }
-.bp-original:hover {
+.bp-facts dd {
+  font-family: var(--body);
+  font-size: 1.05rem;
+  line-height: 1.45;
+  color: var(--ink);
+}
+.bp-card-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 8px;
+  padding-top: 18px;
+  border-top: 1px solid var(--rule);
+}
+.bp-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: var(--body);
+  font-size: 1rem;
+  font-weight: 600;
+  color: #fff;
   background: var(--accent);
-  color: var(--white);
-  border-color: var(--accent);
+  border: 1.5px solid var(--accent);
+  border-radius: 100px;
+  padding: 10px 20px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background .2s, color .2s, border-color .2s, transform .25s cubic-bezier(.34,1.56,.64,1);
 }
+.bp-btn:hover { background: #164a70; border-color: #164a70; transform: translateY(-2px); }
+.bp-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.bp-btn--ghost {
+  color: var(--accent);
+  background: transparent;
+  border-color: rgba(var(--accent-rgb),.3);
+  font-weight: 500;
+}
+.bp-btn--ghost:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
 
 /* ==========================================
    PREV / NEXT
@@ -281,6 +384,15 @@
 /* ==========================================
    RESPONSIVE
 ========================================== */
+@media (max-width: 1000px) {
+  /* Rail drops under the article; cover drops under the title. */
+  .bp-layout { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  .bp-rail { position: static; margin-bottom: clamp(40px, 5vw, 56px); }
+  .bp-card-actions { flex-direction: row; flex-wrap: wrap; }
+}
+@media (max-width: 860px) {
+  .bp-cover { aspect-ratio: 4 / 3; }
+}
 @media (max-width: 768px) {
   .bp-title { font-size: var(--fs-h1-sm); }
 }
@@ -295,7 +407,8 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .bp-hero-img { animation: none; }
-  .bp-back, .bp-meta, .bp-venue, .bp-title, .bp-rule { animation: none; }
+  .bp-back, .bp-meta, .bp-venue, .bp-title, .bp-cover { animation: none; }
+  .bp-cover, .bp-cover-img, .bp-btn { transition: none; }
+  .bp-cover:hover, .bp-btn:hover { transform: none; }
   .bp-pn-thumb, .bp-pn-thumb img { transition: none; }
 }

@@ -19,13 +19,13 @@ export function preloadForPath(path) {
   if (!path) return
   if (path.startsWith('/cv/'))   return routeImports.cv()
   if (path.startsWith('/work/')) return routeImports.projectDetail()
-  if (path.startsWith('/blog/')) return routeImports.blogPost()
+  if (path.startsWith('/blogs/')) return routeImports.blogPost()
   switch (path) {
     case '/about':   return routeImports.about()
     case '/work':    return routeImports.work()
     case '/resume':  return routeImports.resume()
     case '/lab':     return routeImports.lab()
-    case '/blog':    return routeImports.blog()
+    case '/blogs':   return routeImports.blog()
     case '/contact': return routeImports.contact()
     default: return
   }

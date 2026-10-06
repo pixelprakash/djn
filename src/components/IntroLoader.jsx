@@ -1,16 +1,11 @@
 import { useEffect, useRef, useState } from 'react'
 import gsap from 'gsap'
+import ShutterBlades from './ShutterBlades'
+import { applyShutter, makeShutterRefs, shutterRegistrar } from '../utils/shutter'
 import './IntroLoader.css'
 
 const NAME = ['Deepak', 'John', 'Mathew']
 const METER_TICKS = 13 // -3 … 0 … +3 EV in half stops
-const BLADES = 6
-const OPEN = 130 // aperture inradius (viewBox units) that clears any screen
-
-// Closed: every blade edge passes through the centre. Opening slides each
-// edge outward along its own normal while the whole set twists, so the
-// hexagonal aperture swells and unwinds like a real diaphragm.
-const bladeTransform = (k, d, rot) => `rotate(${(rot + k * 360 / BLADES).toFixed(2)}) translate(${d.toFixed(2)} 0)`
 
 /* The sounds are synthesised with Web Audio rather than shipped as files:
    nothing to download, nothing to license, and it stays in sync because
@@ -138,9 +133,7 @@ export default function IntroLoader() {
   const counterRef = useRef(null)
   const fillRef = useRef(null)
   const meterRef = useRef(null)
-  const bladeRefs = useRef([])
-  const edgeRefs = useRef([])
-  const sheenRefs = useRef([])
+  const shutterRefs = useRef(makeShutterRefs())
   const veilRefs = useRef([])
   const markerRef = useRef(null)
   const [visible, setVisible] = useState(
@@ -191,20 +184,7 @@ export default function IntroLoader() {
         ])
 
         // Position every blade for shutter openness o (0 closed, 1 open).
-        const setShutter = o => {
-          if (!bladeRefs.current[BLADES - 1]) return // overlay already gone
-          const d = o * OPEN
-          const rot = (1 - o) * 38
-          const reach = 0.9 * d + 4 // visible length of a blade edge
-          for (let k = 0; k < BLADES; k++) {
-            bladeRefs.current[k].setAttribute('transform', bladeTransform(k, d, rot))
-            const e = edgeRefs.current[k], h = sheenRefs.current[k]
-            e.setAttribute('y1', -reach); e.setAttribute('y2', reach)
-            e.setAttribute('opacity', Math.min(1, d / 7))
-            h.setAttribute('y', -reach); h.setAttribute('height', reach * 2)
-            h.setAttribute('opacity', Math.min(1, d / 7))
-          }
-        }
+        const setShutter = o => applyShutter(shutterRefs.current, o)
         setShutter(0)
 
         // Which way each corner travels in from (toward the centre).
@@ -296,21 +276,7 @@ export default function IntroLoader() {
     <div className="il" ref={rootRef} aria-hidden="true">
       {/* Shutter blades: the ink surface itself. Edges and sheen stay
           invisible until the blades start to part. */}
-      <svg className="il-shutter" viewBox="-100 -100 200 200" preserveAspectRatio="xMidYMid slice">
-        <defs>
-          <linearGradient id="il-sheen" x1="0" x2="1" y1="0" y2="0">
-            <stop offset="0" stopColor="#f5f3ee" stopOpacity=".1" />
-            <stop offset="1" stopColor="#f5f3ee" stopOpacity="0" />
-          </linearGradient>
-        </defs>
-        {Array.from({ length: BLADES }, (_, k) => (
-          <g key={k} ref={el => { bladeRefs.current[k] = el }} transform={bladeTransform(k, 0, 38)}>
-            <polygon className="il-blade" points="0,-700 0,700 700,700 700,-700" />
-            <rect className="il-sheen" x="0" y="0" width="16" height="0" fill="url(#il-sheen)" opacity="0" ref={el => { sheenRefs.current[k] = el }} />
-            <line className="il-edge" x1="0" x2="0" y1="0" y2="0" opacity="0" ref={el => { edgeRefs.current[k] = el }} />
-          </g>
-        ))}
-      </svg>
+      <ShutterBlades prefix="il" reg={shutterRegistrar(shutterRefs.current)} />
       <div className="il-glow" ref={el => { veilRefs.current[0] = el }} />
       <div className="il-grain" ref={el => { veilRefs.current[1] = el }} />
 

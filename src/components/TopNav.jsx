@@ -55,7 +55,7 @@ const NAV_ITEMS = [
       },
     ],
   },
-  { label: 'Blog', path: '/blog' },
+  { label: 'Blogs', path: '/blogs' },
   // Points off-site to the DIC Nodal centre's own site rather than the
   // in-repo /lab page — external, so it's a plain <a>, not a NavLink, and
   // gets the "leaves this site" arrow instead of participating in the

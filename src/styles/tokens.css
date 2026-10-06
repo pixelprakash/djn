@@ -28,6 +28,8 @@
   /* Fluid type scale shared by every page's hero header */
   --fs-h1:       clamp(36px, 5vw, 72px);      /* page title, e.g. "Deepak John Mathew" / "Selected Work" */
   --fs-h1-sm:    clamp(28px, 8vw, 40px);      /* page title, ≤640px */
+  --fs-hero:     clamp(3rem, 7vw, 6.5rem);   /* hero title on Work, Blogs, Resume, Contact -- ONE size for all four (About keeps its own) */
+  --fs-hero-sm:  clamp(2.4rem, 11.5vw, 3.4rem);  /* same, on phones */
   --fs-subtitle: 1.25rem;                     /* hero subtitle line under every page title */
   --fs-body:     1.05rem;                     /* baseline for real reading copy (bios, card/list descriptions) — not for small metadata labels, tags, or dates, which stay smaller on purpose */
 

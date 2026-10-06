@@ -1,44 +1,87 @@
-import { useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import Reveal from '../components/Reveal'
 import { BLOG_POSTS } from './blogData'
+import { useCms, POSTS_QUERY, mapPosts, FEED_QUERY, mapFeed } from '../lib/cms'
+import PostCard from '../components/PostCard'
+import PageHero from '../components/PageHero'
+import useStackedLayers from '../hooks/useStackedLayers'
 import { preloadForPath } from '../routePreload'
 import './Blog.css'
 
-/* Listing cards read straight off the shared post data (src/pages/blogData.js)
-   -- each post's own cover photo (images[0]) and its internal /blog/:slug
-   page, instead of a separate placeholder dataset that links out. */
-const POSTS = BLOG_POSTS.map(function(p, i) {
-  return {
-    date: p.date,
-    tag: p.tag,
-    title: p.title,
-    desc: p.desc,
-    href: '/blog/' + p.slug,
-    img: p.images[0],
-    featured: i === 0,
-  }
+/* Listing cards read off the shared post data (live from Sanity, else the
+   built-in src/pages/blogData.js) -- each post's own cover photo and its
+   internal /blogs/:slug page. */
+const toCard = (p, i) => ({
+  date: p.date,
+  tag: p.tag,
+  title: p.title,
+  desc: p.desc,
+  href: '/blogs/' + p.slug,
+  img: (p.thumbs && p.thumbs[0]) || p.images[0],
+  featured: i === 0,
 })
 
-const ALL_TAGS = ['All', ...Array.from(new Set(POSTS.map(function(p) { return p.tag })))]
-
 export default function Blog() {
+  const pageRef = useRef(null)
+  useStackedLayers(pageRef)
   const [active, setActive] = useState('All')
+  const { data: posts, loading } = useCms('posts', POSTS_QUERY, mapPosts, BLOG_POSTS)
+  // Photos differ between the live and built-in copies, so the cards wait
+  // for the live answer instead of swapping pictures a moment after paint.
+  // Short LinkedIn-style updates. No built-in copy: nothing published, nothing shown.
+  const { data: feed } = useCms('feed', FEED_QUERY, mapFeed, [])
+  const POSTS = useMemo(() => (loading ? [] : posts.map(toCard)), [loading, posts])
+  const ALL_TAGS = useMemo(() => ['All', ...new Set(POSTS.map(p => p.tag))], [POSTS])
 
   const visible  = active === 'All' ? POSTS : POSTS.filter(function(p) { return p.tag === active })
   const featured = visible.find(function(p) { return p.featured })
   const rest     = visible.filter(function(p) { return !p.featured || active !== 'All' })
 
   return (
-    <div className="bl">
+    <div className="bl" ref={pageRef}>
 
       {/* -- HEADER -- */}
-      <header className="bl-head">
-        <div className="bl-head-left">
-          <h1 className="bl-title">Blog &amp; Notes</h1>
-          <p className="bl-sub">Photography, design research, education, and everything in between.</p>
-        </div>
-      </header>
+      <PageHero
+        title="Blogs &amp; Notes"
+        sub="Photography, design research, education, and everything in between."
+      />
+
+      {/* -- FROM LINKEDIN: short updates -- */}
+      {feed.length > 0 && (
+        <section className="bl-feed" aria-labelledby="bl-feed-title">
+          <div className="bl-feed-head">
+            <h2 className="bl-section-title" id="bl-feed-title">From LinkedIn</h2>
+            <p className="bl-feed-sub">Short updates, as he shares them.</p>
+          </div>
+          <div className="bl-feed-grid">
+            <div className="bl-feed-list">
+              {feed.map(post => <PostCard key={post.id} post={post} />)}
+            </div>
+
+            {/* Right-hand panel: balances the single feed column, and is the
+                one place to follow him for new posts. */}
+            <aside className="bl-follow" aria-label="Follow on LinkedIn">
+              <h3 className="bl-follow-title">Follow for new posts</h3>
+              <p className="bl-follow-text">
+                New updates are shared on LinkedIn first and collected here.
+              </p>
+              <a
+                className="bl-follow-btn"
+                href="https://www.linkedin.com/in/deepak-john-mathew-b079ab1a/"
+                target="_blank"
+                rel="noreferrer"
+              >
+                Follow on LinkedIn <span aria-hidden="true">&#8599;</span>
+              </a>
+            </aside>
+          </div>
+        </section>
+      )}
+
+      {feed.length > 0 && (
+        <h2 className="bl-section-title bl-section-title--articles">Articles &amp; exhibitions</h2>
+      )}
 
       {/* -- TAG FILTERS -- */}
       <div className="bl-filters">
@@ -53,6 +96,7 @@ export default function Blog() {
             </button>
           )
         })}
+        {/* "Full archive" link to the old Blogger blog -- switched off for now.
         <a
           href="https://djmphotography.blogspot.com"
           target="_blank"
@@ -61,6 +105,7 @@ export default function Blog() {
         >
           Full archive &#8599;
         </a>
+        */}
       </div>
 
       <div className="bl-body">

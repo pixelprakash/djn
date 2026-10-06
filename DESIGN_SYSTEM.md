@@ -94,33 +94,35 @@ Nested radius should always be ≤ its parent's, per the scale above.
   mobile hamburger — don't add Contact back into the link list or the
   mobile dropdown, that would duplicate it.
 
-## Page header pattern
+## Page header pattern -- the "title card"
 
-Every content page (Work, Resume, Lab, Blog, Contact) follows the same
-header shape:
+Work, Blogs, Resume and Contact open with the shared `PageHero`
+(`src/components/PageHero.jsx` + `PageHero.css`):
 
 ```
-<header className="xx-head">
-  <div className="xx-head-left">
-    <h1 className="xx-title">…</h1>
-    <p className="xx-sub">…</p>
-  </div>
-  {/* + any page-specific element, e.g. Lab's DIC logo image */}
-</header>
+<PageHero title="…" sub="…" />          // Work, Blog
+<PageHero title="…" sub="…" aside={<Portrait … />}>…extra lines…</PageHero>   // Resume
 ```
 
-No eyebrow/kicker line above the title, and no decorative sticker
-illustration — both were removed sitewide for a cleaner, more
-consistent header. If a future page needs a header, copy this shape
-rather than inventing a new one.
-
-- **Height (`--hero-h`):** `clamp(380px, 46vh, 460px)`, applied as
-  `min-height` with the header content vertically centered (`display:flex;
-  flex-direction:column; justify-content:center` for single-column
-  headers, `align-items:center` for the row-layout ones — Home, Lab).
-  It's a floor, not a fixed height — a header with more content (Resume's
-  links row) is allowed to grow past it; the point is every page's header
-  reads as the *same* height, not that they're pixel-identical.
+- **One full-width tinted band** (`#e8eef3` → `#dce6ee`), not a left/right
+  split. The title is oversized Literata (`clamp(3.25rem, 10.5vw, 9.5rem)`)
+  sitting on the band's lower edge, the subtitle under it.
+- **The page overlaps the band.** The hero scrolls away normally (it is NOT
+  pinned -- a pinned hero made the title and portrait look stuck while the
+  page covered them). It sits at `z-index: -1` and the page root must set
+  `isolation: isolate`; every following sibling gets the page background,
+  and the first one rises 28px over the hero's lower edge with rounded top
+  corners and a soft shadow.
+- **Nothing from further down the page is repeated in the hero** -- no cover
+  photos, thumbnails, counts or stats. The only imagery allowed is the
+  person's own cut-out portrait (`aside`), which stands on the band's bottom
+  edge in front of the title; the sheet covers its cropped lower edge.
+- No eyebrow line, no decorative grid or frames.
+- **One title size for all four pages** (Work, Blogs, Resume, Contact): the
+  `--fs-hero` token (`clamp(3rem, 7vw, 6.5rem)`, `--fs-hero-sm` on phones), with
+  the same line height (1.1, enough clearance that a descender never touches the
+  next line) and tracking (-0.02em). Don't size a hero title per page. The About
+  page keeps its own hero. `--fs-h1` still applies to ordinary page titles.
 
 ## Custom cursor
 

@@ -1,5 +1,8 @@
 import Reveal from '../components/Reveal'
+import { useRef } from 'react'
 import Portrait from '../components/Portrait'
+import PageHero from '../components/PageHero'
+import useStackedLayers from '../hooks/useStackedLayers'
 import './Resume.css'
 
 /* -- DATA -- */
@@ -71,36 +74,36 @@ const links = [
 
 /* -- COMPONENT -- */
 export default function Resume() {
+  const pageRef = useRef(null)
+  useStackedLayers(pageRef)
   return (
-    <div className="resume">
+    <div className="resume" ref={pageRef}>
 
       {/* -- HEADER -- */}
-      <header className="r-header">
-        <div className="r-header-left">
-          <h1 className="r-name">Deepak John Mathew</h1>
-          <p className="r-role">Professor of Design · IIT Hyderabad</p>
-          <p className="r-nodal">
-            Principal Investigator &amp; Nodal Coordinator, Design Innovation Centre<br />
-            Ministry of Education, Govt. of India
-          </p>
-          <div className="r-links">
-            {links.map(l => (
-              <a key={l.label} href={l.href} target="_blank" rel="noreferrer">{l.text}</a>
-            ))}
-          </div>
-        </div>
-        {/* Same cut-out portrait as the Home page hero. */}
-        <div className="r-header-photo-col">
+      <PageHero
+        title={<>Deepak John<br />Mathew</>}
+        sub="Professor of Design · IIT Hyderabad"
+        aside={
           <Portrait
-            className="r-header-photo"
+            className="ph-portrait"
             src="/profliepicnobg.webp"
             alt="Portrait of Prof. Deepak John Mathew"
             draggable="false"
             loading="eager"
             decoding="async"
           />
+        }
+      >
+        <p className="r-nodal">
+          Principal Investigator &amp; Nodal Coordinator, Design Innovation Centre<br />
+          Ministry of Education, Govt. of India
+        </p>
+        <div className="r-links">
+          {links.map(l => (
+            <a key={l.label} href={l.href} target="_blank" rel="noreferrer">{l.text}</a>
+          ))}
         </div>
-      </header>
+      </PageHero>
 
       {/* -- RESEARCH AREAS -- */}
       <Reveal as="section" className="r-section">

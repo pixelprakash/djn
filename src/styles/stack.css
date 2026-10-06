@@ -1,0 +1,18 @@
+/* Stack-up scrolling (see src/hooks/useStackedLayers.js). A page is a pile of
+   layers: each pins under the top bar as it scrolls into place and the next
+   layer slides up over it. As a layer gets covered it settles back a little
+   (smaller, slightly dimmer), so the pile reads as depth, not as something
+   stuck. Desktop and tablet only; phones scroll normally. */
+@media (min-width: 861px) {
+  :root [data-stack] {
+    position: sticky;
+    top: 65px; /* the hook sets the real value per layer (tall layers pin by their bottom edge) */
+    transform-origin: 50% 0;
+    transform: scale(calc(1 - var(--cover, 0) * .045));
+    filter: brightness(calc(1 - var(--cover, 0) * .07));
+    will-change: transform;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  :root [data-stack] { transform: none; filter: none; }
+}

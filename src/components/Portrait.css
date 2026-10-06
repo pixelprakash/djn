@@ -1,10 +1,16 @@
-/* See Portrait.jsx. Specificity is .pf .x so these win over the page-level
-   panel rules without needing !important. */
+/* See Portrait.jsx. The portrait is currently static black-and-white; the
+   hover interaction (colour lift, corner brackets, pointer drift) is
+   commented out below -- restore it together with the matching parts of
+   Portrait.jsx. */
 .pf { position: relative; }
 
 .pf img {
-  transform: scale(1.06);
   filter: grayscale(1);
+}
+
+/* ── Interaction (switched off) ──────────────────────────────────────
+.pf img {
+  transform: scale(1.06);
   transition: filter .6s ease;
   will-change: transform;
 }
@@ -19,8 +25,6 @@
   pointer-events: none;
   transition: opacity .3s ease, transform .45s cubic-bezier(.2, .8, .2, 1);
 }
-/* At rest the marks sit a little outside their final position; on hover
-   they close in and settle. */
 .pf .pf-mark--tl { top: 8px;    left: 8px;   border-width: 2px 0 0 2px; transform: translate(-6px, -6px); }
 .pf .pf-mark--tr { top: 8px;    right: 8px;  border-width: 2px 2px 0 0; transform: translate(6px, -6px); }
 .pf .pf-mark--bl { bottom: 8px; left: 8px;   border-width: 0 0 2px 2px; transform: translate(-6px, 6px); }
@@ -28,10 +32,10 @@
 
 .pf:hover .pf-mark { opacity: .9; transform: none; }
 
-/* Touch screens never hover; no focus-lock there. */
 @media (hover: none) { .pf .pf-mark { display: none; } .pf img { transform: none; } }
 
 @media (prefers-reduced-motion: reduce) {
   .pf img { transition: none; transform: none; }
   .pf .pf-mark { display: none; }
 }
+─────────────────────────────────────────────────────────────────── */

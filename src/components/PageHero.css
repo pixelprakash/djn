@@ -1,0 +1,119 @@
+/* Shared page hero -- the "title card" (PageHero.jsx). Tokens only: gutter
+   --g, the shared subtitle size, the radius scale, the card shadow. */
+.ph {
+  --ph-nav-h: 65px;
+  --ph-sheet-r: 28px;
+  /* Layer 0 of the page's stack: pinned by src/styles/stack.css on desktop and
+     tablet (the page covers it as it scrolls), plain flow on phones. z-index -1
+     keeps it under every later layer (the page root isolates). */
+  position: relative;
+  z-index: -1;
+  display: flex;
+  align-items: flex-end;
+  min-height: clamp(400px, 58vh, 640px);
+  padding: clamp(48px, 6vw, 96px) var(--g) calc(clamp(40px, 5vw, 72px) + var(--ph-sheet-r));
+  background: linear-gradient(180deg, #e8eef3 0%, #dce6ee 100%);
+  overflow: hidden;
+}
+
+.ph-text {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  max-width: 100%;
+}
+.ph-title {
+  font-family: 'Literata', var(--serif);
+  font-size: var(--fs-hero);
+  font-weight: 400;
+  /* Two-line titles need real clearance: at this size a descender (the p of
+     "Deepak") reaches the ascender of the next line (the h of "Mathew"). */
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  text-wrap: balance;
+  animation: titleReveal .7s cubic-bezier(.16,1,.3,1) .08s both;
+}
+.ph-sub {
+  margin-top: clamp(22px, 2.6vw, 34px);
+  max-width: 34em;
+  font-family: var(--body);
+  font-size: clamp(1.15rem, 1.6vw, 1.45rem);
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--sub);
+  text-wrap: pretty;
+}
+
+/* The page's content slides over the pinned hero as a rounded sheet. Every
+   following sibling gets the page background so the hero never shows
+   through (pages' own section backgrounds override this: they load later). */
+.ph ~ * { background-color: var(--bg); }
+.ph + * {
+  margin-top: calc(-1 * var(--ph-sheet-r));
+  border-radius: var(--ph-sheet-r) var(--ph-sheet-r) 0 0;
+  box-shadow: 0 -14px 36px rgba(26, 24, 20, .10);
+}
+
+/* ── Resume: the name is long, so it sets in two lines beside the
+   portrait, which stands in front of the band's right edge ── */
+.ph--portrait {
+  /* The hero's own height, and the portrait's width (the cut-out is ~0.92 as
+     wide as it is tall) -- the text column gives that width up, so nothing
+     ever runs under the photograph. */
+  --ph-hero-h: clamp(400px, 58vh, 640px);
+  --ph-portrait-w: calc(var(--ph-hero-h) * .92);
+  --ph-portrait-right: clamp(8px, 4vw, 72px);
+  min-height: var(--ph-hero-h);
+}
+.ph--portrait .ph-text {
+  max-width: max(320px, calc(100% + var(--g) - var(--ph-portrait-right) - var(--ph-portrait-w) - 28px));
+}
+.ph-aside {
+  position: absolute;
+  z-index: 2;
+  right: var(--ph-portrait-right);
+  /* Stands on the very bottom of the band, so the photo's cropped lower edge
+     is hidden under the sheet that slides over it. */
+  bottom: 0;
+  height: min(98%, var(--ph-hero-h));
+  pointer-events: none;
+}
+.ph-portrait { height: 100%; }
+.ph-portrait img {
+  height: 100%;
+  width: auto;
+  display: block;
+  object-fit: contain;
+  object-position: center bottom;
+  /* The cut-out was cropped at its left edge (the elbow): fade it rather
+     than end in a straight line. */
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 30%);
+  mask-image: linear-gradient(90deg, transparent 0%, #000 30%);
+}
+
+/* ── Narrow screens: no pinning (a tall pinned band eats a phone), the
+   portrait sits under the text as part of the band ── */
+@media (max-width: 860px) {
+  .ph {
+    --ph-nav-h: 57px;
+    min-height: 0;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 24px;
+    padding-top: clamp(40px, 9vw, 64px);
+  }
+  .ph--portrait .ph-text { max-width: 100%; }
+  .ph-aside { position: relative; right: auto; bottom: auto; height: clamp(240px, 70vw, 360px); align-self: center; /* cancel the hero's bottom padding so the portrait stands on the band's
+     lower edge and the sheet covers its cropped bottom */
+    margin-bottom: calc(-1 * clamp(40px, 5vw, 72px) - var(--ph-sheet-r)); }
+}
+@media (max-width: 640px) {
+  .ph-title { font-size: var(--fs-hero-sm); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ph-title { animation: none; }
+}

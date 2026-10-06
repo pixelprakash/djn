@@ -72,7 +72,9 @@
 .ss-bg {
   position: fixed; inset: 0;
   background: rgba(5,4,3,.97);
-  z-index: 9999;
+  /* Above the fixed top navigation (99998): on pages that keep the navbar
+     (blog articles) it was covering the close button in the top-right. */
+  z-index: 99999;
   display: flex; align-items: center; justify-content: center;
   animation: pgFadeIn .2s ease;
 }

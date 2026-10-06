@@ -1,0 +1,148 @@
+/* LinkedIn-style post card (see PostCard.jsx). Every rule is under .pc so it
+   can't leak, and keeps the site's reading sizes: nothing under 1rem except
+   the small counts line, which stays at 0.95rem. */
+.pc {
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border: 1px solid rgba(26, 24, 20, .12);
+  border-radius: var(--radius-lg);
+  padding: clamp(18px, 2vw, 24px);
+  min-width: 0;
+}
+
+.pc .pc-head { display: flex; align-items: center; gap: 14px; }
+.pc .pc-avatar {
+  flex-shrink: 0;
+  width: 52px; height: 52px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: linear-gradient(180deg, #e6edf3, #cddae5);
+}
+.pc .pc-avatar img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  display: block;
+  filter: grayscale(1);
+}
+.pc .pc-who { display: flex; flex-direction: column; min-width: 0; line-height: 1.35; }
+.pc .pc-name { font-family: var(--body); font-size: 1.05rem; font-weight: 600; color: var(--ink); }
+.pc .pc-role { font-family: var(--body); font-size: 1rem; color: var(--muted); }
+.pc .pc-date { font-family: var(--body); font-size: 0.95rem; color: var(--muted); }
+
+.pc .pc-text {
+  margin: 16px 0 0;
+  font-family: var(--body);
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: var(--ink);
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+.pc .pc-text--fold {
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.pc .pc-tag { color: var(--accent); font-weight: 500; }
+
+.pc .pc-more {
+  align-self: flex-start;
+  margin-top: 6px;
+  padding: 4px 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--accent);
+  cursor: pointer;
+}
+.pc .pc-more:hover { text-decoration: underline; text-underline-offset: 3px; }
+.pc .pc-more:focus-visible,
+.pc .pc-cell:focus-visible,
+.pc .pc-link:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+/* Photo grid: 1 = full, 2 = side by side, 3 = one tall + two stacked,
+   4+ = 2x2 (the last cell carries "+N"). */
+.pc .pc-grid {
+  display: grid;
+  gap: 3px;
+  margin: 16px calc(-1 * clamp(18px, 2vw, 24px)) 0;
+  aspect-ratio: 16 / 10;
+  background: var(--rule);
+}
+.pc .pc-grid--1 { aspect-ratio: auto; max-height: 520px; }
+.pc .pc-grid--2 { grid-template-columns: 1fr 1fr; }
+.pc .pc-grid--3 { grid-template-columns: 1.6fr 1fr; grid-template-rows: 1fr 1fr; }
+.pc .pc-grid--3 .pc-cell:first-child { grid-row: 1 / span 2; }
+.pc .pc-grid--4 { grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; }
+
+.pc .pc-cell {
+  position: relative;
+  display: block;
+  padding: 0;
+  border: 0;
+  background: var(--rule);
+  overflow: hidden;
+  cursor: pointer;
+  min-height: 0;
+}
+.pc .pc-cell img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.pc .pc-grid--1 .pc-cell img { max-height: 520px; }
+.pc .pc-extra {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(26, 24, 20, .55);
+  color: #fff;
+  font-family: var(--body);
+  font-size: 1.8rem;
+  font-weight: 500;
+}
+
+.pc .pc-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(26, 24, 20, .1);
+}
+.pc .pc-counts { display: flex; align-items: center; gap: 6px 18px; flex-wrap: wrap; }
+.pc .pc-count {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-family: var(--body);
+  font-size: 0.95rem;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+.pc .pc-like { color: var(--accent); flex-shrink: 0; }
+.pc .pc-sr {
+  position: absolute;
+  width: 1px; height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+.pc .pc-link {
+  font-family: var(--body);
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--accent);
+  text-decoration: none;
+}
+.pc .pc-link:hover { text-decoration: underline; text-underline-offset: 3px; }

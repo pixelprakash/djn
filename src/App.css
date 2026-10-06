@@ -48,13 +48,30 @@
 /* 150vh tall, parked 20vh above the viewport at rest: the curved top and
    bottom edges (and the slack either side of them) must clear the
    screen's corners when it's centred, hence the generous height. */
-.pt-panel {
+.pt-sheet {
   position: absolute;
   left: 0;
   top: -20vh;
   width: 100%;
   height: 150vh;
   will-change: transform;
+}
+.pt-layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* Project transition: the camera shutter (see utils/shutter.js, shared with
+   the intro). Blades are the ink; their seams appear as they part. */
+.pt-shutterbox { position: absolute; inset: 0; display: none; }
+.ps-shutter { position: absolute; inset: 0; width: 100%; height: 100%; }
+.ps-blade { fill: var(--ink); }
+.ps-edge {
+  stroke: rgba(245, 243, 238, .34);
+  vector-effect: non-scaling-stroke;
+  stroke-width: 1px;
 }
 .pt-fill { fill: var(--ink); }
 .pt-edge {
@@ -98,6 +115,38 @@
 /* Long section titles (e.g. "Teaching Experience & Permanent Posts") */
 .pt-label-text[data-long="true"] { font-size: clamp(2rem, 4.6vw, 4rem); }
 .pt-label-mask { max-width: min(92vw, 1100px); }
+/* Blog-article transition: a 2px accent line along the top edge. */
+.pt-bar {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: var(--accent);
+  transform-origin: left;
+  transform: scaleX(0);
+  opacity: 0;
+}
+
+.pt-label-mask--sm { padding: 0.1em 0.3em 0.22em; }
+/* Gallery wall-label lines (project transition only). */
+.pt-kicker {
+  display: block;
+  font-family: var(--body);
+  font-size: clamp(0.85rem, 1.3vw, 1rem);
+  font-weight: 600;
+  letter-spacing: .24em;
+  text-transform: uppercase;
+  white-space: pre;
+  color: rgba(245, 243, 238, .72);
+}
+.pt-venue {
+  display: block;
+  font-family: var(--body);
+  font-size: clamp(1rem, 1.5vw, 1.2rem);
+  font-weight: 400;
+  letter-spacing: .02em;
+  text-align: center;
+  color: rgba(245, 243, 238, .82);
+}
 .pt-rule {
   width: clamp(56px, 8vw, 110px);
   height: 2px;

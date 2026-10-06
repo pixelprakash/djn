@@ -10,53 +10,8 @@
   padding-bottom: var(--nav-safe);
   /* Prevent horizontal overflow from breaking fixed nav centering */
   width: 100%;
-  overflow-x: hidden;
-}
-
-/* ======================================================
-   HEADER
-====================================================== */
-.wp-head {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  min-height: var(--hero-h);
-  padding: clamp(32px, 4vw, 48px) var(--g);
-  border-bottom: 1.5px solid var(--ink);
-  animation: fadeUp .5s ease both;
-}
-
-/* Left: title + subtitle */
-.wp-head-left {
-  display: flex;
-  flex-direction: column;
-  gap: clamp(6px, 1vw, 10px);
-  min-width: 0;
-}
-
-/* Title -- Literata sitewide now (see About.css for the original trial);
-   --title-tracking (-5px) was tuned for DM Sans and is far too tight for
-   a serif, eased to -0.01em like every other Literata heading. */
-.wp-heading {
-  font-family: 'Literata', var(--serif);
-  font-size: var(--fs-h1);
-  font-weight: 400;
-  line-height: 1.0;
-  letter-spacing: -0.01em;
-  color: var(--ink);
-  animation: titleReveal .7s cubic-bezier(.16,1,.3,1) .08s both;
-}
-
-/* Subtitle -- Rubik 300. Wraps naturally rather than a fixed single line +
-   ellipsis: now that the stat panel shares the header row, the space left
-   for this text varies with viewport width, so a hard nowrap was liable
-   to clip mid-sentence at in-between widths. */
-.wp-sub {
-  font-family: var(--body);
-  font-size: var(--fs-subtitle);
-  font-weight: 400;
-  color: var(--sub);
-  line-height: 1.4;
+  overflow-x: clip;
+  isolation: isolate;
 }
 
 /* ==========================================
@@ -67,8 +22,13 @@
   gap: 0;
   padding: 0 var(--g);
   border-bottom: 1px solid var(--rule);
-  animation: fadeUp .5s ease .07s both;
   margin-top: 0;
+  /* Pinned under the top bar (65px; 57px on phones) while the lists scroll.
+     The page background comes from PageHero's `.ph ~ *` rule, so lists
+     passing underneath never show through. */
+  position: sticky;
+  top: 65px;
+  z-index: 5;
   /* Scroll horizontally on small screens so no tab label is ever clipped */
   overflow-x: auto;
   overflow-y: visible;
@@ -78,6 +38,10 @@
   flex-shrink: 0;
 }
 .tab-nav::-webkit-scrollbar { display: none; }
+@media (max-width: 640px) { .tab-nav { top: 57px; } }
+
+/* Height of the page's rounded top edge over the hero; see Work.jsx. */
+.wp-sheet-top { height: 28px; }
 
 .tab-btn {
   font-family: var(--body);
@@ -419,12 +383,7 @@
 }
 
 @media (max-width: 640px) {
-  /* --hero-h is tuned for a desktop hero with room to breathe; on mobile
-     it left ~150px of dead space below the short title+subtitle here. */
-  .wp-head { min-height: 0; }
-  .wp-heading { font-size: var(--fs-h1-sm); }
-
-  /* All 3 tabs visible at once -- equal width, no scroll needed */
+    /* All 3 tabs visible at once -- equal width, no scroll needed */
   .tab-nav {
     padding: 0;
     overflow-x: visible;

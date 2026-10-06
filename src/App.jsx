@@ -1,6 +1,6 @@
 import { Suspense, lazy, useEffect, useRef, useState } from "react"
 import { flushSync } from "react-dom"
-import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom"
+import { BrowserRouter, Routes, Route, Navigate, useLocation, useParams } from "react-router-dom"
 import { useReducedMotion } from "framer-motion"
 import gsap from "gsap"
 import TopNav     from "./components/TopNav"
@@ -12,6 +12,9 @@ import { routeImports, preloadAllRoutes } from "./routePreload"
 // eagerly — lazy-loading it would add a chunk-fetch round trip to the most
 // common page load instead of saving one.
 import About from "./pages/About"
+import { PROJECTS } from "./pages/projectData"
+import ShutterBlades from "./components/ShutterBlades"
+import { applyShutter, makeShutterRefs, shutterRegistrar } from "./utils/shutter"
 
 import "./App.css"
 
@@ -32,6 +35,12 @@ function PageLoader() {
   )
 }
 
+// /blog/:slug -> /blogs/:slug
+function OldBlogPost() {
+  const { slug } = useParams()
+  return <Navigate to={`/blogs/${slug}`} replace />
+}
+
 /* The actual route table. */
 function RouteSwitch({ location }) {
   return (
@@ -44,8 +53,12 @@ function RouteSwitch({ location }) {
         <Route path="/work/:slug" element={<ProjectDetail />} />
         <Route path="/resume"  element={<Resume />} />
         <Route path="/lab"     element={<Lab />} />
-        <Route path="/blog"    element={<Blog />} />
-        <Route path="/blog/:slug" element={<BlogPost />} />
+        <Route path="/blogs"   element={<Blog />} />
+        <Route path="/blogs/:slug" element={<BlogPost />} />
+        {/* The section used to live at /blog: old links, bookmarks and search
+            results keep working. */}
+        <Route path="/blog"    element={<Navigate to="/blogs" replace />} />
+        <Route path="/blog/:slug" element={<OldBlogPost />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/cv/:slug" element={<CvPage />} />
       </Routes>
@@ -71,13 +84,30 @@ const CV_TITLES = {
   'training-programs': 'Training Programs',
   'conferences-journals': 'Conferences & Journals',
 }
+// A project page gets its own transition: a camera shutter closes, a gallery
+// wall label (category, title, venue, year) shows on it, and the blades part
+// onto the project (see PageTransition). Deliberately not the cover photo --
+// that is the first thing the project page itself shows.
+function projectFor(pathname) {
+  const [seg, slug] = pathname.split('/').filter(Boolean)
+  return seg === 'work' && slug ? PROJECTS.find(p => p.slug === slug) || null : null
+}
+
+// A blog article opens with the quietest transition on the site: no cover, no
+// label -- a short crossfade and a thin accent line across the top, like a
+// good editorial site. It is for reading, so it gets out of the way.
+const isArticle = pathname => {
+  const [seg, slug] = pathname.split('/').filter(Boolean)
+  return seg === 'blogs' && Boolean(slug)
+}
+
 function labelFor(pathname) {
   const [seg, slug] = pathname.split('/').filter(Boolean)
   switch (seg) {
-    case 'work':    return 'Work'
+    case 'work':    return projectFor(pathname) ? projectFor(pathname).title : 'Work'
     case 'resume':  return 'Resume'
     case 'lab':     return 'DIC Lab'
-    case 'blog':    return 'Blog'
+    case 'blogs':   return 'Blogs'
     case 'contact': return 'Contact'
     case 'cv':      return CV_TITLES[slug] || 'Resume'
     default:        return 'About'
@@ -110,9 +140,14 @@ function PageTransition() {
   const busy = useRef(false)
   const playRef = useRef(() => {})
   const curtain = useRef(null)
-  const panel = useRef(null)
+  const panel = useRef(null)       // the curved ink sheet (every page but projects)
+  const shutterBox = useRef(null)  // the camera shutter (project pages)
+  const bar = useRef(null)         // the thin progress line (blog articles)
+  const shutterRefs = useRef(makeShutterRefs())
+  const kicker = useRef(null)
   const label = useRef(null)
   const rule = useRef(null)
+  const venue = useRef(null)
   const page = useRef(null)
 
   const commit = next => {
@@ -125,9 +160,29 @@ function PageTransition() {
   // close over a stale commit/latest.
   playRef.current = () => {
     busy.current = true
+    const project = projectFor(latest.current.pathname)
     const text = labelFor(latest.current.pathname)
     label.current.textContent = text
     label.current.dataset.long = text.length > 18 ? 'true' : 'false'
+
+    // Each kind of destination has its own transition: project pages get the
+    // camera shutter (with a wall label), blog articles a plain crossfade,
+    // everything else the curved ink curtain.
+    const article = !project && isArticle(latest.current.pathname)
+    const meta = project ? { kicker: [project.category, project.year], venue: project.venue } : null
+    const covers = !article // the curtain / shutter surfaces and the label
+    panel.current.style.display = project || article ? 'none' : 'block'
+    shutterBox.current.style.display = project ? 'block' : 'none'
+    label.current.closest('.pt-label').style.display = covers ? '' : 'none'
+    const kickerText = meta ? meta.kicker.filter(Boolean).join('  \u00b7  ') : ''
+    kicker.current.parentNode.style.display = kickerText ? 'block' : 'none'
+    venue.current.parentNode.style.display = meta && meta.venue ? 'block' : 'none'
+    if (meta) {
+      kicker.current.textContent = kickerText
+      venue.current.textContent = meta.venue || ''
+    }
+    const lines = meta ? [kicker.current, venue.current] : []
+    const textEls = [label.current, rule.current, ...lines]
 
     const tl = gsap.timeline({
       onComplete: () => {
@@ -140,30 +195,72 @@ function PageTransition() {
       },
     })
 
+    // Fully covered: swap the page underneath, unseen, and park it a
+    // little low so it can rise into place as the cover leaves.
+    const swap = () => {
+      commit(latest.current)
+      gsap.set(page.current, { opacity: 1, y: 56, overflow: 'clip' })
+    }
+
     tl.set(curtain.current, { autoAlpha: 1, pointerEvents: 'auto' })
-      .set(panel.current, { yPercent: 78 })
 
-      // In: the panel climbs over the page while the page dims beneath it.
-      .to(panel.current, { yPercent: 0, duration: 0.55, ease: 'power4.inOut' }, 0)
-      .to(page.current, { opacity: 0.45, duration: 0.55, ease: 'power2.in' }, 0)
+    if (project) {
+      // ── Project: shutter closes, wall label, shutter opens ──
+      const sh = { o: 1 }
+      const drive = () => applyShutter(shutterRefs.current, sh.o)
+      drive() // start fully open (see-through)
 
-      // The destination's name rises out of a mask, its rule draws under it.
-      .fromTo(label.current, { yPercent: 115 }, { yPercent: 0, duration: 0.5, ease: 'power3.out' }, 0.4)
-      .fromTo(rule.current, { scaleX: 0 }, { scaleX: 1, duration: 0.45, ease: 'power3.out' }, 0.48)
+      tl.to(sh, { o: 0, duration: 0.55, ease: 'power3.inOut', onUpdate: drive }, 0)
+        .to(page.current, { opacity: 0.5, duration: 0.55, ease: 'power2.in' }, 0)
 
-      // Fully covered: swap the page underneath, unseen, and park it a
-      // little low so it can rise into place as the panel leaves.
-      .call(() => {
-        commit(latest.current)
-        gsap.set(page.current, { opacity: 1, y: 56, overflow: 'clip' })
-      }, null, 0.62)
+        // The wall label sets itself line by line on the closed shutter.
+        .fromTo(kicker.current, { yPercent: 115 }, { yPercent: 0, duration: 0.45, ease: 'power3.out' }, 0.42)
+        .fromTo(label.current, { yPercent: 115 }, { yPercent: 0, duration: 0.55, ease: 'power3.out' }, 0.5)
+        .fromTo(rule.current, { scaleX: 0 }, { scaleX: 1, duration: 0.45, ease: 'power3.out' }, 0.62)
+        .fromTo(venue.current, { yPercent: 115 }, { yPercent: 0, duration: 0.45, ease: 'power3.out' }, 0.7)
 
-      // Out: the panel carries on upward and off; the name lifts away; the
-      // new page settles up into position behind it.
-      .to([label.current, rule.current], { opacity: 0, duration: 0.28, ease: 'power2.in' }, 0.84)
-      .to(panel.current, { yPercent: -84, duration: 0.7, ease: 'power4.inOut' }, 0.84)
-      .to(page.current, { y: 0, duration: 0.85, ease: 'power3.out' }, 0.84)
-      .set([label.current, rule.current], { opacity: 1 })
+        .call(swap, null, 0.62)
+
+        // Label clears, the blades part, the project rises into view.
+        .to(textEls, { opacity: 0, duration: 0.25, ease: 'power2.in' }, 1.2)
+        .to(sh, { o: 1, duration: 0.8, ease: 'power3.inOut', onUpdate: drive }, 1.28)
+        .to(page.current, { y: 0, duration: 0.85, ease: 'power3.out' }, 1.28)
+        .set(textEls, { opacity: 1 })
+    } else if (article) {
+      // ── Article: crossfade, with a thin accent line sweeping the top ──
+      // The article's own entrance (title, meta, cover) plays on mount, so
+      // all this has to do is clear the old page and let the new one in.
+      tl.set(curtain.current, { pointerEvents: 'none' })
+        .fromTo(bar.current, { scaleX: 0, opacity: 1 }, { scaleX: 0.72, duration: 0.4, ease: 'power2.out' }, 0)
+        .to(page.current, { opacity: 0, duration: 0.2, ease: 'power1.in' }, 0)
+        .call(() => {
+          commit(latest.current)
+          gsap.set(page.current, { opacity: 0, y: 14 })
+        }, null, 0.22)
+        .to(bar.current, { scaleX: 1, duration: 0.25, ease: 'power2.inOut' }, 0.4)
+        .to(page.current, { opacity: 1, y: 0, duration: 0.5, ease: 'power3.out' }, 0.26)
+        .to(bar.current, { opacity: 0, duration: 0.25, ease: 'power1.out' }, 0.62)
+    } else {
+      // ── Everything else: the curved ink curtain ──
+      tl.set(panel.current, { yPercent: 78 })
+
+        // In: the panel climbs over the page while the page dims beneath it.
+        .to(panel.current, { yPercent: 0, duration: 0.55, ease: 'power4.inOut' }, 0)
+        .to(page.current, { opacity: 0.45, duration: 0.55, ease: 'power2.in' }, 0)
+
+        // The destination's name rises out of a mask, its rule draws under it.
+        .fromTo(label.current, { yPercent: 115 }, { yPercent: 0, duration: 0.5, ease: 'power3.out' }, 0.4)
+        .fromTo(rule.current, { scaleX: 0 }, { scaleX: 1, duration: 0.45, ease: 'power3.out' }, 0.48)
+
+        .call(swap, null, 0.62)
+
+        // Out: the panel carries on upward and off; the name lifts away; the
+        // new page settles up into position behind it.
+        .to([label.current, rule.current], { opacity: 0, duration: 0.28, ease: 'power2.in' }, 0.84)
+        .to(panel.current, { yPercent: -84, duration: 0.7, ease: 'power4.inOut' }, 0.84)
+        .to(page.current, { y: 0, duration: 0.85, ease: 'power3.out' }, 0.84)
+        .set([label.current, rule.current], { opacity: 1 })
+    }
   }
 
   useEffect(() => {
@@ -181,7 +278,7 @@ function PageTransition() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location, reduceMotion])
 
-  useEffect(() => () => gsap.killTweensOf([panel.current, label.current, rule.current, page.current]), [])
+  useEffect(() => () => gsap.killTweensOf([panel.current, bar.current, kicker.current, label.current, rule.current, venue.current, page.current]), [])
 
   return (
     <>
@@ -190,14 +287,22 @@ function PageTransition() {
       </div>
 
       <div ref={curtain} className="pt" aria-hidden="true">
-        <svg ref={panel} className="pt-panel" viewBox="0 0 100 150" preserveAspectRatio="none">
-          <path className="pt-fill" d="M0,16 Q50,-4 100,16 L100,144 Q50,104 0,144 Z" />
-          <path className="pt-edge" d="M0,16 Q50,-4 100,16" />
-          <path className="pt-edge pt-edge--b" d="M0,144 Q50,104 100,144" />
-        </svg>
+        <div ref={panel} className="pt-sheet">
+          <svg className="pt-layer" viewBox="0 0 100 150" preserveAspectRatio="none">
+            <path className="pt-fill" d="M0,16 Q50,-4 100,16 L100,144 Q50,104 0,144 Z" />
+            <path className="pt-edge" d="M0,16 Q50,-4 100,16" />
+            <path className="pt-edge pt-edge--b" d="M0,144 Q50,104 100,144" />
+          </svg>
+        </div>
+        <div ref={shutterBox} className="pt-shutterbox">
+          <ShutterBlades prefix="ps" startOpen reg={shutterRegistrar(shutterRefs.current)} />
+        </div>
+        <div ref={bar} className="pt-bar" />
         <div className="pt-label">
+          <div className="pt-label-mask pt-label-mask--sm"><span ref={kicker} className="pt-kicker" /></div>
           <div className="pt-label-mask"><span ref={label} className="pt-label-text" /></div>
           <span ref={rule} className="pt-rule" />
+          <div className="pt-label-mask pt-label-mask--sm"><span ref={venue} className="pt-venue" /></div>
         </div>
       </div>
     </>

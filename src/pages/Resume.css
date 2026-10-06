@@ -9,78 +9,8 @@
   color: var(--ink);
   padding-bottom: var(--nav-safe);
   width: 100%;
-  overflow-x: hidden;
-}
-
-/* ==========================================
-   HEADER
-========================================== */
-.r-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: clamp(24px, 4vw, 56px);
-  min-height: var(--hero-h);
-  padding: clamp(32px, 4vw, 48px) var(--g);
-  border-bottom: 1.5px solid var(--ink);
-  animation: fadeUp .5s ease both;
-}
-
-/* gap:0 -- each child below sets its own margin-bottom instead, so the
-   name sits tight to the role line while the links block gets real
-   breathing room, without a uniform gap fighting those relationships. */
-.r-header-left {
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-}
-
-/* Portrait -- same treatment as the Home page hero photo (Reveal grayscale
-   that lifts to color on hover/focus), currently reusing that same image
-   as a placeholder until a photo specific to this page is provided. */
-.r-header-photo-col {
-  flex-shrink: 0;
-  width: clamp(160px, 20vw, 280px);
-}
-.r-header-photo {
-  width: 100%;
-  aspect-ratio: 1 / 1.08;
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  /* Cut-out portrait: this panel is its backdrop (same as the Home hero). */
-  background: linear-gradient(180deg, #e6edf3 0%, #cddae5 100%);
-}
-.r-header-photo img {
-  width: 100%; height: 100%;
-  object-fit: cover;
-  object-position: center bottom;
-  display: block;
-}
-
-/* Name -- Bree Serif display, matches ap-title sizing */
-.r-name {
-  /* Trial: Literata on headings (see src/pages/About.css for the same
-     change on Home). --title-tracking (-5px) was tuned for DM Sans at
-     this size -- far too tight for a serif, so it's eased way off. */
-  font-family: 'Literata', var(--serif);
-  font-size: var(--fs-h1);
-  font-weight: 400;
-  line-height: 1.05;
-  letter-spacing: -0.01em;
-  color: var(--ink);
-  margin-bottom: 10px;
-  animation: titleReveal .7s cubic-bezier(.16,1,.3,1) .08s both;
-}
-
-/* Role line under the name -- tight to the name (margin-bottom here, not
-   on .r-name) since the two read as one unit: who, then what. */
-.r-role {
-  font-family: var(--body);
-  font-size: var(--fs-subtitle);
-  font-weight: 400;
-  color: var(--sub);
-  line-height: 1.4;
-  margin-bottom: 20px;
+  overflow-x: clip;
+  isolation: isolate;
 }
 
 /* Secondary role line -- the DIC / Ministry appointment. A distinct fact
@@ -88,8 +18,10 @@
    below (hence the wider gap after) -- proximity should read as grouping,
    and these three blocks aren't the same group. */
 .r-nodal {
+  margin-top: 20px;
+  text-wrap: pretty;
   font-family: var(--body);
-  font-size: clamp(1rem, 1.3vw, 1.05rem);
+  font-size: clamp(1rem, 1.2vw, 1.25rem);
   font-weight: 400;
   color: var(--sub);
   line-height: 1.65;
@@ -101,16 +33,17 @@
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
+  margin-top: 22px;
 }
 .r-links a {
   font-family: var(--body);
-  font-size: 1rem;
+  font-size: clamp(1rem, 1.05vw, 1.1rem);
   font-weight: 500;
   color: var(--accent);
   text-decoration: none;
   border: 1px solid var(--rule);
   border-radius: 100px;
-  padding: 5px 14px;
+  padding: 6px 16px;
   transition: background .2s, color .2s, border-color .2s,
               transform .2s cubic-bezier(.34,1.56,.64,1);
 }
@@ -337,21 +270,13 @@
    RESPONSIVE
 ========================================== */
 @media (max-width: 768px) {
-  /* --hero-h assumes a desktop-height hero; centering shortish header
-     content inside it left large equal gaps above and below on mobile. */
-  .r-header { flex-direction: column; align-items: center; gap: 16px; padding: 16px var(--g); min-height: 0; }
-  .r-header-photo-col { width: clamp(120px, 36vw, 180px); }
-  .r-section-title { font-size: 2rem; }
+    .r-section-title { font-size: 2rem; }
   .r-entry-title { font-size: 1.2rem; }
   .r-award-text { font-size: 1.05rem; }
   .r-paper-title { font-size: 1.1rem; }
-  .r-name { font-size: var(--fs-h1-sm); }
 }
 
 @media (max-width: 580px) {
-  .r-header { align-items: center; gap: 12px; }
-  .r-name { font-size: clamp(18px, 6vw, 28px); }
-  .r-role { font-size: 1rem; }
   .r-nodal { font-size: 1rem; }
   .r-section-title { font-size: 1.6rem; }
   .r-entry,

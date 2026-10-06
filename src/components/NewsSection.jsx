@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import Reveal from './Reveal'
-import { NEWS } from '../data/newsData'
+import { NEWS as LOCAL_NEWS } from '../data/newsData'
+import { useCms, NEWS_QUERY, mapNews } from '../lib/cms'
 import './NewsSection.css'
 
 // How many updates show before the "show all" toggle -- one row on a wide
@@ -12,10 +13,14 @@ const VISIBLE = 4
 /* Latest updates -- admissions windows, open positions, talks, newly
    published or accepted work -- as one compact band right under the hero,
    where a visitor sees time-sensitive news before they scroll into the
-   portfolio, not after. See src/data/newsData.js to add entries; this
-   component just renders whatever's there, newest first. */
+   portfolio, not after. Entries are edited in Sanity (see /studio); the
+   built-in list in src/data/newsData.js is the fallback if that can't be
+   reached. This component just renders whatever's there, newest first. */
 export default function NewsSection() {
   const [all, setAll] = useState(false)
+  // Text only, so showing the built-in list for the instant before the live
+  // one arrives is invisible when they match.
+  const { data: NEWS } = useCms('news', NEWS_QUERY, mapNews, LOCAL_NEWS)
   if (!NEWS.length) return null
 
   const shown = all ? NEWS : NEWS.slice(0, VISIBLE)

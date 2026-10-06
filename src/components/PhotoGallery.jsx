@@ -29,9 +29,16 @@ export function Slideshow({ images, startIdx, onClose }) {
     if (thumb) thumb.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' })
   }, [idx])
 
+  // Lock page scroll while open. The site scrolls inside #root (not the body),
+  // so that has to be locked too or the page moves behind the slideshow.
   useEffect(() => {
+    const scroller = document.getElementById('root')
     document.body.style.overflow = 'hidden'
-    return () => { document.body.style.overflow = '' }
+    if (scroller) scroller.style.overflow = 'hidden'
+    return () => {
+      document.body.style.overflow = ''
+      if (scroller) scroller.style.overflow = ''
+    }
   }, [])
 
   return (

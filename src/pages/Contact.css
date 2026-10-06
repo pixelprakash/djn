@@ -9,62 +9,55 @@
   color: var(--ink);
   padding-bottom: var(--nav-safe);
   width: 100%;
-  overflow-x: hidden;
-}
-
-/* =============================================
-   HEADER
-============================================= */
-.contact-header {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  min-height: var(--hero-h);
-  padding: clamp(32px, 4vw, 48px) var(--g);
-  border-bottom: 1.5px solid var(--ink);
-  animation: fadeUp .5s ease both;
-}
-
-.contact-header-left {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-/* Heading -- clean, no italic accent.
-   Literata, sitewide now (see About.css for the original trial) --
-   --title-tracking (-5px) was tuned for DM Sans at this size and is far
-   too tight for a serif, so it's eased to -0.01em like every other
-   Literata heading on the site. */
-.contact-heading {
-  font-family: 'Literata', var(--serif);
-  font-size: var(--fs-h1);
-  font-weight: 400;
-  line-height: 1.0;
-  letter-spacing: -0.01em;
-  color: var(--ink);
-  animation: titleReveal .7s cubic-bezier(.16,1,.3,1) .08s both;
-}
-
-/* Subtitle -- single line */
-.contact-sub {
-  font-family: var(--body);
-  font-size: var(--fs-subtitle);
-  font-weight: 400;
-  color: var(--sub);
-  line-height: 1.4;
+  /* clip, not hidden, and isolated: the shared hero sits behind the page
+     (see PageHero.css) and `hidden` would make this a scroll container. */
+  overflow-x: clip;
+  isolation: isolate;
 }
 
 /* ==========================================
-   BODY LAYOUT  -- form left | info right
+   BODY: the form on the left, where/elsewhere on the right. The form column
+   keeps a readable width; the right column docks to the page's right gutter
+   so both edges line up with the navbar.
 ========================================== */
 .contact-body {
-  padding: clamp(48px, 6vw, 80px) var(--g);
   display: grid;
-  grid-template-columns: 1fr clamp(260px, 28vw, 360px);
-  gap: clamp(48px, 6vw, 96px);
+  grid-template-columns: minmax(0, 760px) minmax(300px, clamp(320px, 28vw, 420px));
+  justify-content: space-between;
   align-items: start;
-  animation: fadeUp .5s ease .1s both;
+  gap: clamp(40px, 6vw, 96px);
+  padding: clamp(40px, 5vw, 64px) var(--g) clamp(32px, 4vw, 56px);
+}
+
+.contact-main { min-width: 0; }
+
+.contact-section-title,
+.contact-block-title {
+  font-family: 'Literata', var(--serif);
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+.contact-section-title { font-size: clamp(1.7rem, 2.6vw, 2.2rem); line-height: 1.15; }
+.contact-block-title   { font-size: 1.3rem; margin-bottom: 14px; }
+
+.contact-intro {
+  margin: 10px 0 clamp(20px, 2.6vw, 28px);
+  max-width: 34em;
+  font-family: var(--body);
+  font-size: var(--fs-body);
+  line-height: 1.6;
+  color: var(--sub);
+}
+
+/* The form sits on a card, per the site's card pattern (resting shadow,
+   --radius-lg). */
+.contact-card {
+  background: #fff;
+  border: 1px solid rgba(26, 24, 20, .08);
+  border-radius: var(--radius-lg);
+  padding: clamp(22px, 3vw, 40px);
+  box-shadow: 0 1px 2px rgba(26,24,20,.06), 0 8px 24px rgba(26,24,20,.08);
 }
 
 /* ==========================================
@@ -73,238 +66,209 @@
 .contact-form {
   display: flex;
   flex-direction: column;
-  gap: clamp(16px, 2.5vw, 24px);
+  gap: clamp(16px, 2.2vw, 22px);
 }
-
 .form-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: clamp(12px, 2vw, 20px);
 }
+.form-group { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
 
-.form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-/* Label -- small uppercase, Rubik */
 .form-label {
   font-family: var(--body);
   font-size: 1rem;
   font-weight: 500;
-  letter-spacing: .1em;
+  letter-spacing: .08em;
   text-transform: uppercase;
   color: var(--muted);
 }
 .form-label span { color: var(--accent); }
 
-/* Input / Textarea */
 .form-input {
-  background: var(--white);
+  background: var(--bg);
   border: 1.5px solid var(--rule);
-  border-radius: 10px;
-  padding: clamp(12px, 1.5vw, 16px) clamp(14px, 2vw, 18px);
+  border-radius: var(--radius-md);
+  padding: clamp(12px, 1.4vw, 15px) clamp(14px, 1.8vw, 18px);
   font-family: var(--body);
-  font-size: 1rem;
+  font-size: var(--fs-body);
   font-weight: 400;
   color: var(--ink);
   outline: none;
   width: 100%;
-  transition: border-color .2s, box-shadow .2s;
+  transition: border-color .2s, box-shadow .2s, background-color .2s;
 }
-.form-input::placeholder { color: var(--rule); }
+/* Placeholders were the divider colour (~1.4:1 on white): unreadable. */
+.form-input::placeholder { color: rgba(26, 24, 20, .55); }
+.form-input:hover { border-color: rgba(26, 24, 20, .3); }
 .form-input:focus {
+  background: #fff;
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(var(--accent-rgb),.1);
+  box-shadow: 0 0 0 3px rgba(var(--accent-rgb), .14);
 }
-
-.form-textarea {
-  resize: vertical;
-  min-height: 160px;
-  line-height: 1.65;
-}
+.form-textarea { resize: vertical; min-height: 170px; line-height: 1.65; }
 
 .form-error {
   font-family: var(--body);
   font-size: 1rem;
-  color: var(--accent);
+  font-weight: 500;
+  color: #a1281f;
 }
 
-/* Submit button */
 .cta-primary {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
   width: fit-content;
-  padding: clamp(11px, 1.5vw, 14px) clamp(24px, 3vw, 32px);
-  background: var(--ink);
-  color: var(--white);
+  padding: 13px 30px;
   font-family: var(--body);
   font-size: 1rem;
-  font-weight: 500;
-  border: none;
+  font-weight: 600;
+  color: #fff;
+  background: var(--accent);
+  border: 1.5px solid var(--accent);
   border-radius: 100px;
   cursor: pointer;
-  letter-spacing: .01em;
-  position: relative;
-  overflow: hidden;
-  transition: box-shadow .25s, transform .2s cubic-bezier(.34,1.56,.64,1);
+  transition: background .2s, border-color .2s, transform .25s cubic-bezier(.34,1.56,.64,1), box-shadow .2s;
+  box-shadow: 0 2px 10px rgba(var(--accent-rgb), .28);
 }
-.cta-primary::before {
-  content: '';
-  position: absolute; inset: 0;
-  background: var(--accent);
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform .3s ease;
-  z-index: 0;
-}
-.cta-primary:hover::before { transform: scaleX(1); }
-.cta-primary:hover {
-  box-shadow: 0 6px 24px rgba(var(--accent-rgb),.3);
+.cta-primary:hover:not(:disabled) {
+  background: #164a70;
+  border-color: #164a70;
   transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(var(--accent-rgb), .38);
 }
-.cta-primary:active { transform: scale(.97); }
-.cta-primary > * { position: relative; z-index: 1; }
-.cta-primary:disabled { opacity: .6; cursor: not-allowed; transform: none; }
-.cta-primary:disabled::before { display: none; }
+.cta-primary:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.cta-primary:disabled { opacity: .65; cursor: progress; }
 
 /* Success state */
 .contact-success {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 18px;
-  padding: clamp(28px, 4vw, 48px);
-  background: var(--white);
-  border-radius: 14px;
-  border: 1px solid var(--rule);
+  gap: 12px;
+  padding: clamp(8px, 2vw, 20px) 0;
 }
 .success-icon {
-  width: 52px; height: 52px;
-  background: var(--accent);
-  color: var(--white);
+  width: 48px; height: 48px;
+  display: grid; place-items: center;
   border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 1.3rem; font-weight: 500;
+  background: rgba(var(--accent-rgb), .1);
+  color: var(--accent);
+  font-size: 1.4rem;
+  font-weight: 600;
 }
 .contact-success h3 {
   font-family: 'Literata', var(--serif);
-  font-size: 2rem;
+  font-size: 1.6rem;
   font-weight: 400;
   color: var(--ink);
 }
 .contact-success p {
   font-family: var(--body);
-  font-size: 1.1rem;
-  font-weight: 400;
-  color: var(--muted);
-  line-height: 1.65;
+  font-size: var(--fs-body);
+  line-height: 1.6;
+  color: var(--sub);
+  margin-bottom: 8px;
 }
 
 /* ==========================================
-   RIGHT INFO PANEL
+   ASIDE: Based at / Elsewhere online. Two cards, same pattern as the form.
 ========================================== */
-.contact-info {
+.contact-aside {
   display: flex;
   flex-direction: column;
-  gap: clamp(36px, 5vw, 56px);
+  gap: clamp(18px, 2.4vw, 28px);
+  min-width: 0;
+  position: sticky;
+  top: 96px;
 }
-
-/* Social / profile links list */
-.contact-list { display: flex; flex-direction: column; }
-
-.contact-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-  padding: clamp(14px, 1.8vw, 20px) 0;
-  border-bottom: 1px solid var(--rule);
-  transition: padding-left .22s;
+.contact-block {
+  background: #fff;
+  border: 1px solid rgba(26, 24, 20, .08);
+  border-radius: var(--radius-lg);
+  padding: clamp(20px, 2.2vw, 28px);
+  box-shadow: 0 1px 2px rgba(26,24,20,.06), 0 8px 24px rgba(26,24,20,.08);
 }
-.contact-row:first-child { border-top: 1px solid var(--rule); }
-.contact-row:hover { padding-left: 6px; }
-
-/* Label -- small caps */
-.contact-label {
-  font-family: var(--body);
-  font-size: 1rem;
-  font-weight: 500;
-  letter-spacing: .1em;
-  text-transform: uppercase;
-  color: var(--muted);
-  flex-shrink: 0;
-}
-
-/* Value link */
-.contact-value {
-  font-family: var(--body);
-  font-size: 1rem;
-  font-weight: 400;
-  color: var(--sub);
-  text-decoration: none;
-  text-align: right;
-  transition: color .2s;
-}
-.contact-value:hover { color: var(--accent); }
-
-/* Location block */
-.contact-location { display: flex; flex-direction: column; gap: 10px; }
-
-.contact-location-label {
-  font-family: var(--body);
-  font-size: 1rem;
-  font-weight: 500;
-  letter-spacing: .14em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
-
 .contact-place {
   font-family: var(--body);
-  font-size: 1.1rem;
-  font-weight: 500;
-  line-height: 1.5;
+  font-size: var(--fs-body);
+  font-weight: 600;
+  line-height: 1.4;
   color: var(--ink);
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
 }
-.contact-place span {
+.contact-address {
+  margin-top: 6px;
+  font-family: var(--body);
+  font-size: var(--fs-body);
+  line-height: 1.55;
+  color: var(--sub);
+}
+.contact-maplink {
+  display: inline-block;
+  margin-top: 14px;
+  font-family: var(--body);
   font-size: 1rem;
-  font-weight: 400;
-  color: var(--muted);
-  line-height: 1.65;
+  font-weight: 500;
+  color: var(--accent);
+  text-decoration: none;
 }
+.contact-maplink:hover { text-decoration: underline; text-underline-offset: 3px; }
 
-/* ==========================================
-   ANIMATION
-========================================== */
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(14px); }
-  to   { opacity: 1; transform: translateY(0); }
+.contact-links { list-style: none; }
+.contact-link {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-areas: "label arrow" "value arrow";
+  column-gap: 12px;
+  align-items: center;
+  padding: 13px 0;
+  border-top: 1px solid var(--rule);
+  text-decoration: none;
 }
+.contact-links li:first-child .contact-link { border-top: 0; padding-top: 2px; }
+.contact-link-label {
+  grid-area: label;
+  font-family: var(--body);
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.contact-link-value {
+  grid-area: value;
+  font-family: var(--body);
+  font-size: var(--fs-body);
+  color: var(--ink);
+  overflow-wrap: anywhere;
+  transition: color .2s;
+}
+.contact-link-arrow {
+  grid-area: arrow;
+  font-size: 1.1rem;
+  color: var(--muted);
+  transition: color .2s, transform .25s cubic-bezier(.34,1.56,.64,1);
+}
+.contact-link:hover .contact-link-value { color: var(--accent); }
+.contact-link:hover .contact-link-arrow { color: var(--accent); transform: translate(2px, -2px); }
+.contact-link:focus-visible,
+.contact-maplink:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
 
 /* ==========================================
    RESPONSIVE
 ========================================== */
-@media (max-width: 860px) {
-  /* --hero-h assumes a desktop-height hero; centering short header
-     content inside it left a large empty band above the title. */
-  .contact-header { min-height: 0; }
-  .contact-body {
-    grid-template-columns: 1fr;
-    gap: clamp(40px, 6vw, 60px);
-  }
+@media (max-width: 960px) {
+  .contact-body { grid-template-columns: minmax(0, 1fr); }
+  .contact-aside { position: static; }
+}
+@media (max-width: 560px) {
+  .form-row { grid-template-columns: 1fr; }
+  .cta-primary { width: 100%; }
 }
 
-@media (max-width: 640px) {
-  .contact-heading { font-size: var(--fs-h1-sm); }
-  .contact-sub { font-size: 1rem; }
-  .form-row { grid-template-columns: 1fr; }
-  .form-input { font-size: 1rem; }
-  .cta-primary { font-size: 1rem; }
-  .contact-success h3 { font-size: 1.5rem; }
+@media (prefers-reduced-motion: reduce) {
+  .cta-primary, .contact-link-arrow, .form-input { transition: none; }
+  .cta-primary:hover:not(:disabled), .contact-link:hover .contact-link-arrow { transform: none; }
 }

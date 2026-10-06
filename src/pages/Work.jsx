@@ -1,23 +1,43 @@
 import { Link } from 'react-router-dom'
 import { PROJECTS } from './projectData'
 import { SPONSORED, SOLO_SHOWS, EXHIBITIONS } from './exhibitionData'
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import Reveal from '../components/Reveal'
+import PageHero from '../components/PageHero'
+import useStackedLayers from '../hooks/useStackedLayers'
 import './Work.css'
 
 export default function Work() {
   const [tab, setTab] = useState('projects')
+  const pageRef = useRef(null)
+  useStackedLayers(pageRef)
+  const sheetTop = useRef(null)
+
+  // The tabs stay pinned under the top bar while the lists scroll, so a visitor
+  // can switch category from anywhere. Switching swaps in a list of a different
+  // length, so if they are scrolled down, bring the new list back to its start
+  // (just under the pinned tabs) instead of leaving them mid-way or past the end.
+  const chooseTab = id => {
+    setTab(id)
+    const root = document.getElementById('root')
+    if (!root || !sheetTop.current) return
+    const navH = window.matchMedia('(max-width: 640px)').matches ? 57 : 65
+    const target = sheetTop.current.getBoundingClientRect().bottom + root.scrollTop - navH
+    if (root.scrollTop > target) root.scrollTo({ top: target })
+  }
 
   return (
-    <div className="wp">
+    <div className="wp" ref={pageRef}>
 
       {/* -- HEADER -- */}
-      <header className="wp-head">
-        <div className="wp-head-left">
-          <h1 className="wp-heading">Selected Work</h1>
-          <p className="wp-sub">Photography, research projects, and exhibitions spanning three decades.</p>
-        </div>
-      </header>
+      <PageHero
+        title="Selected Work"
+        sub="Photography, research projects, and exhibitions spanning three decades."
+      />
+
+      {/* The page's rounded top edge over the hero (see PageHero.css). It is
+          its own element, not the tab bar, so the pinned tabs stay square. */}
+      <div className="wp-sheet-top" ref={sheetTop} aria-hidden="true" />
 
       {/* -- TABS -- */}
       <nav className="tab-nav" aria-label="Work sections">
@@ -29,7 +49,7 @@ export default function Work() {
           <button
             key={id}
             className={`tab-btn${tab === id ? ' active' : ''}`}
-            onClick={() => setTab(id)}
+            onClick={() => chooseTab(id)}
             aria-selected={tab === id}
           >
             {label}
