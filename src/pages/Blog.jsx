@@ -174,7 +174,8 @@ export default function Blog() {
           })}
         </div>
 
-        {/* -- ARCHIVE BANNER -- */}
+        {/* -- ARCHIVE BANNER ("Read all posts on DJM Photography") -- switched off for now;
+            its styles (.bl-banner*) are still in Blog.css.
         <Reveal
           as="a"
           href="https://djmphotography.blogspot.com"
@@ -189,6 +190,7 @@ export default function Blog() {
           </div>
           <div className="bl-banner-arrow">&#8599;</div>
         </Reveal>
+        */}
 
       </div>
     </div>
