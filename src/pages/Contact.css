@@ -7,7 +7,6 @@
   background: var(--bg);
   font-family: var(--body);
   color: var(--ink);
-  -webkit-font-smoothing: antialiased;
   padding-bottom: var(--nav-safe);
   width: 100%;
   overflow-x: hidden;
@@ -51,7 +50,7 @@
 .contact-sub {
   font-family: var(--body);
   font-size: var(--fs-subtitle);
-  font-weight: 300;
+  font-weight: 400;
   color: var(--sub);
   line-height: 1.4;
 }
@@ -108,7 +107,7 @@
   padding: clamp(12px, 1.5vw, 16px) clamp(14px, 2vw, 18px);
   font-family: var(--body);
   font-size: 1rem;
-  font-weight: 300;
+  font-weight: 400;
   color: var(--ink);
   outline: none;
   width: 100%;
@@ -199,7 +198,7 @@
 .contact-success p {
   font-family: var(--body);
   font-size: 1.1rem;
-  font-weight: 300;
+  font-weight: 400;
   color: var(--muted);
   line-height: 1.65;
 }
@@ -275,7 +274,7 @@
 }
 .contact-place span {
   font-size: 1rem;
-  font-weight: 300;
+  font-weight: 400;
   color: var(--muted);
   line-height: 1.65;
 }

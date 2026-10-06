@@ -1,15 +1,25 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import Reveal from './Reveal'
 import { NEWS } from '../data/newsData'
 import './NewsSection.css'
 
-/* Compact list of time-sensitive updates -- admissions windows, open
-   positions, talks, newly published or accepted work -- on the home
-   page, between the portfolio (WorksTimeline) and the footer. See
-   src/data/newsData.js to add entries; this component just renders
-   whatever's there. */
+// How many updates show before the "show all" toggle -- one row on a wide
+// screen. Anything past this stays one click away instead of pushing the
+// portfolio further down the page.
+const VISIBLE = 4
+
+/* Latest updates -- admissions windows, open positions, talks, newly
+   published or accepted work -- as one compact band right under the hero,
+   where a visitor sees time-sensitive news before they scroll into the
+   portfolio, not after. See src/data/newsData.js to add entries; this
+   component just renders whatever's there, newest first. */
 export default function NewsSection() {
+  const [all, setAll] = useState(false)
   if (!NEWS.length) return null
+
+  const shown = all ? NEWS : NEWS.slice(0, VISIBLE)
+  const extra = NEWS.length - VISIBLE
 
   return (
     <section className="ns" aria-labelledby="ns-heading">
@@ -19,11 +29,11 @@ export default function NewsSection() {
           <p className="ns-sub">Admissions, openings, talks, and recent work.</p>
         </div>
 
-        <div className="ns-list">
-          {NEWS.map((item, i) => {
+        <div className="ns-grid">
+          {shown.map((item, i) => {
             // Internal paths ("/cv/...") route through React Router's Link;
             // anything else is a plain external anchor. Items with no href
-            // at all render as an inert row (an announcement with nowhere
+            // at all render as an inert card (an announcement with nowhere
             // to click through to).
             const external = Boolean(item.href) && !item.href.startsWith('/')
             const internal = Boolean(item.href) && !external
@@ -31,7 +41,7 @@ export default function NewsSection() {
             return (
               <Reveal
                 as={internal ? Link : external ? 'a' : 'div'}
-                key={i}
+                key={item.title}
                 to={internal ? item.href : undefined}
                 href={external ? item.href : undefined}
                 target={external ? '_blank' : undefined}
@@ -39,12 +49,12 @@ export default function NewsSection() {
                 className={`ns-item${item.href ? ' ns-item--link' : ''}`}
                 delay={(i % 4) * 0.05}
               >
-                <span className="ns-date">{item.date}</span>
-                <div className="ns-body">
+                <div className="ns-meta">
                   <span className="ns-tag">{item.tag}</span>
-                  <h3 className="ns-title">{item.title}</h3>
-                  {item.desc && <p className="ns-desc">{item.desc}</p>}
+                  <span className="ns-date">{item.date}</span>
                 </div>
+                <h3 className="ns-title">{item.title}</h3>
+                {item.desc && <p className="ns-desc">{item.desc}</p>}
                 {item.href && (
                   <span className="ns-arrow" aria-hidden="true">
                     {external ? '↗' : '→'}
@@ -54,6 +64,17 @@ export default function NewsSection() {
             )
           })}
         </div>
+
+        {extra > 0 && (
+          <button
+            type="button"
+            className="ns-more"
+            aria-expanded={all}
+            onClick={() => setAll(v => !v)}
+          >
+            {all ? 'Show fewer' : `Show all ${NEWS.length} updates`}
+          </button>
+        )}
       </div>
     </section>
   )

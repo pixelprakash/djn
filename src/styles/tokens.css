@@ -10,9 +10,11 @@
   --bg:      #f5f3ee;
   --ink:     #1a1814;
   --sub:     #4a4540;
-  --muted:   #6b6660; /* darkened from #8a8478 — that value contrasts ~3.35:1
-                          on --bg, below WCAG AA's 4.5:1 for the small/body
-                          text it's used for. This passes ~5.1:1. */
+  --muted:   #534e48; /* darkened twice: #8a8478 was ~3.35:1 on --bg (below AA),
+                          #6b6660 cleared AA at ~5.1:1 but is used for real reading
+                          content (dates, venues, form labels, addresses), where
+                          that is still tiring. This is ~7.4:1 on --bg and ~7:1 on
+                          the pale-blue News band. */
   --rule:    #dbd6ce;
   --accent:     #1c5d8c; /* brand blue — primary accent sitewide */
   --accent-rgb: 28, 93, 140; /* same color, as r,g,b — for rgba() glows/borders that need partial opacity. Keeping this in sync with --accent is what makes a future rebrand a two-line change instead of a grep-and-replace. */

@@ -1,14 +1,12 @@
-/* Native cursor hidden only once JS confirms a fine pointer is present —
-   see CustomCursor.jsx. Touch/coarse pointers never get this class, so
-   mobile is completely unaffected. */
-html.cc-enabled,
-html.cc-enabled * {
+/* The real pointer is only replaced while the viewfinder is actually
+   doing something -- over a photo or card that opens larger (state "view",
+   see CustomCursor.jsx). Everywhere else, and above all over text, the OS
+   cursor stays: it is the one pointer people can track instantly while
+   reading, and the I-beam over a paragraph tells you it is selectable.
+   (Hiding it site-wide behind a 5px dot made reading harder, not richer.) */
+html.cc-view,
+html.cc-view * {
   cursor: none !important;
-}
-html.cc-enabled input,
-html.cc-enabled textarea,
-html.cc-enabled [contenteditable="true"] {
-  cursor: text !important; /* precise caret placement beats the viewfinder */
 }
 
 .cc {
@@ -68,9 +66,9 @@ html.cc-enabled [contenteditable="true"] {
 .cc[data-state="view"] .cc-dot { opacity: 0; transform: translate(-50%, -50%) scale(0); }
 .cc[data-state="view"] .cc-expand { opacity: 1; transform: translate(-50%, -50%) scale(1); }
 
-/* text: hide entirely, native caret takes over */
-.cc[data-state="text"] .cc-brackets,
-.cc[data-state="text"] .cc-dot { opacity: 0; }
+/* every other state: nothing drawn, the native cursor is showing */
+.cc:not([data-state="view"]) .cc-brackets,
+.cc:not([data-state="view"]) .cc-dot { opacity: 0; }
 
 /* click feedback — a shutter-click squeeze */
 .cc--down .cc-brackets { transform: translate(-50%, -50%) scale(0.82) !important; }

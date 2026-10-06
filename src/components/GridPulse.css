@@ -1,0 +1,22 @@
+/* See GridPulse.jsx. Positioned container required: this fills its nearest
+   positioned ancestor and sits under the content. */
+.grid-pulse {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  /* The hairlines, faint on their own so the lit cells keep full ink.
+     Override --grid-pulse-line where it's used. */
+  --grid-pulse-line: rgba(255, 255, 255, .07);
+  background-image:
+    linear-gradient(to right, var(--grid-pulse-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-pulse-line) 1px, transparent 1px);
+  background-size: var(--grid-pulse-cell) var(--grid-pulse-cell);
+}
+
+.grid-pulse-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}

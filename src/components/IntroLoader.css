@@ -1,151 +1,250 @@
+/* One-time arrival (see IntroLoader.jsx): a camera viewfinder.
+   --il-ink is a touch lighter at the centre than the page ink, so the
+   screen has depth without a gradient looking like a gradient. */
 .il {
+  --il-cream: rgba(245, 243, 238, 1);
+  --il-dim:   rgba(245, 243, 238, .66);
+  --il-faint: rgba(245, 243, 238, .12);
+  --il-blue:  #7db4dc; /* brand blue, lifted to read on ink */
+  --il-pad:   clamp(16px, 2.4vw, 34px);
+  --il-arm:   clamp(22px, 3vw, 40px);
+
   position: fixed;
   inset: 0;
   z-index: 100000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--ink);
   overflow: hidden;
+  font-family: var(--body);
 }
 
-/* Subtle film-grain texture -- static, low-opacity, just enough to keep
-   the flat ink background from reading as a plain color swatch; a
-   quietly filmic touch for a photographer's site. */
+/* Shutter blades -- the ink surface. Fills with the page ink so the
+   closed shutter is indistinguishable from a flat ink screen. */
+.il-shutter {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.il-blade { fill: var(--ink); }
+.il-edge {
+  stroke: rgba(245, 243, 238, .34);
+  vector-effect: non-scaling-stroke;
+  stroke-width: 1px;
+}
+
+/* Soft centre light, so the flat ink has depth. Fades with the readouts. */
+.il-glow {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(120% 95% at 50% 44%, rgba(255, 255, 255, .045) 0%, rgba(255, 255, 255, 0) 68%);
+}
+
+/* Static film grain: keeps flat ink from reading as a colour swatch. */
 .il-grain {
   position: absolute;
   inset: 0;
-  opacity: .05;
+  opacity: .06;
   mix-blend-mode: overlay;
   pointer-events: none;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
-/* ── The frame: a layout grid's margins doubling as a photo proof
-   sheet's crop marks -- the one visual idea the whole intro is built
-   from, not incidental decoration. ── */
-.il-frame {
-  position: relative;
-  width: clamp(340px, 62vw, 760px);
-  height: clamp(230px, 40vh, 340px);
+/* The viewfinder: everything lives inside this inset frame. */
+.il-vf {
+  position: absolute;
+  inset: var(--il-pad);
 }
 
-.il-guide {
+/* ── Rule-of-thirds grid ── */
+.il-third {
   position: absolute;
-  background: rgba(var(--accent-rgb), .4);
+  background: var(--il-faint);
 }
-.il-guide--t, .il-guide--b {
-  left: 0; right: 0;
-  height: 1px;
-  transform-origin: center;
-  transform: scaleX(0);
-}
-.il-guide--t { top: 0; }
-.il-guide--b { bottom: 0; }
-.il-guide--l, .il-guide--r {
-  top: 0; bottom: 0;
-  width: 1px;
-  transform-origin: center;
-  transform: scaleY(0);
-}
-.il-guide--l { left: 0; }
-.il-guide--r { right: 0; }
+.il-third--v1, .il-third--v2 { top: 0; bottom: 0; width: 1px; transform-origin: center; transform: scaleY(0); }
+.il-third--v1 { left: 33.333%; }
+.il-third--v2 { left: 66.666%; }
+.il-third--h1, .il-third--h2 { left: 0; right: 0; height: 1px; transform-origin: center; transform: scaleX(0); }
+.il-third--h1 { top: 33.333%; }
+.il-third--h2 { top: 66.666%; }
 
-/* Printer's crop marks -- two short strokes meeting at a corner point,
-   sitting just outside the frame's own corner, pointing away from the
-   content, exactly as they would on a proof sheet. */
-.il-crop {
+/* ── Frame corners ── */
+.il-corner {
   position: absolute;
-  width: 16px;
-  height: 16px;
+  width: var(--il-arm);
+  height: var(--il-arm);
   opacity: 0;
 }
-.il-crop--tl { top: -9px;  left: -9px;  border-top: 1.5px solid var(--bg); border-left: 1.5px solid var(--bg); }
-.il-crop--tr { top: -9px;  right: -9px; border-top: 1.5px solid var(--bg); border-right: 1.5px solid var(--bg); }
-.il-crop--bl { bottom: -9px; left: -9px;  border-bottom: 1.5px solid var(--bg); border-left: 1.5px solid var(--bg); }
-.il-crop--br { bottom: -9px; right: -9px; border-bottom: 1.5px solid var(--bg); border-right: 1.5px solid var(--bg); }
+.il-corner--tl { top: 0;    left: 0;  border-top: 2px solid var(--il-cream);    border-left: 2px solid var(--il-cream); }
+.il-corner--tr { top: 0;    right: 0; border-top: 2px solid var(--il-cream);    border-right: 2px solid var(--il-cream); }
+.il-corner--bl { bottom: 0; left: 0;  border-bottom: 2px solid var(--il-cream); border-left: 2px solid var(--il-cream); }
+.il-corner--br { bottom: 0; right: 0; border-bottom: 2px solid var(--il-cream); border-right: 2px solid var(--il-cream); }
 
-.il-counter {
+/* ── Readouts ── */
+.il-hud {
   position: absolute;
-  top: -34px;
-  left: 0;
   opacity: 0;
-  font-family: var(--body);
-  font-size: 0.85rem;
-  font-weight: 600;
-  letter-spacing: .06em;
-  color: rgba(245,243,238,.56);
+  font-size: 0.82rem;
+  font-weight: 500;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--il-dim);
   font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
+.il-hud--tl { top: 10px; left: calc(var(--il-arm) + 18px); }
+.il-hud--tr { top: 10px; right: calc(var(--il-arm) + 18px); }
+.il-hud--br { bottom: 14px; right: calc(var(--il-arm) + 18px); }
 
-/* ── Stage: the content the frame brackets. ── */
-.il-stage {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: center;
-  height: 100%;
-  padding: 0 clamp(20px, 4vw, 40px);
+/* ── Progress: the bottom edge of the frame is the bar ── */
+.il-bottom {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  opacity: 0; /* faded in by the timeline once the intro starts */
 }
-
-.il-name-wrap,
-.il-facts-wrap {
-  position: relative;
+.il-track {
+  position: absolute;
+  left: calc(var(--il-arm) + 18px);
+  right: calc(var(--il-arm) + 18px);
+  bottom: 0;
+  height: 2px;
+  background: var(--il-faint);
   overflow: hidden;
 }
+.il-fill {
+  display: block;
+  height: 100%;
+  background: var(--il-blue);
+  transform-origin: left;
+  transform: scaleX(0);
+}
+.il-count {
+  position: absolute;
+  left: calc(var(--il-arm) + 18px);
+  bottom: 16px;
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  font-size: clamp(2.4rem, 5.4vw, 4.4rem);
+  font-weight: 300;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--il-cream);
+  font-variant-numeric: tabular-nums;
+}
+.il-count i {
+  font-style: normal;
+  font-size: .32em;
+  letter-spacing: .08em;
+  color: var(--il-dim);
+}
 
+/* ── Exposure meter ── */
+.il-meter {
+  position: absolute;
+  left: 50%;
+  bottom: 18px;
+  width: clamp(150px, 16vw, 220px);
+  transform: translateX(-50%);
+  opacity: 0;
+}
+.il-ticks {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  height: 16px;
+}
+.il-ticks span {
+  width: 1px;
+  height: 7px;
+  background: var(--il-dim);
+}
+.il-ticks span.is-major { height: 14px; background: var(--il-cream); }
+.il-marker {
+  position: absolute;
+  top: -11px;
+  left: 0;
+  width: 0; height: 0;
+  margin-left: -5px;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 7px solid var(--il-blue);
+}
+
+/* ── Centre: autofocus box + name ── */
+.il-center {
+  position: absolute;
+  top: 46%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: clamp(24px, 3.4vw, 48px) clamp(26px, 4.4vw, 64px);
+  text-align: center;
+  width: max-content;
+  max-width: 100%;
+}
+
+.il-af { position: absolute; inset: 0; opacity: 0; }
+.il-af i {
+  position: absolute;
+  width: 16px; height: 16px;
+  border: 0 solid var(--il-blue);
+}
+.il-af i:nth-child(1) { top: 0;    left: 0;  border-width: 2px 0 0 2px; }
+.il-af i:nth-child(2) { top: 0;    right: 0; border-width: 2px 2px 0 0; }
+.il-af i:nth-child(3) { bottom: 0; left: 0;  border-width: 0 0 2px 2px; }
+.il-af i:nth-child(4) { bottom: 0; right: 0; border-width: 0 2px 2px 0; }
+.il-af.is-locked i { border-color: var(--il-cream); }
+
+/* Masks: padding sits on the element that owns the font size, so the em
+   resolves against the type it protects (descenders, italic overhang). */
+.il-mask {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+}
 .il-name {
   font-family: 'Literata', var(--serif);
   font-style: italic;
   font-weight: 400;
-  font-size: clamp(26px, 4.4vw, 48px);
-  line-height: 1.15;
-  letter-spacing: -0.01em;
-  color: var(--bg);
-  white-space: nowrap;
+  font-size: clamp(2.3rem, 7.2vw, 6.4rem);
+  line-height: 1.12;
+  letter-spacing: -0.015em;
+  color: var(--il-cream);
 }
-.il-name-bar {
-  position: absolute;
-  inset: 0;
-  background: var(--accent);
-  transform-origin: right;
-}
+.il-name .il-mask { padding: 0.06em 0.12em 0.24em; margin: 0 -0.04em; }
+.il-word { display: inline-block; }
 
-.il-rule {
-  width: clamp(48px, 7vw, 84px);
-  height: 1.5px;
-  margin: clamp(14px, 2vw, 20px) 0;
-  background: rgba(245, 243, 238, .4);
-  transform-origin: left;
-  transform: scaleX(0);
+.il-sub {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: clamp(4px, 1vw, 12px);
 }
-
-.il-facts {
-  font-family: var(--body);
-  font-size: clamp(0.95rem, 1.6vw, 1.1rem);
+.il-sub .il-mask { padding: 0.12em 0.2em 0.28em; }
+.il-line {
+  display: inline-block;
+  font-size: clamp(0.95rem, 1.5vw, 1.2rem);
   font-weight: 500;
-  letter-spacing: .02em;
-  color: rgba(245,243,238,.82);
-  white-space: nowrap;
+  letter-spacing: .06em;
+  color: var(--il-dim);
+  text-wrap: balance;
 }
-.il-facts-bar {
-  position: absolute;
-  inset: 0;
-  background: var(--accent);
-  transform-origin: right;
-}
+.il-sub .il-mask:first-child .il-line { color: rgba(245, 243, 238, .9); }
 
-/* prefers-reduced-motion skips this component entirely at the React
-   level (see IntroLoader.jsx, which also never builds the GSAP timeline
-   in that case) -- this rule is just a second line of defense in case
-   CSS ends up cached ahead of a JS update. */
+/* Reduced motion skips this component in React; this is the second line
+   of defence if CSS is cached ahead of a JS update. */
 @media (prefers-reduced-motion: reduce) {
   .il { display: none; }
 }
 
-@media (max-width: 560px) {
-  .il-frame { width: 86vw; height: clamp(260px, 52vh, 380px); }
-  .il-name { white-space: normal; }
-  .il-facts { white-space: normal; }
-  .il-counter { top: -28px; }
+@media (max-width: 720px) {
+  .il-meter { display: none; }
+  .il-hud--tr { display: none; }
+  .il-hud--tl { left: calc(var(--il-arm) + 12px); }
+  .il-hud--br { right: calc(var(--il-arm) + 12px); }
+  .il-track { left: calc(var(--il-arm) + 12px); right: calc(var(--il-arm) + 12px); }
+  .il-count { left: calc(var(--il-arm) + 12px); }
+  .il-name { font-size: clamp(2.4rem, 12.5vw, 4rem); }
+  .il-name .il-mask { display: block; margin: 0; }
+  .il-center { padding: 28px 22px; }
 }

@@ -6,10 +6,33 @@
    identity statement live together in one glance.
 ===================================================== */
 .ft {
+  position: relative;
+  overflow: hidden;
   background: var(--ink);
   color: rgba(255,255,255,.7);
   margin-top: clamp(56px, 7vw, 88px);
+  /* A halo in the footer's own ground colour, so lit grid cells never
+     crowd the letters (GridPulse also holds its light back from anything
+     marked data-grid-avoid; this is the second line of defence). */
+  --ft-halo: 0 0 6px var(--ink), 0 0 14px var(--ink), 0 0 28px var(--ink);
 }
+
+/* The one edge of colour the footer wears at rest: a hairline spectrum,
+   red through violet, the same ramp GridPulse paints with -- light
+   leaving a prism. */
+.ft-spectrum {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  z-index: 2;
+  background: linear-gradient(90deg,
+    hsl(0 85% 58%), hsl(32 90% 56%), hsl(58 92% 58%), hsl(120 62% 50%),
+    hsl(190 80% 52%), hsl(240 82% 64%), hsl(280 72% 62%));
+  opacity: .9;
+}
+
+.ft-inner, .ft-bottom { position: relative; z-index: 1; }
+.ft-logo, .ft-tagline, .ft-link, .ft-bottom p { text-shadow: var(--ft-halo); }
 
 .ft-inner {
   max-width: 1440px;
@@ -40,7 +63,7 @@
   font-size: 1rem;
   font-weight: 300;
   line-height: 1.65;
-  color: rgba(255,255,255,.55);
+  color: rgba(255,255,255,.74);
   max-width: 36ch;
 }
 
@@ -54,7 +77,7 @@
   font-family: var(--body);
   font-size: 1rem;
   font-weight: 400;
-  color: rgba(255,255,255,.65);
+  color: rgba(255,255,255,.8);
   text-decoration: none;
   width: fit-content;
   transition: color .2s ease, transform .2s cubic-bezier(.34,1.56,.64,1);
@@ -75,7 +98,7 @@
   align-items: center;
   justify-content: center;
   border: 1px solid rgba(255,255,255,.16);
-  color: rgba(255,255,255,.65);
+  color: rgba(255,255,255,.8);
   transition: background .25s ease, color .25s ease, border-color .25s ease, transform .25s cubic-bezier(.34,1.56,.64,1);
 }
 .ft-social:hover, .ft-social:focus-visible {
@@ -96,7 +119,7 @@
   font-size: 1rem;
   /* .4 measured ~3.8:1 against --ink — below WCAG AA's 4.5:1 for text.
      .6 clears it with room to spare. */
-  color: rgba(255,255,255,.6);
+  color: rgba(255,255,255,.76);
 }
 
 @media (max-width: 640px) {

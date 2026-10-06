@@ -7,7 +7,6 @@
   background: var(--bg);
   font-family: var(--body);
   color: var(--ink);
-  -webkit-font-smoothing: antialiased;
   padding-bottom: var(--nav-safe);
   width: 100%;
   overflow-x: hidden;
@@ -48,20 +47,14 @@
   aspect-ratio: 1 / 1.08;
   border-radius: var(--radius-lg);
   overflow: hidden;
-  background: var(--rule);
+  /* Cut-out portrait: this panel is its backdrop (same as the Home hero). */
+  background: linear-gradient(180deg, #e6edf3 0%, #cddae5 100%);
 }
 .r-header-photo img {
   width: 100%; height: 100%;
   object-fit: cover;
+  object-position: center bottom;
   display: block;
-  filter: grayscale(1);
-  transform: scale(1);
-  transition: filter .5s ease, transform .5s cubic-bezier(.34,1.56,.64,1);
-}
-.r-header-photo:hover img,
-.r-header-photo:focus-within img {
-  filter: grayscale(0);
-  transform: scale(1.03);
 }
 
 /* Name -- Bree Serif display, matches ap-title sizing */

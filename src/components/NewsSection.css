@@ -1,131 +1,159 @@
-.ns {
-  background: var(--bg);
-  padding: clamp(48px, 7vw, 88px) 0;
+/* Compact band under the hero (see NewsSection.jsx). Every rule is
+   prefixed with .ns so it out-specifies About.css's blanket
+   ".hp, .hp * { background: transparent }" -- this component renders
+   inside .hp, and that rule would otherwise strip the tag chips' tint. */
+/* A pale tint of the brand blue: steps down from the cream hero and
+   leads into Works, whose first project opens on a deep blue-slate, so
+   the page moves cream -> pale blue -> dark rather than jumping. Text
+   on it keeps >=4.8:1 (muted, the weakest) -- see the contrast check
+   when changing this. section.ns, not .ns, to out-specify About.css's
+   ".hp *" transparent reset. */
+section.ns {
+  background: #e8eef3;
+  border-top: 1px solid rgba(var(--accent-rgb), .16);
+  border-bottom: 1px solid rgba(var(--accent-rgb), .16);
+  padding: clamp(32px, 4.5vw, 56px) 0 clamp(36px, 5vw, 60px);
 }
 
-/* Gutter-padded, not margin:auto-centered -- max-width still caps the
-   line length on very wide screens, but the column starts flush at the
-   page's left gutter (var(--g)) so its heading lines up with the hero
-   title and the Works heading right above it, instead of floating in
-   the middle of the viewport while they stay flush-left. */
-.ns-inner {
-  max-width: 880px;
+/* Gutter-padded, left-flush -- lines up with the hero title above and
+   the Works heading below. */
+.ns .ns-inner {
+  max-width: 1440px;
   padding: 0 var(--g);
 }
 
-.ns-head {
-  margin-bottom: clamp(28px, 4vw, 44px);
+.ns .ns-head {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 6px 20px;
+  margin-bottom: clamp(20px, 2.8vw, 32px);
 }
 
-.ns-heading {
+.ns .ns-heading {
   font-family: 'Literata', var(--serif);
   font-weight: 400;
-  font-size: clamp(1.8rem, 3.4vw, 2.6rem);
-  line-height: 1.1;
+  font-size: clamp(1.5rem, 2.6vw, 2rem);
+  line-height: 1.15;
   letter-spacing: -0.01em;
   color: var(--ink);
 }
 
-.ns-sub {
-  margin-top: 8px;
+.ns .ns-sub {
   font-family: var(--body);
-  font-size: 1.05rem;
-  font-weight: 300;
+  font-size: 1rem;
+  font-weight: 400;
   color: var(--sub);
 }
 
-.ns-list {
+/* One row of columns on a wide screen, each topped by its own hairline --
+   reads like a newspaper's column heads, and stays correct however the
+   grid wraps (a vertical divider between cells would not). */
+.ns .ns-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(28px, 3vw, 44px) clamp(24px, 2.8vw, 40px);
+}
+
+.ns .ns-item {
+  position: relative;
   display: flex;
   flex-direction: column;
-}
-
-.ns-item {
-  display: grid;
-  grid-template-columns: clamp(64px, 8vw, 90px) 1fr auto;
-  align-items: start;
-  gap: clamp(16px, 2.6vw, 32px);
-  padding: clamp(20px, 2.6vw, 26px) 0;
-  border-bottom: 1px solid var(--rule);
+  gap: 8px;
+  padding: 16px 0 4px;
+  border-top: 1.5px solid var(--ink);
   text-decoration: none;
   color: inherit;
-  transition: padding-left .2s ease, background .2s ease;
+  transition: border-color .2s ease;
 }
-.ns-item:first-child { border-top: 1px solid var(--rule); }
+.ns .ns-item--link { cursor: pointer; }
+.ns .ns-item--link:hover,
+.ns .ns-item--link:focus-visible { border-top-color: var(--accent); }
 
-.ns-item--link {
-  cursor: pointer;
-}
-.ns-item--link:hover,
-.ns-item--link:focus-visible {
-  padding-left: 10px;
-  background: rgba(var(--accent-rgb), .04);
-}
-
-.ns-date {
-  font-family: var(--body);
-  font-size: 1rem;
-  font-weight: 500;
-  color: var(--muted);
-  padding-top: 2px;
+.ns .ns-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
 }
 
-.ns-body { min-width: 0; }
-
-.ns-tag {
-  display: inline-block;
+.ns .ns-tag {
   font-family: var(--body);
   font-size: 0.82rem;
   font-weight: 600;
   letter-spacing: .06em;
   text-transform: uppercase;
   color: var(--accent);
-  background: rgba(var(--accent-rgb), .08);
-  border: 1px solid rgba(var(--accent-rgb), .18);
+  background: rgba(255, 255, 255, .7);
+  border: 1px solid rgba(var(--accent-rgb), .22);
   border-radius: 100px;
   padding: 3px 11px;
-  margin-bottom: 8px;
 }
 
-.ns-title {
+.ns .ns-date {
+  font-family: var(--body);
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.ns .ns-title {
   font-family: var(--body);
   font-weight: 600;
-  font-size: clamp(1.05rem, 1.6vw, 1.2rem);
+  font-size: clamp(1.05rem, 1.4vw, 1.18rem);
   line-height: 1.35;
   color: var(--ink);
 }
 
-.ns-desc {
-  margin-top: 4px;
+.ns .ns-desc {
   font-family: var(--body);
-  font-weight: 300;
+  font-weight: 400;
   font-size: 1rem;
   line-height: 1.55;
   color: var(--sub);
 }
 
-.ns-arrow {
+.ns .ns-arrow {
+  margin-top: auto;
+  padding-top: 6px;
   font-size: 1.2rem;
   color: var(--muted);
-  padding-top: 4px;
   transition: color .2s ease, transform .2s ease;
 }
-.ns-item--link:hover .ns-arrow,
-.ns-item--link:focus-visible .ns-arrow {
+.ns .ns-item--link:hover .ns-arrow,
+.ns .ns-item--link:focus-visible .ns-arrow {
   color: var(--accent);
-  transform: translate(2px, -2px);
+  transform: translateX(4px);
 }
 
+.ns .ns-more {
+  margin-top: clamp(22px, 3vw, 32px);
+  font-family: var(--body);
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--accent);
+  background: none;
+  border: 1.5px solid rgba(var(--accent-rgb), .25);
+  border-radius: 100px;
+  padding: 8px 20px;
+  cursor: pointer;
+  transition: background .2s, color .2s, border-color .2s;
+}
+.ns .ns-more:hover {
+  background: var(--accent);
+  color: var(--white);
+  border-color: var(--accent);
+}
+
+@media (max-width: 1100px) {
+  .ns .ns-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
 @media (max-width: 640px) {
-  .ns-item {
-    grid-template-columns: 1fr;
-    gap: 6px;
-  }
-  .ns-arrow { justify-self: flex-end; }
+  .ns .ns-grid { grid-template-columns: minmax(0, 1fr); }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .ns-item { transition: none; }
-  .ns-item--link:hover { padding-left: 0; }
-  .ns-arrow { transition: none; }
-  .ns-item--link:hover .ns-arrow { transform: none; }
+  .ns .ns-item, .ns .ns-arrow { transition: none; }
+  .ns .ns-item--link:hover .ns-arrow { transform: none; }
 }

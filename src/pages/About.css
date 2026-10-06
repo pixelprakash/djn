@@ -8,7 +8,6 @@
   min-height: 100%;
   font-family: var(--body);
   color: var(--ink);
-  -webkit-font-smoothing: antialiased;
   display: flex;
   flex-direction: column;
   /* No gap here (was clamp(20px,3vw,36px)): .hp-hero and WorksTimeline
@@ -268,24 +267,20 @@
   margin: calc(-1 * var(--hero-pad-y)) 0;
 }
 
+/* The portrait is a background-removed cut-out, so the panel behind it is
+   the backdrop: a soft blue-grey studio sweep, lighter at the top, with
+   the figure standing on the bottom edge. */
 .hp-hero-photo {
   width: 100%;
   height: 100%;
   overflow: hidden;
-  background: var(--rule);
+  background: linear-gradient(180deg, #e6edf3 0%, #cddae5 100%);
 }
 .hp-hero-photo img {
   width: 100%; height: 100%;
   object-fit: cover;
+  object-position: center bottom;
   display: block;
-  filter: grayscale(1);
-  transform: scale(1);
-  transition: filter .5s ease, transform .5s cubic-bezier(.34,1.56,.64,1);
-}
-.hp-hero-photo:hover img,
-.hp-hero-photo:focus-within img {
-  filter: grayscale(0);
-  transform: scale(1.03);
 }
 
 /* Works panel now lives in WorksTimeline.css, mounted via
@@ -336,7 +331,6 @@
 
 @media (prefers-reduced-motion: reduce) {
   .hp { animation: none; }
-  .hp-hero-photo img,
   .hp-link::before, .hp-link-word-real, .hp-link-word::before,
   .hp-social { transition: none; }
 }

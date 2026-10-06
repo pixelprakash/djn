@@ -3,14 +3,13 @@ import './CustomCursor.css'
 
 /* Camera-viewfinder cursor — four AF-bracket corners around a center dot,
    nodding to the photography side of the profile without being a gimmick.
-   Desktop (fine pointer) only; a plain mouse-follow with no state logic
-   would be worse than the OS cursor, so every hoverable category gets a
-   distinct, purposeful state instead of one generic "hover" look:
-     - text        over inputs/textareas — cursor hides, native caret shows
-     - view        over things that open larger (photos, project/blog
-                    cards, videos) — brackets pull in tight + expand glyph
-     - interactive over links/buttons/nav — brackets relax outward
-     - default     everything else — resting viewfinder                  */
+   Desktop (fine pointer) only. It appears ONLY over things that open
+   larger (photos, project/blog cards, videos), where it earns its place as
+   a "focus lock" cue; everywhere else the native cursor is left alone so
+   reading and selecting text stays natural.
+     - view        over those items -- native cursor hidden, brackets pull
+                    in tight around an expand glyph
+     - all others  (text, links, buttons, plain page) -- nothing drawn   */
 
 const VIEW_SELECTOR =
   '.pg-item, .wt-item, .wt-title-card, .bl-card, .bl-featured, .lab-video, .proj-card, .lab-slider-img'
@@ -42,6 +41,7 @@ export default function CustomCursor() {
       if (next === state) return
       state = next
       root.dataset.state = next
+      html.classList.toggle('cc-view', next === 'view')
     }
 
     // classify() walks up to three .closest() chains — cheap once, but
@@ -77,7 +77,7 @@ export default function CustomCursor() {
     document.addEventListener('mouseout', onOut, { passive: true })
 
     return () => {
-      html.classList.remove('cc-enabled')
+      html.classList.remove('cc-enabled', 'cc-view')
       window.removeEventListener('mousemove', onMove)
       window.removeEventListener('mousedown', onDown)
       window.removeEventListener('mouseup', onUp)

@@ -44,9 +44,26 @@
   letter-spacing: -0.03em;
   flex-shrink: 0;
   margin-right: 48px;
+  display: flex;
+  align-items: center;
   transition: opacity .2s;
 }
 .tn-logo:hover { opacity: .65; }
+
+/* Full name beside the monogram, where there's room: "DJM" alone means
+   nothing to someone arriving cold. */
+.tn-logo-name {
+  display: none;
+  margin-left: 14px;
+  padding-left: 14px;
+  border-left: 1px solid var(--rule);
+  font-size: 0.95rem;
+  font-weight: 500;
+  letter-spacing: 0;
+  line-height: 1.2;
+  color: var(--sub);
+}
+@media (min-width: 1180px) { .tn-logo-name { display: block; } }
 
 /* Desktop links */
 .tn-links {
@@ -54,6 +71,7 @@
   align-items: center;
   gap: 0;
   flex: 1;
+  position: relative;
 }
 
 .tn-item {
@@ -76,26 +94,36 @@
   gap: 5px;
   white-space: nowrap;
   transition: background .18s, opacity .18s;
-  opacity: .6;
+  /* .6 was borderline against the cream; this clears AA with room to spare. */
+  opacity: .76;
   position: relative;
 }
 .tn-link:hover { background: rgba(26,24,20,.05); opacity: 1; }
-.tn-link--active { opacity: 1; font-weight: 500; }
-.tn-link--active::after {
-  content: '';
+.tn-link--active { opacity: 1; }
+
+/* The gliding underline (see the slider effect in TopNav.jsx). Blue on
+   the current section; a quiet grey while it's travelling to a hovered one. */
+.tn-slider {
   position: absolute;
-  bottom: 2px; left: 16px; right: 16px;
+  left: 0; top: 0;
   height: 2px;
-  background: var(--accent);
   border-radius: 2px;
+  background: var(--accent);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform .4s cubic-bezier(.2, .8, .2, 1), width .4s cubic-bezier(.2, .8, .2, 1),
+              opacity .2s ease, background-color .25s ease;
 }
+.tn-slider--on { opacity: 1; }
+.tn-slider--instant { transition: opacity .2s ease, background-color .25s ease; }
+.tn-slider--hot { background: rgba(26, 24, 20, .35); }
 
 .tn-chevron {
   opacity: .4;
   transition: transform .22s cubic-bezier(.34,1.56,.64,1), opacity .2s;
   flex-shrink: 0;
 }
-.tn-item:hover .tn-chevron { transform: rotate(180deg); opacity: .8; }
+.tn-item--open .tn-chevron { transform: rotate(180deg); opacity: .8; }
 
 /* External-link arrow — deliberately a different shape and motion from
    the dropdown chevron above, so "opens a submenu" and "leaves this site"
@@ -125,11 +153,9 @@
   transition: opacity .18s ease, transform .18s ease;
 }
 
-/* Show on hover of parent item — NOT just the link.
-   :focus-within mirrors this for keyboard users tabbing through the link
-   and its dropdown children (the dropdown has no JS-driven open state). */
-.tn-item:hover .tn-drop,
-.tn-item:focus-within .tn-drop {
+/* Opened by state (hover or keyboard focus on the item, closed by Escape
+   or a click) -- see TopNav.jsx -- so aria-expanded always tells the truth. */
+.tn-item--open .tn-drop {
   opacity: 1;
   pointer-events: all;
   transform: translateY(0);
@@ -336,6 +362,22 @@
 .tn-mobile-sublink:last-child { border-bottom: none; }
 .tn-mobile-sublink:hover { color: var(--accent); padding-left: 22px; }
 
+/* Reading progress, riding the nav's bottom edge. Switched off for now:
+   its element and effect are commented out in TopNav.jsx. */
+.tn-progress {
+  position: absolute;
+  left: 0; right: 0; bottom: -1px;
+  height: 2px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  opacity: 0;
+  transition: opacity .25s ease;
+  pointer-events: none;
+}
+
+.tn-mobile-link--current { color: var(--accent); }
+
 /* Offset spacer -- reserves exactly the fixed nav's real height (.tn-inner
    plus its 1px border-bottom) so content below it doesn't inherit a dead
    gap; kept in sync with .tn-inner's height at each breakpoint below. */
@@ -346,6 +388,7 @@
 ===================================================== */
 @media (max-width: 960px) {
   .tn-links { display: none; }
+  .tn-progress { display: block; }
   .tn-burger { display: flex; }
   .tn-mobile { display: block; }
 }
@@ -360,3 +403,6 @@
 /* Hide TopNav on project detail page for clean fullscreen viewing */
 .hide-topnav .tn { display: none !important; }
 .hide-topnav .tn-offset { display: none !important; }
+@media (prefers-reduced-motion: reduce) {
+  .tn-slider, .tn-slider--instant, .tn-progress { transition: none; }
+}

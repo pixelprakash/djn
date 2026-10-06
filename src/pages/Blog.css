@@ -7,7 +7,6 @@
   background: var(--bg);
   font-family: var(--body);
   color: var(--ink);
-  -webkit-font-smoothing: antialiased;
   padding-bottom: var(--nav-safe);
   width: 100%;
   overflow-x: hidden;
@@ -52,7 +51,7 @@
 .bl-sub {
   font-family: var(--body);
   font-size: var(--fs-subtitle);
-  font-weight: 300;
+  font-weight: 400;
   color: var(--sub);
   line-height: 1.4;
 }
@@ -196,7 +195,7 @@
 .bl-featured-desc {
   font-family: var(--body);
   font-size: 1.1rem;
-  font-weight: 300;
+  font-weight: 400;
   color: var(--sub);
   line-height: 1.7;
 }
@@ -286,7 +285,7 @@
 .bl-card-desc {
   font-family: var(--body);
   font-size: clamp(1rem, 1.3vw, 1.05rem);
-  font-weight: 300;
+  font-weight: 400;
   color: var(--sub);
   line-height: 1.65;
   flex: 1;
@@ -321,7 +320,7 @@
 .bl-date {
   font-family: var(--body);
   font-size: 1rem;
-  font-weight: 300;
+  font-weight: 400;
   color: var(--muted);
 }
 
@@ -370,7 +369,7 @@
 .bl-banner-sub {
   font-family: var(--body);
   font-size: 1rem;
-  font-weight: 300;
+  font-weight: 400;
   /* .45 measured ~3.2:1 against this banner's dark green — under WCAG
      AA's 4.5:1. .7 clears it. */
   color: rgba(255,255,255,.7);
@@ -380,7 +379,7 @@
 .bl-banner-arrow {
   font-size: clamp(2rem, 5vw, 4rem);
   color: rgba(255,255,255,.3);
-  font-weight: 300;
+  font-weight: 400;
   flex-shrink: 0;
   transition: color .25s, transform .25s cubic-bezier(.34,1.56,.64,1);
 }

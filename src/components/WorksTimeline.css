@@ -92,7 +92,7 @@
   font-size: 1rem;
   font-weight: 600;
   letter-spacing: .04em;
-  color: rgba(245,243,238,.56);
+  color: rgba(245,243,238,.74);
 }
 .wt-now-title {
   font-size: 1rem;
@@ -104,7 +104,7 @@
   font-family: var(--body);
   font-size: 1rem;
   font-weight: 500;
-  color: rgba(245,243,238,.68);
+  color: rgba(245,243,238,.82);
   text-decoration: none;
   white-space: nowrap;
   border-bottom: 1px solid rgba(245,243,238,.32);

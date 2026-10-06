@@ -11,13 +11,16 @@
   background: var(--bg);
   font-family: var(--body);
   color: var(--ink);
-  -webkit-font-smoothing: antialiased;
   padding-bottom: var(--nav-safe);
 }
 
+/* Gutter-padded, not margin:auto-centered -- max-width still caps the
+   line length for comfortable reading, but the column starts flush at
+   the page's left gutter (var(--g)), matching the hero/Works/News
+   convention everywhere else on the site rather than floating centered
+   in the middle of the viewport on wide screens. */
 .cvp-inner {
   max-width: 940px;
-  margin: 0 auto;
   padding: clamp(44px, 7vw, 84px) var(--g) 0;
 }
 
@@ -65,9 +68,38 @@
 .cvp-rule {
   height: 1.5px;
   background: var(--ink);
-  margin-bottom: clamp(44px, 6vw, 72px);
+  margin-bottom: clamp(32px, 4.5vw, 52px);
   transform-origin: left;
   animation: cvpWipe .6s cubic-bezier(.16,1,.3,1) .12s both;
+}
+
+/* Jump nav -- only rendered for pages with more than one section (see
+   showJump in CvPage.jsx). Same pill-link convention as Blog's tag
+   filters, reused rather than invented fresh, so it reads as part of
+   the same system instead of a one-off widget. */
+.cvp-jump {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: clamp(40px, 5.5vw, 64px);
+  animation: cvpFade .5s ease .16s both;
+}
+.cvp-jump-link {
+  font-family: var(--body);
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--sub);
+  text-decoration: none;
+  border: 1.5px solid var(--rule);
+  border-radius: 100px;
+  padding: 7px 16px;
+  transition: background .2s, color .2s, border-color .2s;
+}
+.cvp-jump-link:hover,
+.cvp-jump-link:focus-visible {
+  background: var(--ink);
+  color: var(--white);
+  border-color: var(--ink);
 }
 
 /* Sections */
@@ -75,6 +107,9 @@
   margin-bottom: clamp(40px, 5vw, 64px);
   padding-bottom: clamp(28px, 4vw, 48px);
   border-bottom: 1px solid var(--rule);
+  /* So a #jump-nav anchor lands below the fixed nav instead of right
+     under it -- see .tn-offset's own height in TopNav.css. */
+  scroll-margin-top: 84px;
 }
 .cvp-section:last-child {
   border-bottom: none;
@@ -91,7 +126,7 @@
   letter-spacing: -0.01em;
   display: flex;
   align-items: center;
-  gap: 18px;
+  gap: 14px;
 }
 .cvp-sec-head::after {
   content: '';
@@ -108,35 +143,79 @@
   grid-template-columns: clamp(74px, 9vw, 104px) 1fr;
   gap: clamp(14px, 2.6vw, 34px);
   align-items: baseline;
-  padding: clamp(12px, 1.6vw, 16px) 0;
+  padding: clamp(13px, 1.8vw, 18px) clamp(10px, 1.4vw, 14px);
+  margin: 0 clamp(-10px, -1.4vw, -14px);
   border-bottom: 1px solid rgba(219, 214, 206, 0.55);
-  transition: padding-left .18s ease;
+  border-radius: var(--radius-sm);
+  transition: padding-left .18s ease, background .18s ease;
 }
 .cvp-item:first-child { border-top: 1px solid rgba(219, 214, 206, 0.55); }
 .cvp-item:last-child { border-bottom: none; }
-.cvp-item:hover { padding-left: 6px; }
+
+/* A hairline-faint zebra tint -- just enough to help the eye track a
+   row across a wide column on long pages (Selected Exhibitions,
+   Conferences & Journals), gone the instant hover takes over. */
+.cvp-item:nth-child(even) { background: rgba(26, 24, 20, .022); }
+.cvp-item:hover {
+  padding-left: calc(clamp(10px, 1.4vw, 14px) + 6px);
+  background: rgba(var(--accent-rgb), .045);
+}
 
 /* Sections with no per-entry years: drop the empty column */
 .cvp-list--plain .cvp-item { grid-template-columns: 1fr; }
 
+/* A small accent tick marks each year rather than a repeated badge/pill
+   -- the brand color shows up on every row without 20+ loud chips
+   fighting for attention on the longer pages. */
 .cvp-year {
+  position: relative;
+  padding-left: 14px;
   font-family: var(--body);
   font-size: 1rem;
-  font-weight: 500;
-  color: var(--muted);
+  font-weight: 600;
+  letter-spacing: .01em;
+  color: var(--ink);
   white-space: nowrap;
   line-height: 1.6;
+  font-variant-numeric: tabular-nums;
+}
+.cvp-year::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 3px; bottom: 3px;
+  width: 2px;
+  border-radius: 1px;
+  background: rgba(var(--accent-rgb), .55);
 }
 
 .cvp-text {
+  display: inline;
   font-family: var(--body);
   font-size: clamp(1.05rem, 1.35vw, 1.15rem);
   font-weight: 400;
   color: var(--sub);
   line-height: 1.62;
+  text-decoration: none;
   transition: color .18s ease;
 }
 .cvp-item:hover .cvp-text { color: var(--ink); }
+
+/* The handful of papers that had a DOI in the source list link straight
+   to the published paper -- a quiet, always-on underline (not just a
+   hover reveal) is what marks these as links at rest, the way an inline
+   citation link reads in a paper itself. */
+.cvp-text--link {
+  text-decoration: underline;
+  text-decoration-color: rgba(var(--accent-rgb), .35);
+  text-underline-offset: 3px;
+  transition: color .18s ease, text-decoration-color .18s ease;
+}
+.cvp-text--link:hover,
+.cvp-text--link:focus-visible {
+  color: var(--accent);
+  text-decoration-color: var(--accent);
+}
+.cvp-item:hover .cvp-text--link { color: var(--accent); }
 
 /* =====================================================
    ANIMATION
@@ -161,5 +240,5 @@
 @media (max-width: 540px) {
   /* Stack the year above the entry, like the main résumé does on phones */
   .cvp-item { grid-template-columns: 1fr; gap: 3px; }
-  .cvp-item:hover { padding-left: 0; }
+  .cvp-item:hover { padding-left: clamp(10px, 1.4vw, 14px); }
 }

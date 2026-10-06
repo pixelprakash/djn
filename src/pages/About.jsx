@@ -4,6 +4,7 @@ import { SOCIALS } from '../data/socials'
 import SocialIcon from '../components/SocialIcon'
 import WorksTimeline from '../components/WorksTimeline'
 import NewsSection from '../components/NewsSection'
+import Portrait from '../components/Portrait'
 import './About.css'
 
 const PH = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300'%3E%3Crect fill='%23d8d8d8' width='400' height='300'/%3E%3C/svg%3E"
@@ -52,8 +53,7 @@ export default function About() {
           </p>
           <p className="hp-bio">
             A designer, researcher, and creative artist at heart — driven by curiosity,
-            mentorship, and a hands-on love of experimentation. Author of <em>Principles
-            of Design through Photography</em>.
+            mentorship, and a hands-on love of experimentation.
           </p>
 
           {/* Run-in sentence, not a chip row or a table — reads the way
@@ -87,32 +87,33 @@ export default function About() {
           </div>
         </div>
         <div className="hp-hero-photo-col">
-          <div className="hp-hero-photo">
-            <img
-              src="/profliepic.webp"
-              alt="Portrait of Prof. Deepak John Mathew"
-              draggable="false"
-              // Almost certainly this page's LCP element — above the fold,
-              // large, and the first meaningfully-sized thing to paint.
-              // fetchPriority tells the browser to fetch it ahead of
-              // lower-priority requests instead of at default priority.
-              loading="eager"
-              decoding="async"
-              fetchPriority="high"
-              onError={e => { if (e.currentTarget.src !== PH) e.currentTarget.src = PH }}
-            />
-          </div>
+          <Portrait
+            className="hp-hero-photo"
+            src="/profliepicnobg.webp"
+            alt="Portrait of Prof. Deepak John Mathew"
+            draggable="false"
+            // Almost certainly this page's LCP element — above the fold,
+            // large, and the first meaningfully-sized thing to paint.
+            // fetchPriority tells the browser to fetch it ahead of
+            // lower-priority requests instead of at default priority.
+            loading="eager"
+            decoding="async"
+            fetchPriority="high"
+            onError={e => { if (e.currentTarget.src !== PH) e.currentTarget.src = PH }}
+          />
         </div>
       </header>
+
+      {/* Admissions, openings, talks, recent work -- right under the hero so
+          time-sensitive news is seen before the long pinned portfolio
+          scroll, not after it. See src/data/newsData.js to add/edit. */}
+      <NewsSection />
 
       {/* Scroll-driven filmstrip through all 5 projects' real photos —
           see src/components/WorksTimeline.jsx. RESEARCH (removed above)
           was placeholder data; this pulls only from real PROJECTS. */}
       <WorksTimeline projects={PROJECTS} />
 
-      {/* Admissions, openings, talks, recent work -- see
-          src/data/newsData.js to add/edit entries. */}
-      <NewsSection />
     </div>
   )
 }

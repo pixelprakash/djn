@@ -7,7 +7,6 @@
   background: var(--bg);
   font-family: var(--body);
   color: var(--ink);
-  -webkit-font-smoothing: antialiased;
   padding-bottom: var(--nav-safe);
   width: 100%;
   overflow-x: hidden;
@@ -64,7 +63,7 @@
 .lab-sub {
   font-family: var(--body);
   font-size: var(--fs-subtitle);
-  font-weight: 300;
+  font-weight: 400;
   color: var(--sub);
   line-height: 1.4;
   white-space: nowrap;
@@ -482,7 +481,7 @@
 .lab-patent-inv {
   font-family: var(--body);
   font-size: 1rem;
-  font-weight: 300;
+  font-weight: 400;
   color: var(--muted);
 }
 

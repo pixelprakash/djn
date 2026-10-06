@@ -287,16 +287,16 @@ const PAGES = {
           '2026 — Rethinking Craft Identity through the Case of Dhoolpet Idol Makers in Hyderabad — 20th International Conference on Design Principles & Practices',
           '2026 — Reclaiming the Canvas: Evaluating Design Assessment and Creative Capital in Telangana’s Specialized Welfare Schools — UC-HDSF 2026',
           '2026 — Frugal Immersion: A Low-Cost, Smartphone-Based Virtual Reality Physics Lesson for Equitable Learning in Telangana Government Schools — UC-HDSF 2026',
-          '2025 — Human-Centred Design Approach: A Comprehensive Review on Enhancing the UAM Aircraft Experience for Indian Passengers — ICoRD 2025',
-          '2025 — Displaying Indigenous Heritage: Analysing Discourse on Cultural Heritage, Community Involvement, and Indigenous Representation in Museum Exhibition Design — ICoRD 2025',
-          '2025 — Empowering Dhokra Artisans: A Design-led Intervention Workshop for Enhancing Sustainable Livelihoods in the Ojha Community of Adilabad, Telangana — ICoRD 2025',
-          '2025 — Immersive Learning in Indian Schools: Exploring Approaches to Education Using AR and VR — Futuring Design Education 2024, IIT Delhi',
+          { text: '2025 — Human-Centred Design Approach: A Comprehensive Review on Enhancing the UAM Aircraft Experience for Indian Passengers — ICoRD 2025', href: 'https://doi.org/10.1007/978-981-96-6414-6_17' },
+          { text: '2025 — Displaying Indigenous Heritage: Analysing Discourse on Cultural Heritage, Community Involvement, and Indigenous Representation in Museum Exhibition Design — ICoRD 2025', href: 'https://doi.org/10.1007/978-981-96-5511-3_23' },
+          { text: '2025 — Empowering Dhokra Artisans: A Design-led Intervention Workshop for Enhancing Sustainable Livelihoods in the Ojha Community of Adilabad, Telangana — ICoRD 2025', href: 'https://doi.org/10.1007/978-981-96-5507-6_10' },
+          { text: '2025 — Immersive Learning in Indian Schools: Exploring Approaches to Education Using AR and VR — Futuring Design Education 2024, IIT Delhi', href: 'https://doi.org/10.1007/978-981-97-9206-1_38' },
           '2025 — A Comprehensive Assessment of Technology-Enhanced Experiential Learning in Education — ICoRD 2025',
-          '2025 — Exploring Urban Air Mobility: A Proposal for Dual Landing Capabilities on Different Surfaces — ICoRD 2025',
-          '2025 — Study and Evaluation of User Perception of Light and Shadow on the Shape and Form of Physical Products in Industrial Product Design — ICoRD 2025',
-          '2025 — Bio-Wiz Framework for Industrial Design Practices: Bio-wisdom to Product Innovation — The International Journal of Designed Objects, Common Ground Research Network',
-          '2025 — Designing Futures: A Scoping Review and a Canvas for Scenario Building — Futuring Design Education Conference, Springer Nature Singapore',
-          '2025 — Innovating Air Traffic Management for Urban Air Mobility in Indian Cities: A Literature Review and Hypothetical Alternative Solutions for Low-Altitude Airspace — ServDes.2025 Service Design and Innovation Conference',
+          { text: '2025 — Exploring Urban Air Mobility: A Proposal for Dual Landing Capabilities on Different Surfaces — ICoRD 2025', href: 'https://doi.org/10.1007/978-981-96-5487-1_20' },
+          { text: '2025 — Study and Evaluation of User Perception of Light and Shadow on the Shape and Form of Physical Products in Industrial Product Design — ICoRD 2025', href: 'https://doi.org/10.1007/978-981-96-6511-2_43' },
+          { text: '2025 — Bio-Wiz Framework for Industrial Design Practices: Bio-wisdom to Product Innovation — The International Journal of Designed Objects, Common Ground Research Network', href: 'https://doi.org/10.18848/2325-1379/CGP/v19i02/123-144' },
+          { text: '2025 — Designing Futures: A Scoping Review and a Canvas for Scenario Building — Futuring Design Education Conference, Springer Nature Singapore', href: 'https://link.springer.com/chapter/10.1007/978-981-97-9210-8_9' },
+          { text: '2025 — Innovating Air Traffic Management for Urban Air Mobility in Indian Cities: A Literature Review and Hypothetical Alternative Solutions for Low-Altitude Airspace — ServDes.2025 Service Design and Innovation Conference', href: 'https://doi.org/10.21606/servdes2025.79' },
           '2024 — Transforming Education through Virtual Reality in Indian Middle Schools in Telangana: Development and Testing Their Effectiveness — DAAD iHED Conference 2024',
           '2023 — Transforming Education through Virtual Reality: A Study of Integrating VR in Indian Government Schools — JoLII-GINTL Global Conference 2023, Finland',
         ],
@@ -419,12 +419,26 @@ const PAGES = {
    without a clean leading-year prefix — and whole sections that have none
    (e.g. Thesis Guidance, or Conferences where the year is the heading) —
    fall back to a plain full-width list. */
+/* An item is normally a plain string, but a handful of papers (ones that
+   actually had a DOI in the source spreadsheet) are instead
+   { text, href } so the entry can link straight to the published paper.
+   Keeping the plain-string form as the default for everything else means
+   most of this file never has to think about links at all. */
 function splitYear(item) {
-  const i = item.indexOf(' — ')
-  if (i > 0 && i <= 24 && /^\d{4}/.test(item)) {
-    return { year: item.slice(0, i), text: item.slice(i + 3) }
+  const href = typeof item === 'object' ? item.href : null
+  const text = typeof item === 'object' ? item.text : item
+  const i = text.indexOf(' — ')
+  if (i > 0 && i <= 24 && /^\d{4}/.test(text)) {
+    return { year: text.slice(0, i), text: text.slice(i + 3), href }
   }
-  return { year: null, text: item }
+  return { year: null, text, href }
+}
+
+/* Anchor id for a section's heading, for the jump-nav below -- unique
+   per page load (si guards the rare case of two sections sharing a
+   heading, e.g. none today but cheap insurance). */
+function sectionId(heading, si) {
+  return heading.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') + '-' + si
 }
 
 export default function CvPage() {
@@ -443,6 +457,8 @@ export default function CvPage() {
     )
   }
 
+  const showJump = page.sections.length > 1
+
   return (
     <div className="cvp">
       <div className="cvp-inner">
@@ -454,19 +470,36 @@ export default function CvPage() {
         )}
 
         <h1 className="cvp-title">{page.title}</h1>
+
         <div className="cvp-rule" aria-hidden="true" />
+
+        {showJump && (
+          <nav className="cvp-jump" aria-label="Jump to section">
+            {page.sections.map((sec, si) => (
+              <a key={si} href={`#${sectionId(sec.heading, si)}`} className="cvp-jump-link">
+                {sec.heading}
+              </a>
+            ))}
+          </nav>
+        )}
 
         {page.sections.map((sec, si) => {
           const rows = sec.items.map(splitYear)
           const hasYears = rows.some(r => r.year)
           return (
-            <Reveal as="section" key={si} className="cvp-section">
+            <Reveal as="section" key={si} id={sectionId(sec.heading, si)} className="cvp-section">
               <h2 className="cvp-sec-head">{sec.heading}</h2>
               <ul className={`cvp-list${hasYears ? '' : ' cvp-list--plain'}`}>
-                {rows.map(({ year, text }, j) => (
+                {rows.map(({ year, text, href }, j) => (
                   <li key={j} className="cvp-item">
                     {hasYears && <span className="cvp-year">{year}</span>}
-                    <span className="cvp-text">{text}</span>
+                    {href ? (
+                      <a href={href} target="_blank" rel="noreferrer" className="cvp-text cvp-text--link">
+                        {text}
+                      </a>
+                    ) : (
+                      <span className="cvp-text">{text}</span>
+                    )}
                   </li>
                 ))}
               </ul>

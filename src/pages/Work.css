@@ -7,7 +7,6 @@
   background: var(--bg);
   font-family: var(--body);
   color: var(--ink);
-  -webkit-font-smoothing: antialiased;
   padding-bottom: var(--nav-safe);
   /* Prevent horizontal overflow from breaking fixed nav centering */
   width: 100%;
@@ -55,7 +54,7 @@
 .wp-sub {
   font-family: var(--body);
   font-size: var(--fs-subtitle);
-  font-weight: 300;
+  font-weight: 400;
   color: var(--sub);
   line-height: 1.4;
 }
@@ -206,7 +205,7 @@
 .proj-year {
   font-family: var(--body);
   font-size: 1rem;
-  font-weight: 300;
+  font-weight: 400;
   color: var(--muted);
 }
 
@@ -224,7 +223,7 @@
 .proj-venue {
   font-family: var(--body);
   font-size: clamp(1rem, 1.5vw, 1.2rem);
-  font-weight: 300;
+  font-weight: 400;
   color: var(--sub);
   line-height: 1.6;
 }
@@ -306,7 +305,7 @@
 .sp-funder {
   font-family: var(--body);
   font-size: clamp(0.9rem, 1.3vw, 1.1rem);
-  font-weight: 300;
+  font-weight: 400;
   color: var(--sub);
   line-height: 1.5;
 }
@@ -396,7 +395,7 @@
 .solo-venue, .ex-venue {
   font-family: var(--body);
   font-size: clamp(1rem, 1.2vw, 1.05rem);
-  font-weight: 300;
+  font-weight: 400;
   color: var(--sub);
   line-height: 1.5;
 }

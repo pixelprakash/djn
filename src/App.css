@@ -33,29 +33,78 @@
   .page-loader-mark { animation: none; opacity: 0.4; }
 }
 
-/* Route-change sweep -- a thin accent-colored bar that fills left to
-   right then dissolves at the start of every page-to-page navigation
-   (see RouteTransition's enter timeline in App.jsx, which now drives
-   scaleX/opacity directly via GSAP rather than a CSS @keyframes).
-   Fixed positioning pins it to the viewport regardless of where
-   RouteTransition nests it in the DOM. Sits just under IntroLoader's
-   own z-index so it stays hidden behind that overlay on the very first
-   load instead of doubling up with it. scaleX(0) here is just the
-   pre-JS safe default -- GSAP sets the real starting value itself once
-   its effect runs. Purely decorative chrome, not a real progress
-   indicator -- there's nothing it's waiting on, it's just a considered
-   beat before the new page settles in, the same way a shutter fires
-   before the frame locks. */
-.route-sweep {
+/* Page-transition curtain (see PageTransition in App.jsx). Hidden until a
+   navigation runs it; above the nav so the wipe is total, below the
+   one-time IntroLoader. GSAP drives the panel's position and the label. */
+.pt {
   position: fixed;
-  top: 0; left: 0; right: 0;
-  height: 2.5px;
+  inset: 0;
   z-index: 99999;
-  background: var(--accent);
-  transform-origin: left;
-  transform: scaleX(0);
+  visibility: hidden;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+/* 150vh tall, parked 20vh above the viewport at rest: the curved top and
+   bottom edges (and the slack either side of them) must clear the
+   screen's corners when it's centred, hence the generous height. */
+.pt-panel {
+  position: absolute;
+  left: 0;
+  top: -20vh;
+  width: 100%;
+  height: 150vh;
+  will-change: transform;
+}
+.pt-fill { fill: var(--ink); }
+.pt-edge {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 2px;
+  vector-effect: non-scaling-stroke;
+  opacity: .9;
+}
+.pt-edge--b { opacity: .45; }
+
+.pt-label {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(14px, 2vw, 22px);
   pointer-events: none;
 }
+.pt-label-mask {
+  overflow: hidden;
+}
+.pt-label-text {
+  display: block;
+  font-family: 'Literata', var(--serif);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(2.6rem, 7vw, 6rem);
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  color: var(--bg);
+  /* Room for descenders (f, p, g, y) and italic overhang inside the
+     mask. Padding lives on the text itself so the em resolves against
+     the label's own size, not the mask's inherited body size. */
+  padding: 0.1em 0.3em 0.3em;
+  text-align: center;
+  text-wrap: balance;
+}
+/* Long section titles (e.g. "Teaching Experience & Permanent Posts") */
+.pt-label-text[data-long="true"] { font-size: clamp(2rem, 4.6vw, 4rem); }
+.pt-label-mask { max-width: min(92vw, 1100px); }
+.pt-rule {
+  width: clamp(56px, 8vw, 110px);
+  height: 2px;
+  background: rgba(245, 243, 238, .5);
+  transform-origin: left;
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .route-sweep { display: none; }
+  .pt { display: none; }
 }

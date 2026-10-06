@@ -7,7 +7,6 @@
   background: var(--bg);
   color: var(--ink);
   font-family: var(--body);
-  -webkit-font-smoothing: antialiased;
   padding-bottom: var(--nav-safe);
 }
 
@@ -49,9 +48,10 @@
 /* ==========================================
    BODY
 ========================================== */
+/* Gutter-padded, not margin:auto-centered -- see the same fix/reasoning
+   on .cvp-inner in CvPage.css. */
 .bp-inner {
   max-width: 820px;
-  margin: 0 auto;
   padding: clamp(32px, 5vw, 52px) var(--g) 0;
 }
 
@@ -96,7 +96,7 @@
 .bp-date {
   font-family: var(--body);
   font-size: 1rem;
-  font-weight: 300;
+  font-weight: 400;
   color: var(--muted);
 }
 
@@ -140,7 +140,7 @@
 .bp-p {
   font-family: var(--body);
   font-size: clamp(1.05rem, 1.3vw, 1.15rem);
-  font-weight: 300;
+  font-weight: 400;
   color: var(--sub);
   line-height: 1.75;
 }

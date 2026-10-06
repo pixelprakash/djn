@@ -17,8 +17,10 @@ body {
   font-family: var(--body);
   background: var(--bg);
   color: var(--ink);
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  /* No -webkit-font-smoothing override on purpose. `antialiased` switches off
+     macOS's stem darkening, which thins every glyph -- fine for display type,
+     tiring for paragraphs of dark-on-light text. The default renders the
+     font at its designed weight. */
 }
 
 #root {
@@ -72,12 +74,13 @@ textarea:focus-visible,
 
 /* Shared entrance animation for every page's <h1> — defined once here so
    Home/Work/Resume/Lab/Blog/Contact/CvPage all reference the same keyframe
-   instead of seven near-identical copies drifting apart over time. A soft
-   blur-in read as more deliberate than a plain fade, without resorting to
-   a letter-by-letter or typewriter effect. */
+   instead of seven near-identical copies drifting apart over time. A fade
+   and short rise -- no blur: text that starts out of focus makes the eye
+   hunt for a sharp edge, which is exactly the wrong thing to do to the
+   first line a visitor reads. */
 @keyframes titleReveal {
-  from { opacity: 0; transform: translateY(20px); filter: blur(6px); }
-  to   { opacity: 1; transform: translateY(0);     filter: blur(0); }
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 /* ─────────────────────────────────────────────────────────────

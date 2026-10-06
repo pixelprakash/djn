@@ -1,4 +1,5 @@
 import Reveal from '../components/Reveal'
+import Portrait from '../components/Portrait'
 import './Resume.css'
 
 /* -- DATA -- */
@@ -88,18 +89,16 @@ export default function Resume() {
             ))}
           </div>
         </div>
-        {/* Placeholder: same portrait as the Home page hero, reused here
-            until a dedicated photo is provided for this page. */}
+        {/* Same cut-out portrait as the Home page hero. */}
         <div className="r-header-photo-col">
-          <div className="r-header-photo">
-            <img
-              src="/profliepic.webp"
-              alt="Portrait of Prof. Deepak John Mathew"
-              draggable="false"
-              loading="eager"
-              decoding="async"
-            />
-          </div>
+          <Portrait
+            className="r-header-photo"
+            src="/profliepicnobg.webp"
+            alt="Portrait of Prof. Deepak John Mathew"
+            draggable="false"
+            loading="eager"
+            decoding="async"
+          />
         </div>
       </header>
 

@@ -242,12 +242,6 @@ export default function WorksTimeline({ projects }) {
           key={item.key}
           className="wt-title-card"
           ref={el => { firstItemRefs.current[item.project.slug] = el }}
-          // See the comment on .pd-hero-img in ProjectDetail.jsx -- this
-          // just wraps the navigation in a View Transition (a no-op,
-          // completely normal navigation in browsers that don't support
-          // it yet); the morph itself only engages for the cover photo
-          // below, which carries the matching viewTransitionName.
-          viewTransition
         >
           <span className="wt-title-card-index">{String(item.index).padStart(2, '0')}</span>
           <span className="wt-title-card-meta">{item.project.category} · {item.project.year}</span>
@@ -282,7 +276,6 @@ export default function WorksTimeline({ projects }) {
         to={`/work/${item.project.slug}`}
         key={item.key}
         className={`wt-item wt-item--${item.size}${dim ? ' wt-item--dim' : ''}`}
-        viewTransition
         state={openAt ? { openSlideshow: openAt } : undefined}
       >
         <img
@@ -292,13 +285,6 @@ export default function WorksTimeline({ projects }) {
           decoding="async"
           draggable="false"
           onError={e => { if (e.currentTarget.src !== PH) e.currentTarget.src = PH }}
-          // Only the cover photo carries this -- see isCover above and
-          // .pd-hero-img in ProjectDetail.jsx. Every other photo in the
-          // rail just gets the page-level cross-fade from `viewTransition`
-          // on the Link; tagging more than one element per project here
-          // would give them all the same name, which the View Transitions
-          // API doesn't allow.
-          style={item.isCover ? { viewTransitionName: `work-cover-${item.project.slug}` } : undefined}
         />
       </Link>
     )

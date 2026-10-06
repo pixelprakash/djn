@@ -150,14 +150,6 @@ export default function ProjectDetail() {
           loading="eager"
           decoding="async"
           fetchPriority="high"
-          // Matches the same name set on that project's cover photo in
-          // the home page's Works timeline (src/components/WorksTimeline
-          // .jsx) -- when a click there arrives here via a View
-          // Transition, the browser morphs that exact thumbnail straight
-          // into this hero instead of just cross-fading the whole page.
-          // Harmless when arriving any other way (direct link, Work.jsx
-          // grid, back button): an unmatched name just transitions alone.
-          style={{ viewTransitionName: `work-cover-${project.slug}` }}
         />
         <div className="pd-hero-grad" aria-hidden />
         <div className="pd-hero-info">
