@@ -1,6 +1,7 @@
 import { useParams, Link } from 'react-router-dom'
 import Reveal from '../components/Reveal'
 import usePageTitle from '../hooks/usePageTitle'
+import { cvMeta, notFoundMeta } from '../seo/routes'
 import './CvPage.css'
 
 /* ── All CV content ── */
@@ -445,7 +446,7 @@ function sectionId(heading, si) {
 export default function CvPage() {
   const { slug } = useParams()
   const page = PAGES[slug]
-  usePageTitle(page ? page.title : 'Résumé')
+  usePageTitle(page ? cvMeta(slug) : notFoundMeta())
 
   if (!page) {
     return (

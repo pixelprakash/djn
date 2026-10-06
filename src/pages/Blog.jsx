@@ -6,6 +6,7 @@ import { useCms, POSTS_QUERY, mapPosts, FEED_QUERY, mapFeed } from '../lib/cms'
 import PostCard from '../components/PostCard'
 import PageHero from '../components/PageHero'
 import usePageTitle from '../hooks/usePageTitle'
+import { blogsMeta } from '../seo/routes'
 import useStackedLayers from '../hooks/useStackedLayers'
 import { preloadForPath } from '../routePreload'
 import './Blog.css'
@@ -24,7 +25,7 @@ const toCard = (p, i) => ({
 })
 
 export default function Blog() {
-  usePageTitle('Blogs')
+  usePageTitle(blogsMeta())
   const pageRef = useRef(null)
   useStackedLayers(pageRef)
   const [active, setActive] = useState('All')

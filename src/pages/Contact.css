@@ -33,7 +33,7 @@
 
 .contact-section-title,
 .contact-block-title {
-  font-family: 'Literata', var(--serif);
+  font-family: var(--display);
   font-weight: 400;
   letter-spacing: -0.01em;
   color: var(--ink);
@@ -171,7 +171,7 @@
   font-weight: 600;
 }
 .contact-success h3 {
-  font-family: 'Literata', var(--serif);
+  font-family: var(--display);
   font-size: 1.6rem;
   font-weight: 400;
   color: var(--ink);

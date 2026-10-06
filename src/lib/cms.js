@@ -21,23 +21,42 @@ async function query(groq) {
   return (await res.json()).result
 }
 
-const cache = new Map() // key -> { data } once loaded, { promise } while loading
+const cache = new Map() // key -> { data, promise }
+
+// The last good answer for each query is kept in localStorage, so a returning
+// visitor sees their content immediately and it is refreshed in the
+// background (stale-while-revalidate) instead of waiting on the network.
+// Bump STORE's version if the shape the maps produce ever changes.
+const STORE = 'djm-cms:v1:'
+const readStored = key => {
+  try { const raw = localStorage.getItem(STORE + key); return raw ? JSON.parse(raw) : null } catch { return null }
+}
+const writeStored = (key, data) => {
+  try {
+    if (data) localStorage.setItem(STORE + key, JSON.stringify(data))
+    else localStorage.removeItem(STORE + key)
+  } catch { /* private mode or storage full: just skip caching */ }
+}
 
 function load(key, groq, map) {
   let entry = cache.get(key)
   if (!entry) {
-    entry = {
-      promise: query(groq)
-        .then(rows => {
-          // Nothing published yet counts as "no live content".
-          entry.data = Array.isArray(rows) && rows.length ? map(rows) : null
-          return entry.data
-        })
-        .catch(() => {
-          entry.data = null
-          return null
-        }),
-    }
+    entry = {}
+    const stored = readStored(key)
+    if (stored) entry.data = stored // usable at once
+    entry.promise = query(groq)
+      .then(rows => {
+        // Nothing published yet counts as "no live content".
+        const fresh = Array.isArray(rows) && rows.length ? map(rows) : null
+        entry.data = fresh
+        writeStored(key, fresh)
+        return fresh
+      })
+      .catch(() => {
+        // Offline or blocked: keep whatever we already had.
+        if (!('data' in entry)) entry.data = null
+        return entry.data
+      })
     cache.set(key, entry)
   }
   return entry
@@ -45,18 +64,18 @@ function load(key, groq, map) {
 
 /* Live content if there is any, else `fallback`. `loading` is true until the
    first answer arrives (a page that must not show "not found" for a
-   CMS-only item yet can wait on it). */
+   CMS-only item yet can wait on it) -- which is immediately, for anyone who
+   has been here before. */
 export function useCms(key, groq, map, fallback) {
-  const known = cache.get(key)
+  const known = load(key, groq, map)
   const [state, setState] = useState(() => ({
-    data: known && 'data' in known ? known.data : undefined, // undefined = not answered yet
+    data: 'data' in known ? known.data : undefined, // undefined = not answered yet
   }))
 
   useEffect(() => {
     let alive = true
-    // Always via the promise (already-settled ones resolve on the next
-    // tick), so state is only ever set from a callback, never synchronously.
-    load(key, groq, map).promise.then(data => { if (alive) setState({ data }) })
+    // Always via the promise, so state is only ever set from a callback.
+    known.promise.then(data => { if (alive) setState(s => (s.data === data ? s : { data })) })
     return () => { alive = false }
     // key identifies the query; groq/map are module constants at call sites.
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -128,3 +147,13 @@ export const mapFeed = rows => rows.map(r => ({
   })),
 }))
 
+
+// Start the requests a page will need before React has even mounted, so the
+// network round trip overlaps with loading and running the app's code.
+export function prefetchFor(pathname) {
+  if (pathname === '/' || pathname.startsWith('/about')) load('news', NEWS_QUERY, mapNews)
+  if (pathname.startsWith('/blogs')) {
+    load('posts', POSTS_QUERY, mapPosts)
+    load('feed', FEED_QUERY, mapFeed)
+  }
+}

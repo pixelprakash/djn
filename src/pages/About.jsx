@@ -1,11 +1,12 @@
+import { Suspense, lazy } from 'react'
 import { Link } from 'react-router-dom'
 import { PROJECTS } from './projectData'
 import { SOCIALS } from '../data/socials'
 import SocialIcon from '../components/SocialIcon'
-import WorksTimeline from '../components/WorksTimeline'
 import NewsSection from '../components/NewsSection'
 import Portrait from '../components/Portrait'
 import usePageTitle from '../hooks/usePageTitle'
+import { homeMeta } from '../seo/routes'
 import './About.css'
 
 const PH = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300'%3E%3Crect fill='%23d8d8d8' width='400' height='300'/%3E%3C/svg%3E"
@@ -41,8 +42,13 @@ function MotionLink({ href, label }) {
   )
 }
 
+// The pinned "Works" timeline sits far below the hero. Loading it as its own
+// chunk keeps its code and styles off the critical path, so the hero and news
+// paint first; the placeholder holds its place so nothing jumps when it arrives.
+const WorksTimeline = lazy(() => import('../components/WorksTimeline'))
+
 export default function About() {
-  usePageTitle()
+  usePageTitle(homeMeta())
   return (
     <div className="hp">
       <header className="hp-hero">
@@ -114,7 +120,9 @@ export default function About() {
       {/* Scroll-driven filmstrip through all 5 projects' real photos —
           see src/components/WorksTimeline.jsx. RESEARCH (removed above)
           was placeholder data; this pulls only from real PROJECTS. */}
-      <WorksTimeline projects={PROJECTS} />
+      <Suspense fallback={<div aria-hidden="true" style={{ minHeight: '100vh' }} />}>
+        <WorksTimeline projects={PROJECTS} />
+      </Suspense>
 
     </div>
   )

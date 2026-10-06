@@ -238,22 +238,25 @@
   flex-shrink: 0;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
   font-family: var(--body);
   font-size: 1rem;
-  font-weight: 600;
-  color: #fff;
-  background: var(--accent);
-  padding: 10px 22px;
-  border-radius: 100px;
+  font-weight: 500;
+  letter-spacing: .02em;
+  color: var(--bg);
+  /* One solid ink block with squared-off corners: no icon, no shadow, no
+     lift. It matches the heavy ink rules and the footer, and takes the brand
+     blue on hover and on its own page. */
+  background: var(--ink);
+  padding: 10px 24px;
+  border-radius: 4px;
   text-decoration: none;
   white-space: nowrap;
-  box-shadow: 0 2px 10px rgba(28,93,140,.28);
-  transition: background .2s, transform .2s cubic-bezier(.34,1.56,.64,1), box-shadow .2s;
+  transition: background-color .2s ease;
 }
-.tn-cta:hover { background: #164a70; transform: translateY(-2px); box-shadow: 0 6px 18px rgba(28,93,140,.38); }
-.tn-cta:active { transform: translateY(0); }
-.tn-cta--active { background: #164a70; }
+.tn-cta:hover { background: var(--accent); }
+.tn-cta:active { background: #164a70; }
+.tn-cta:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.tn-cta--active { background: var(--accent); }
 
 /* Hamburger */
 .tn-burger {
@@ -396,7 +399,7 @@
   .tn-inner { height: 56px; }
   .tn-logo { font-size: 1.5rem; margin-right: 0; }
   .tn-offset { height: 57px; }
-  .tn-cta { padding: 8px 16px; font-size: 1rem; }
+  .tn-cta { padding: 8px 18px; }
   .tn-mobile { top: 56px; }
 }
 
@@ -404,5 +407,6 @@
 .hide-topnav .tn { display: none !important; }
 .hide-topnav .tn-offset { display: none !important; }
 @media (prefers-reduced-motion: reduce) {
+  .tn-cta { transition: none; }
   .tn-slider, .tn-slider--instant, .tn-progress { transition: none; }
 }

@@ -175,7 +175,7 @@
 
 /* Title -- 3rem Bree Serif like sec-head */
 .proj-title {
-  font-family: 'Literata', var(--serif);
+  font-family: var(--display);
   font-size: clamp(1.5rem, 2.5vw, 2.2rem);
   font-weight: 400;
   line-height: 1.2;
@@ -256,7 +256,7 @@
 
 /* Title -- Bree Serif, clearly bigger */
 .sp-title {
-  font-family: 'Literata', var(--serif);
+  font-family: var(--display);
   font-size: clamp(1.1rem, 1.8vw, 1.5rem);
   font-weight: 400;
   color: var(--ink);
@@ -285,7 +285,7 @@
 
 /* Section label -- matches About's SectionRule */
 .seg-lbl {
-  font-family: 'Literata', var(--serif);
+  font-family: var(--display);
   font-size: 3rem;           /* 48px -- matches sec-head */
   font-weight: 400;
   color: var(--ink);
@@ -338,7 +338,7 @@
 
 /* Solo title -- Bree Serif prominent */
 .solo-title {
-  font-family: 'Literata', var(--serif);
+  font-family: var(--display);
   font-size: clamp(1.1rem, 1.8vw, 1.5rem);
   font-weight: 400;
   color: var(--ink);

@@ -2,6 +2,7 @@ import { useState, useCallback, useRef, useEffect } from 'react'
 import Reveal from '../components/Reveal'
 import CountUp from '../components/CountUp'
 import usePageTitle from '../hooks/usePageTitle'
+import { labMeta } from '../seo/routes'
 import './Lab.css'
 
 /* ── Data ── */
@@ -177,7 +178,7 @@ function VideoCard({ videoId, title }) {
 
 /* ── Main ── */
 export default function Lab() {
-  usePageTitle('DIC Lab')
+  usePageTitle(labMeta())
   return (
     <div className="lab">
 

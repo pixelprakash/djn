@@ -55,7 +55,7 @@
    trial); --title-tracking (-5px) was tuned for DM Sans and is far too
    tight for a serif, eased to -0.01em like every other Literata heading. */
 .cvp-title {
-  font-family: 'Literata', var(--serif);
+  font-family: var(--display);
   font-size: var(--fs-h1);
   font-weight: 400;
   line-height: 1.04;
@@ -118,7 +118,7 @@
 }
 
 .cvp-sec-head {
-  font-family: 'Literata', var(--serif);
+  font-family: var(--display);
   font-size: clamp(1.35rem, 2.4vw, 1.8rem);
   font-weight: 400;
   color: var(--ink);

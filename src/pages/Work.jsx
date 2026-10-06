@@ -5,6 +5,7 @@ import { useRef, useState } from 'react'
 import Reveal from '../components/Reveal'
 import PageHero from '../components/PageHero'
 import usePageTitle from '../hooks/usePageTitle'
+import { workMeta } from '../seo/routes'
 import useStackedLayers from '../hooks/useStackedLayers'
 import './Work.css'
 
@@ -15,7 +16,7 @@ const TABS = [
 ]
 
 export default function Work() {
-  usePageTitle('Work')
+  usePageTitle(workMeta())
   const [tab, setTab] = useState('projects')
   const pageRef = useRef(null)
   useStackedLayers(pageRef)

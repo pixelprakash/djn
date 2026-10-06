@@ -229,3 +229,31 @@ Conventions every page and component follows -- keep them when adding to the sit
 **How to test:** `npm install --no-save axe-core`, then in the browser load
 `/node_modules/axe-core/axe.min.js` on a page (after skipping the intro) and run
 `axe.run(document, {runOnly: {type: 'tag', values: ['wcag2a','wcag2aa','wcag21aa','wcag22aa']}})`.
+
+## Performance & search (SEO)
+
+**Load less, later**
+- The intro and GSAP are lazy chunks: the intro plays once per browsing session (not for reduced motion), and GSAP
+  loads in the background after first paint. Pages swap without animation if a click beats it.
+- Fonts are bundled (`@fontsource-variable/dm-sans` and `/literata`, imported in `main.jsx`), not fetched from Google;
+  the two latin files are preloaded by a small plugin in `vite.config.js`. Use `var(--display)` for headlines.
+- Background route preloading waits until the page has loaded plus ~2.5s, and is skipped on data-saver / 2G.
+- The portrait ships as 560w / 900w / 1380w (`Portrait.jsx` srcset). New large photos need a `srcset` + intrinsic
+  `width`/`height`; article covers use `src/utils/imageSizes.js`.
+- CMS content is cached in localStorage (`djm-cms:v1:*`) and refreshed in the background; bump the version in
+  `src/lib/cms.js` if a mapped shape changes. `prefetchFor()` starts the request before React mounts.
+- Loading placeholders are full-screen tall so the footer never shows and then jumps (layout shift).
+- `vercel.json` sets long-lived caching for `/assets/*` and a week for images/fonts.
+
+**Search & sharing**
+- `src/seo/routes.js` is the single source for every page's title, description, canonical path, social image and
+  structured data. Pages call `usePageTitle(xxxMeta(...))`; `scripts/prerender.mjs` (run by `npm run build`) uses the
+  same builders to write a real HTML file per page (`dist/<route>.html`, served at clean URLs), a `<noscript>`
+  summary, an image preload for the hero/cover, and `sitemap.xml`. New static pages must be added to `routes.js`
+  and to the `pages` list in the script.
+- Blog articles published in Sanity after a deploy work immediately in the browser but only get their own static
+  HTML on the next deploy (a Vercel deploy hook fired on publish would automate that).
+- Unknown addresses render `NotFound` (`noindex`).
+- Share image: `public/og-image.jpg` (1200x630).
+
+**How to measure:** `npx lighthouse <url> --form-factor=mobile --only-categories=performance,seo` (needs Chrome).

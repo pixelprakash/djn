@@ -15,7 +15,18 @@ import './Portrait.css'
 
    `className` is the page's own panel class (it owns size, radius and the
    responsive rules); everything else passes straight through to the img. */
+// The portrait ships in three sizes; the browser picks the smallest that is
+// sharp for the screen (a phone needs ~35 KB, not the 175 KB original).
+const PORTRAIT = {
+  src: '/profliepicnobg-900.webp',
+  srcSet: '/profliepicnobg-560.webp 560w, /profliepicnobg-900.webp 900w, /profliepicnobg.webp 1380w',
+  sizes: '(max-width: 860px) 300px, 560px',
+  width: 1380,
+  height: 1504, // intrinsic size: reserves the space, no layout shift
+}
+
 export default function Portrait({ className = '', ...imgProps }) {
+  const img = imgProps.src === '/profliepicnobg.webp' ? { ...imgProps, ...PORTRAIT } : imgProps
   /*
   const boxRef = useRef(null)
   const imgRef = useRef(null)
@@ -55,7 +66,7 @@ export default function Portrait({ className = '', ...imgProps }) {
 
   return (
     <div className={`pf ${className}`} /* ref={boxRef} */>
-      <img /* ref={imgRef} */ {...imgProps} />
+      <img /* ref={imgRef} */ {...img} />
       {/*
       <i className="pf-mark pf-mark--tl" aria-hidden="true" />
       <i className="pf-mark pf-mark--tr" aria-hidden="true" />

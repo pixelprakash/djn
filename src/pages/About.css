@@ -51,7 +51,7 @@
      --title-tracking (-5px) was tuned for a sans display face at this
      size -- far too tight for a serif, whose letterforms need more room
      to read clean, so it's eased way off here rather than reused as-is. */
-  font-family: 'Literata', var(--serif);
+  font-family: var(--display);
   font-weight: 400;
   /* Own clamp instead of the shared --fs-h1 (5vw/72px): the full-bleed
      photo column eats into this column's width at common laptop sizes

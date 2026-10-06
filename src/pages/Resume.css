@@ -63,7 +63,7 @@
 
 /* Section heading -- 3rem Bree Serif with trailing rule, matches sec-head */
 .r-section-title {
-  font-family: 'Literata', var(--serif);
+  font-family: var(--display);
   font-size: 3rem;
   font-weight: 400;
   line-height: 1.05;

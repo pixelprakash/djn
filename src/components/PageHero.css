@@ -25,7 +25,7 @@
   max-width: 100%;
 }
 .ph-title {
-  font-family: 'Literata', var(--serif);
+  font-family: var(--display);
   font-size: var(--fs-hero);
   font-weight: 400;
   /* Two-line titles need real clearance: at this size a descender (the p of

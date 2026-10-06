@@ -3,6 +3,7 @@ import { useRef } from 'react'
 import Portrait from '../components/Portrait'
 import PageHero from '../components/PageHero'
 import usePageTitle from '../hooks/usePageTitle'
+import { resumeMeta } from '../seo/routes'
 import useStackedLayers from '../hooks/useStackedLayers'
 import './Resume.css'
 
@@ -75,7 +76,7 @@ const links = [
 
 /* -- COMPONENT -- */
 export default function Resume() {
-  usePageTitle('Resume')
+  usePageTitle(resumeMeta())
   const pageRef = useRef(null)
   useStackedLayers(pageRef)
   return (

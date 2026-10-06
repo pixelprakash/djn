@@ -1,22 +1,42 @@
 import { Suspense, lazy, useEffect, useRef, useState } from "react"
 import { flushSync } from "react-dom"
 import { BrowserRouter, Routes, Route, Navigate, useLocation, useParams } from "react-router-dom"
-import { useReducedMotion } from "framer-motion"
-import gsap from "gsap"
+import useReducedMotion from "./hooks/useReducedMotion"
 import TopNav     from "./components/TopNav"
 import CustomCursor from "./components/CustomCursor"
 import Footer from "./components/Footer"
-import IntroLoader from "./components/IntroLoader"
 import { routeImports, preloadAllRoutes } from "./routePreload"
 // About is the default landing route ("/" redirects here), so it's imported
 // eagerly — lazy-loading it would add a chunk-fetch round trip to the most
 // common page load instead of saving one.
 import About from "./pages/About"
 import { PROJECTS } from "./pages/projectData"
+import { CV_TITLES } from "./seo/routes"
+import NotFound from "./pages/NotFound"
 import ShutterBlades from "./components/ShutterBlades"
 import { applyShutter, makeShutterRefs, shutterRegistrar } from "./utils/shutter"
 
 import "./App.css"
+
+// The intro (and the animation library behind it) is only downloaded when it
+// is going to play: the first visit of a browsing session, and not for people
+// who asked for reduced motion. Everyone else skips ~70 KB of script.
+const IntroLoader = lazy(() => import("./components/IntroLoader"))
+const INTRO_KEY = "djm-intro-seen"
+const SHOW_INTRO = (() => {
+  try {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return false
+    if (sessionStorage.getItem(INTRO_KEY)) return false
+    sessionStorage.setItem(INTRO_KEY, "1")
+    return true
+  } catch { return true }
+})()
+
+// GSAP drives the page transitions. It loads in the background right after the
+// first paint; until it is there a navigation simply swaps the page.
+let gsap = null
+let gsapLoading = null
+const loadGsap = () => gsapLoading || (gsapLoading = import("gsap").then(m => (gsap = m.default)))
 
 const Work         = lazy(routeImports.work)
 const ProjectDetail = lazy(routeImports.projectDetail)
@@ -61,6 +81,7 @@ function RouteSwitch({ location }) {
         <Route path="/blog/:slug" element={<OldBlogPost />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/cv/:slug" element={<CvPage />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </Suspense>
   )
@@ -69,21 +90,6 @@ function RouteSwitch({ location }) {
 /* What the curtain says while it's covering the screen: where you're
    going. CV sub-pages name themselves (titles match CvPage's PAGES -- kept
    here so the lazy CvPage chunk isn't pulled into the main bundle). */
-const CV_TITLES = {
-  'educational-qualifications': 'Educational Qualifications',
-  'scholarships-awards': 'Scholarships & Awards',
-  'professional-experience': 'Professional Experience',
-  'teaching-experience': 'Teaching Experience & Permanent Posts',
-  'thesis-guidance': 'Thesis Guidance',
-  'visiting-appointments': 'Visiting Appointments',
-  'sponsored-projects': 'Sponsored Projects',
-  'solo-shows': 'Solo Shows',
-  'selected-exhibitions': 'Selected Exhibitions',
-  'books': 'Books',
-  'papers-publications': 'Papers & Publications',
-  'training-programs': 'Training Programs',
-  'conferences-journals': 'Conferences & Journals',
-}
 // A project page gets its own transition: a camera shutter closes, a gallery
 // wall label (category, title, venue, year) shows on it, and the blades part
 // onto the project (see PageTransition). Deliberately not the cover photo --
@@ -161,6 +167,14 @@ function PageTransition() {
   // Re-pointed every render so the timeline's callbacks (below) never
   // close over a stale commit/latest.
   playRef.current = () => {
+    if (!gsap) {
+      // Animation library not here yet (very fast click): swap without ceremony.
+      // (Deferred a tick: flushSync must not run inside the effect that got us here.)
+      loadGsap()
+      busy.current = true
+      queueMicrotask(() => { commit(latest.current); busy.current = false })
+      return
+    }
     busy.current = true
     const project = projectFor(latest.current.pathname)
     const text = labelFor(latest.current.pathname)
@@ -275,12 +289,12 @@ function PageTransition() {
       if (location !== cur && !busy.current) { shownRef.current = location; setShown(location) }
       return
     }
-    if (reduceMotion) { commit(location); return }
+    if (reduceMotion) { queueMicrotask(() => commit(location)); return }
     if (!busy.current) playRef.current()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location, reduceMotion])
 
-  useEffect(() => () => gsap.killTweensOf([panel.current, bar.current, kicker.current, label.current, rule.current, venue.current, page.current]), [])
+  useEffect(() => () => { if (gsap) gsap.killTweensOf([panel.current, bar.current, kicker.current, label.current, rule.current, venue.current, page.current]) }, [])
 
   return (
     <>
@@ -339,10 +353,29 @@ function RouteAnnouncer() {
 // preloadForPath first (e.g. touch devices, or a click too fast to hover).
 function IdlePreload() {
   useEffect(() => {
-    const idle = window.requestIdleCallback || (cb => setTimeout(cb, 1200))
-    const cancel = window.cancelIdleCallback || clearTimeout
-    const id = idle(preloadAllRoutes)
-    return () => cancel(id)
+    // Not on data-saver or very slow connections: spend their data on what
+    // they asked for, not on pages they may never open.
+    const conn = navigator.connection
+    if (conn && (conn.saveData || /(^|-)2g$/.test(conn.effectiveType || ''))) return
+
+    // Wait until the page has finished loading and settled (a couple of
+    // seconds), so these ~25 background requests never compete with the first
+    // paint or the hero photograph for bandwidth and the main thread.
+    let timer, idle
+    const cancelIdle = window.cancelIdleCallback || clearTimeout
+    const requestIdle = window.requestIdleCallback || (cb => setTimeout(cb, 300))
+    const start = () => {
+      timer = setTimeout(() => {
+        idle = requestIdle(() => { loadGsap(); preloadAllRoutes() })
+      }, 2500)
+    }
+    if (document.readyState === 'complete') start()
+    else window.addEventListener('load', start, { once: true })
+    return () => {
+      window.removeEventListener('load', start)
+      clearTimeout(timer)
+      if (idle) cancelIdle(idle)
+    }
   }, [])
   return null
 }
@@ -350,7 +383,11 @@ function IdlePreload() {
 function App() {
   return (
     <BrowserRouter>
-      <IntroLoader />
+      {SHOW_INTRO && (
+        <Suspense fallback={<div className="il-boot" aria-hidden="true" />}>
+          <IntroLoader />
+        </Suspense>
+      )}
       <a href="#main-content" className="skip-link">Skip to main content</a>
 
       <IdlePreload />

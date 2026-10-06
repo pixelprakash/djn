@@ -4,6 +4,7 @@ import { PROJECTS } from './projectData'
 import Reveal from '../components/Reveal'
 import { Slideshow, PhotoGrid } from '../components/PhotoGallery'
 import usePageTitle from '../hooks/usePageTitle'
+import { projectMeta, notFoundMeta } from '../seo/routes'
 import './ProjectDetail.css'
 
 /* ═══════════════════════════════════════════
@@ -55,7 +56,7 @@ export default function ProjectDetail() {
   /* Find project */
   const pIdx   = PROJECTS.findIndex(p => p.slug === slug)
   const project = PROJECTS[pIdx]
-  usePageTitle(project ? project.title : 'Work')
+  usePageTitle(project ? projectMeta(project) : notFoundMeta())
   const prevP   = pIdx > 0 ? PROJECTS[pIdx - 1] : null
   const nextP   = pIdx < PROJECTS.length - 1 ? PROJECTS[pIdx + 1] : null
 

@@ -1,14 +1,16 @@
 import { useEffect } from 'react'
+import applyMeta from '../seo/applyMeta'
 
-const SITE = 'Deepak John Mathew'
-const HOME = 'Deepak John Mathew — Professor of Design, IIT Hyderabad'
-
-/* Sets the browser tab / window title for the current page (WCAG 2.4.2 Page
-   Titled). It is a single-page app, so without this every page would keep the
-   home page's title -- which is also what a screen reader announces and what
-   browser history lists. Pass nothing for the home page. */
-export default function usePageTitle(title) {
+/* Sets the page's title (WCAG 2.4.2 Page Titled) and, with it, everything a
+   search engine or link preview reads: description, canonical address, social
+   tags and structured data. Pass a meta object from src/seo/routes.js. It is a
+   single-page app, so without this every page would keep the home page's
+   head -- which is also what a screen reader announces. */
+export default function usePageTitle(meta) {
+  const key = meta ? `${meta.path}|${meta.title}|${meta.description}|${meta.image || ''}` : ''
   useEffect(() => {
-    document.title = title ? `${title} — ${SITE}` : HOME
-  }, [title])
+    if (meta) applyMeta(meta)
+    // `key` stands in for the object's contents.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [key])
 }

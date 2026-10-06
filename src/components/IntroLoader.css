@@ -203,7 +203,7 @@
   vertical-align: top;
 }
 .il-name {
-  font-family: 'Literata', var(--serif);
+  font-family: var(--display);
   font-style: italic;
   font-weight: 400;
   font-size: clamp(2.3rem, 7.2vw, 6.4rem);

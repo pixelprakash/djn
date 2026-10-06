@@ -22,8 +22,11 @@
   --white:   #ffffff;
 
   /* Type — DM Sans is the only typeface used across the site */
-  --serif: 'DM Sans', sans-serif;
-  --body:  'DM Sans', sans-serif;
+  --serif: 'DM Sans Variable', 'DM Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --body:  'DM Sans Variable', 'DM Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  /* Headlines: Literata (serif). The fallback is sized close to it so text does
+     not jump when the font arrives. */
+  --display: 'Literata Variable', 'Literata', Georgia, 'Times New Roman', serif;
 
   /* Fluid type scale shared by every page's hero header */
   --fs-h1:       clamp(36px, 5vw, 72px);      /* page title, e.g. "Deepak John Mathew" / "Selected Work" */

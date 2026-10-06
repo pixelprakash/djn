@@ -222,7 +222,7 @@
   animation: slideUp .5s ease .05s both;
 }
 .pd-hero-title {
-  font-family: 'Literata', var(--serif);
+  font-family: var(--display);
   font-size: clamp(28px, 5.5vw, 76px);
   font-style: italic;
   font-weight: 400;
@@ -487,7 +487,7 @@
 
 /* Title */
 .pd-pn-title {
-  font-family: 'Literata', var(--serif);
+  font-family: var(--display);
   font-style: italic;
   /* min bumped 1.05rem -> 1.2rem — this is the name of the adjacent
      project and the main label of a primary nav link, shouldn't shrink

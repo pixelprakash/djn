@@ -13,7 +13,9 @@
 /* Route-chunk loading fallback — shown only on the rare cold fetch of a
    not-yet-cached page chunk; kept minimal on purpose. */
 .page-loader {
-  min-height: 60vh;
+  /* A full screen tall: while a page's code arrives the footer stays below the
+     fold, instead of showing and then being pushed away (layout shift). */
+  min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -98,7 +100,7 @@
 }
 .pt-label-text {
   display: block;
-  font-family: 'Literata', var(--serif);
+  font-family: var(--display);
   font-style: italic;
   font-weight: 400;
   font-size: clamp(2.6rem, 7vw, 6rem);
@@ -157,3 +159,7 @@
 @media (prefers-reduced-motion: reduce) {
   .pt { display: none; }
 }
+
+/* Held over the page for the instant before the intro's script arrives, so the
+   page never flashes before the intro covers it. Same colour as the intro. */
+.il-boot { position: fixed; inset: 0; z-index: 100000; background: var(--ink); }

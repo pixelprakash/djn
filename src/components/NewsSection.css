@@ -31,7 +31,7 @@ section.ns {
 }
 
 .ns .ns-heading {
-  font-family: 'Literata', var(--serif);
+  font-family: var(--display);
   font-weight: 400;
   font-size: clamp(1.5rem, 2.6vw, 2rem);
   line-height: 1.15;

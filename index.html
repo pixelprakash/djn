@@ -7,45 +7,64 @@
     <title>Deepak John Mathew — Professor of Design, IIT Hyderabad</title>
     <meta name="description" content="Deepak John Mathew is Professor and Founding Head of Design at IIT Hyderabad, specializing in digital heritage, AR/VR, photography, and design innovation." />
     <meta name="robots" content="index, follow" />
+    <meta name="author" content="Deepak John Mathew" />
     <meta name="theme-color" content="#f5f3ee" />
     <meta name="color-scheme" content="light" />
-    <link rel="canonical" href="https://djn.vercel.app/" />
+    <link rel="canonical" href="https://djn.vercel.app/about" />
 
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Deepak John Mathew" />
     <meta property="og:title" content="Deepak John Mathew — Professor of Design, IIT Hyderabad" />
     <meta property="og:description" content="Professor and Founding Head of Design at IIT Hyderabad, specializing in digital heritage, AR/VR, photography, and design innovation." />
-    <meta property="og:url" content="https://djn.vercel.app/" />
-    <meta property="og:image" content="https://djn.vercel.app/djm-profile.jpg" />
+    <meta property="og:url" content="https://djn.vercel.app/about" />
+    <meta property="og:image" content="https://djn.vercel.app/og-image.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Prof. Deepak John Mathew, Professor of Design at IIT Hyderabad" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Deepak John Mathew — Professor of Design, IIT Hyderabad" />
     <meta name="twitter:description" content="Professor and Founding Head of Design at IIT Hyderabad, specializing in digital heritage, AR/VR, photography, and design innovation." />
-    <meta name="twitter:image" content="https://djn.vercel.app/djm-profile.jpg" />
+    <meta name="twitter:image" content="https://djn.vercel.app/og-image.jpg" />
 
     <link rel="icon" type="image/png" href="/diclogo.png" />
     <link rel="apple-touch-icon" href="/diclogo.png" />
 
-    <!-- Fonts: preconnect + a single non-blocking stylesheet shared by every page,
-         instead of a duplicated @import in each page's CSS -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <!-- Literata added for a trial run on heading type, starting on the
-         Home page only (src/pages/About.css) -- not yet adopted sitewide. -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=Literata:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" />
+    <!-- Fonts are bundled with the site (see src/main.jsx), not fetched from Google.
+         Warm the connections to the hosts the page does use: content API + images. -->
+    <link rel="preconnect" href="https://q6natj20.apicdn.sanity.io" crossorigin />
+    <link rel="preconnect" href="https://cdn.sanity.io" crossorigin />
+    <link rel="dns-prefetch" href="https://deepakjohnmathew.net" />
 
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
-        "@type": "Person",
-        "name": "Deepak John Mathew",
-        "jobTitle": "Professor and Founding Head of Design",
-        "worksFor": {
-          "@type": "CollegeOrUniversity",
-          "name": "Indian Institute of Technology Hyderabad"
-        },
-        "url": "https://djn.vercel.app/",
-        "image": "https://djn.vercel.app/djm-profile.jpg",
-        "sameAs": []
+        "@graph": [
+          {
+            "@type": "Person",
+            "@id": "https://djn.vercel.app/#person",
+            "name": "Deepak John Mathew",
+            "jobTitle": "Professor and Founding Head of Design",
+            "description": "Professor of Design at IIT Hyderabad working on digital heritage, AR/VR, photography and design innovation.",
+            "worksFor": { "@type": "CollegeOrUniversity", "name": "Indian Institute of Technology Hyderabad" },
+            "url": "https://djn.vercel.app/",
+            "image": "https://djn.vercel.app/og-image.jpg",
+            "sameAs": [
+              "https://www.linkedin.com/in/deepak-john-mathew-b079ab1a/",
+              "https://www.instagram.com/deepakjohnmathew/",
+              "https://scholar.google.com/citations?user=UBODlvYAAAAJ",
+              "https://www.researchgate.net/profile/Deepak-Mathew-3",
+              "https://deepakjohnmathew.net"
+            ]
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://djn.vercel.app/#website",
+            "name": "Deepak John Mathew",
+            "url": "https://djn.vercel.app/",
+            "publisher": { "@id": "https://djn.vercel.app/#person" },
+            "inLanguage": "en"
+          }
+        ]
       }
     </script>
   </head>

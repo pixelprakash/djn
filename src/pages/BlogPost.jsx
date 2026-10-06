@@ -6,6 +6,8 @@ import { useCms, POSTS_QUERY, mapPosts } from '../lib/cms'
 import Reveal from '../components/Reveal'
 import { Slideshow, PhotoGrid } from '../components/PhotoGallery'
 import usePageTitle from '../hooks/usePageTitle'
+import { srcSetFor, COVER_SIZES } from '../utils/imageSizes'
+import { postMeta, blogsMeta, notFoundMeta } from '../seo/routes'
 import './BlogPost.css'
 
 // Body text from Sanity is rich text: paragraphs (rendered with the page's
@@ -33,7 +35,7 @@ export default function BlogPost() {
 
   const idx  = posts.findIndex(p => p.slug === slug)
   const post = posts[idx]
-  usePageTitle(post ? post.title : 'Blogs')
+  usePageTitle(post ? postMeta(post) : loading ? blogsMeta() : notFoundMeta())
   const prevP = idx > 0 ? posts[idx - 1] : null
   const nextP = idx >= 0 && idx < posts.length - 1 ? posts[idx + 1] : null
 
@@ -99,6 +101,8 @@ export default function BlogPost() {
             <img
               className="bp-cover-img"
               src={cover}
+              srcSet={srcSetFor(cover)}
+              sizes={srcSetFor(cover) ? COVER_SIZES : undefined}
               alt={post.title}
               loading="eager"
               decoding="async"

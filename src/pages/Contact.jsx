@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react'
 import PageHero from '../components/PageHero'
 import usePageTitle from '../hooks/usePageTitle'
+import { contactMeta } from '../seo/routes'
 import useStackedLayers from '../hooks/useStackedLayers'
 import './Contact.css'
 
@@ -28,7 +29,7 @@ function FieldError({ id, message }) {
 }
 
 export default function Contact() {
-  usePageTitle('Contact')
+  usePageTitle(contactMeta())
   const pageRef = useRef(null)
   useStackedLayers(pageRef)
   const [form, setForm]     = useState(EMPTY)
