@@ -289,14 +289,14 @@
 .pd-more-head a:hover { text-decoration: underline; text-underline-offset: 3px; }
 .pd-more-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(14px, 2vw, 28px); }
 .pd-more-card { display: flex; flex-direction: column; gap: 6px; text-decoration: none; color: inherit; }
-.pd-more-img { position: relative; display: block; aspect-ratio: 3 / 2; border-radius: 10px; overflow: hidden; background: #dcd7cc; }
+.pd-more-img { position: relative; display: block; aspect-ratio: 3 / 2; border-radius: 0; overflow: hidden; background: #dcd7cc; }
 .pd-more-img img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .6s cubic-bezier(.16,1,.3,1); }
 .pd-more-card:hover .pd-more-img img { transform: scale(1.05); }
 .pd-more-next { position: absolute; left: 10px; top: 10px; font-size: 0.95rem; font-weight: 600; line-height: 1; padding: 6px 10px; border-radius: 4px; background: var(--ink); color: #fff; }
 .pd-more-meta { margin-top: 8px; font-size: 0.95rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); }
 .pd-more-title { font-family: var(--display); font-size: clamp(1.1rem, 1.6vw, 1.4rem); line-height: 1.25; color: var(--ink); }
 .pd-more-card:hover .pd-more-title { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 4px; }
-.pd-more-card:focus-visible { outline: 3px solid var(--accent); outline-offset: 4px; border-radius: 10px; }
+.pd-more-card:focus-visible { outline: 3px solid var(--accent); outline-offset: 4px; }
 
 /* ═══════════════════════════════════════════════════
    ANIMATIONS

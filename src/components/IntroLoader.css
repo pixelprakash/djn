@@ -249,12 +249,16 @@
   .il-center { padding: 28px 22px; }
 }
 
-/* Skip control: above the overlay, bottom-right, always reachable by keyboard.
+/* Skip control: above the overlay, right side just above the frame's bottom
+   strip, always reachable by keyboard.
    Portalled to <body> so it is outside the aria-hidden intro. */
 .il-skip {
   position: fixed;
+  /* The viewfinder frame uses every corner and the whole bottom edge (counter,
+     exposure meter, readout, corner brackets), so the button sits just above
+     that strip on the right, where nothing else is drawn. */
   right: clamp(16px, 3vw, 40px);
-  bottom: clamp(16px, 3vw, 40px);
+  bottom: clamp(76px, 11vh, 112px);
   z-index: 100001;
   min-height: 44px;
   padding: 10px 20px;
@@ -271,4 +275,7 @@
 }
 .il-skip:hover { background: rgba(245, 243, 238, .92); color: var(--ink); border-color: transparent; }
 .il-skip:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+/* Short (landscape phone) screens: lower, to clear the autofocus square that
+   closes in around the name. */
+@media (max-height: 480px) { .il-skip { bottom: 58px; } }
 @media (prefers-reduced-motion: reduce) { .il-skip { display: none; } }

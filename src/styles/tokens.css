@@ -43,8 +43,10 @@
   --title-tracking-sm: -2px;
 
   /* Radius scale — nested elements use the smaller step */
-  --radius-lg: 12px; /* outer containers, e.g. the Works/Research panels */
-  --radius-md: 10px; /* cards nested inside a --radius-lg container */
+  /* Cards and panels have square corners (a deliberate, plain look): these two
+     are 0 on purpose. Pills, chips and round icon buttons keep their own radii. */
+  --radius-lg: 0; /* outer containers, e.g. the Works/Research panels */
+  --radius-md: 0; /* cards nested inside a --radius-lg container */
   --radius-sm: 6px;  /* small chips/inputs */
 
   /* Layout */

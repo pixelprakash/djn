@@ -147,7 +147,7 @@
   padding: clamp(13px, 1.8vw, 18px) clamp(10px, 1.4vw, 14px);
   margin: 0 clamp(-10px, -1.4vw, -14px);
   border-bottom: 1px solid rgba(219, 214, 206, 0.55);
-  border-radius: var(--radius-sm);
+  border-radius: 0;
   transition: padding-left .18s ease, background .18s ease;
 }
 .cvp-item:first-child { border-top: 1px solid rgba(219, 214, 206, 0.55); }
