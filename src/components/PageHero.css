@@ -51,6 +51,24 @@
    following sibling gets the page background so the hero never shows
    through (pages' own section backgrounds override this: they load later). */
 .ph ~ * { background-color: var(--bg); }
+/* A scroll-reveal section that follows the hero must not fade ITSELF: an
+   element at partial opacity is see-through, background included, so the
+   pinned hero behind it would show through as a pale ghost whenever you
+   scroll faster than the sections can reveal. The sheet stays solid at all
+   times; its content does the fading (same fade and lift as everywhere). */
+.js-ready .ph ~ .reveal { opacity: 1; transform: none; transition: none; }
+.js-ready .ph ~ .reveal > * {
+  opacity: 0;
+  transform: translateY(18px);
+  transition:
+    opacity .62s cubic-bezier(.16, 1, .3, 1),
+    transform .62s cubic-bezier(.16, 1, .3, 1);
+}
+.js-ready .ph ~ .reveal--in > * { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) {
+  .js-ready .ph ~ .reveal > * { opacity: 1; transform: none; }
+}
+
 .ph + * {
   margin-top: calc(-1 * var(--ph-sheet-r));
   border-radius: var(--ph-sheet-r) var(--ph-sheet-r) 0 0;

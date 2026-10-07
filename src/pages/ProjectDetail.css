@@ -94,6 +94,8 @@
   text-decoration: none;
   white-space: nowrap;
   position: relative;
+  display: inline-block;
+  padding: 6px 2px; /* >= 24px tall touch target */
   transition: color .2s;
 }
 .pd-crumb a::after {
@@ -176,7 +178,7 @@
 .pd-hero {
   position: relative;
   width: 100%;
-  height: clamp(380px, 58vw, 720px);
+  height: clamp(440px, 70vh, 760px);
   overflow: hidden;
   background: #12100d;
 }
@@ -184,329 +186,135 @@
   width: 100%; height: 100%;
   object-fit: cover;
   display: block;
-  opacity: .84;
+  opacity: .9;
   animation: heroKen 10s ease forwards;
 }
 @keyframes heroKen {
-  from { transform: scale(1.09); }
+  from { transform: scale(1.07); }
   to   { transform: scale(1.0); }
 }
 .pd-hero-grad {
   position: absolute; inset: 0;
-  background: linear-gradient(
-    to top,
-    rgba(8,7,5,.85) 0%,
-    rgba(8,7,5,.22) 55%,
-    transparent 100%
-  );
+  background:
+    linear-gradient(to top, rgba(8,7,5,.9) 0%, rgba(8,7,5,.45) 38%, rgba(8,7,5,0) 72%),
+    linear-gradient(to bottom, rgba(8,7,5,.28) 0%, rgba(8,7,5,0) 22%);
 }
 .pd-hero-info {
   position: absolute;
   bottom: 0; left: 0; right: 0;
-  padding: clamp(40px, 6vw, 80px) var(--gutter) clamp(32px, 4vw, 52px);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: clamp(40px, 6vw, 80px) var(--gutter) clamp(32px, 4.5vw, 56px);
 }
+/* Light chip: the category must read on any photograph. */
 .pd-hero-tag {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  font-size: 1rem;
-  font-weight: 500;
-  letter-spacing: .08em;
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: .12em;
   text-transform: uppercase;
-  color: var(--accent);
-  background: rgba(var(--accent-rgb),.12);
-  border: 1px solid rgba(var(--accent-rgb),.22);
-  padding: 6px 16px;
+  color: #fff;
+  background: rgba(255,255,255,.16);
+  border: 1px solid rgba(255,255,255,.4);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  padding: 7px 16px;
   border-radius: 100px;
   margin-bottom: 18px;
   animation: slideUp .5s ease .05s both;
 }
 .pd-hero-title {
   font-family: var(--display);
-  font-size: clamp(28px, 5.5vw, 76px);
+  font-size: clamp(2rem, 5.6vw, 4.8rem);
   font-style: italic;
   font-weight: 400;
-  line-height: 1.0;
+  line-height: 1.04;
+  letter-spacing: -0.01em;
   color: #fff;
+  max-width: 20ch;
+  text-wrap: balance;
   margin-bottom: 14px;
   animation: slideUp .55s ease .14s both;
 }
 .pd-hero-venue {
-  font-size: 1.05rem;
-  /* was 300 — light weight plus low opacity read as barely-there on the
-     dark hero; 400 gives it presence as the title's supporting line. */
+  font-size: clamp(1rem, 1.5vw, 1.2rem);
   font-weight: 400;
-  /* .46 was thin against the dark scrim behind it (.pd-hero-grad) — this
-     sits in the strongest part of that gradient, so there's no reason not
-     to push it closer to fully opaque. */
-  color: rgba(255,255,255,.9);
+  color: rgba(255,255,255,.92);
   animation: slideUp .55s ease .24s both;
 }
-
-/* ═══════════════════════════════════════════════════
-   EDITORIAL BODY
-═══════════════════════════════════════════════════ */
-.pd-body {
-  /* Max width matches --gutter on both sides */
-  max-width: 1440px;
-  margin: 0 auto;
-}
-
-.pd-sec { display: block; }
-
-/* ═══════════════════════════════════════════════════
-   NOTEBOOK TEXT BLOCK
-═══════════════════════════════════════════════════ */
-.nb {
-  position: relative;
-  /* Outer indent = gutter + red-line offset so it lines up with page edge */
-  padding: 52px 0 0 0;
-  margin: 0 var(--gutter);
-  max-width: 720px;
-}
-/* Odd sections push right for editorial asymmetry */
-.pd-sec-odd .nb { margin-left: auto; }
-
-/* Red margin line — positioned at left of .nb */
-.nb-redline {
-  position: absolute;
-  left: -18px; top: 0; bottom: 0;
-  width: 2px;
-  background: var(--nb-red);
-  border-radius: 2px;
-}
-
-/* Ruled paper background — the whole block runs on a fixed vertical rhythm
-   (line-height = ruled-line spacing = paragraph spacing), so bumping the
-   text size means bumping every one of these values together. Grid is 34px
-   now (was 30px) to carry the larger, heavier body copy comfortably. */
-.nb-paper {
-  background-image: repeating-linear-gradient(
-    to bottom,
-    transparent 0px,
-    transparent 33px,
-    var(--nb-line) 33px,
-    var(--nb-line) 34px
-  );
-  /* Shift so first rule lands correctly under first text line */
-  background-position: 0 9px;
-  padding: 9px 0 0;
-}
-
-.nb-p {
-  /* This is the page's primary reading copy — was 16px / weight 300, which
-     read as faint and small for sustained reading. */
-  font-size: 1.1875rem;
-  font-weight: 400;
-  /* line-height MUST match ruled line spacing exactly = 34px */
-  line-height: 34px;
-  color: var(--sub);
-  /* Each paragraph = whole number of ruled lines */
-  margin-bottom: 34px;
-}
-.nb-p:last-of-type { margin-bottom: 0; }
-
-/* Button row: lives below the ruled area, flush with page gutter */
-.nb-actions {
-  /* Gap above = one ruled-line gap (34px) */
-  margin-top: 34px;
-  padding-top: 34px;
-  border-top: 1px solid var(--nb-line);
-  /* Align left with text (no extra indent) */
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
-  /* Bottom padding = one ruled line so element clears nicely */
-  padding-bottom: 36px;
-}
-
-.nb-view-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 9px;
+.pd-hero-cta {
+  margin-top: 22px;
   font-family: var(--body);
   font-size: 1rem;
   font-weight: 500;
   color: var(--ink);
-  background: var(--white);
-  border: 1.5px solid var(--rule);
+  background: #fff;
+  border: 0;
   border-radius: 100px;
-  padding: 9px 20px;
+  padding: 13px 26px;
   cursor: pointer;
-  transition:
-    background .22s,
-    color .22s,
-    border-color .22s,
-    transform .22s cubic-bezier(.34,1.56,.64,1),
-    box-shadow .22s;
+  transition: background-color .2s, color .2s, transform .2s cubic-bezier(.34,1.56,.64,1);
+  animation: slideUp .55s ease .34s both;
 }
-.nb-view-btn:hover {
-  background: var(--ink);
-  color: var(--white);
-  border-color: var(--ink);
-  transform: translateY(-3px);
-  box-shadow: 0 8px 24px rgba(26,24,20,.14);
-}
-.nb-view-btn:active { transform: translateY(0) scale(.97); }
-
-/* Animated play circle inside button */
-.nb-play-dot {
-  width: 24px; height: 24px;
-  border-radius: 50%;
-  background: var(--accent);
-  color: #fff;
-  display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0;
-  transition: transform .28s cubic-bezier(.34,1.56,.64,1);
-}
-.nb-view-btn:hover .nb-play-dot { transform: scale(1.2) rotate(12deg); }
-
-.nb-count {
-  font-size: 1rem;
-  font-weight: 400;
-  color: var(--muted);
-  transition: color .2s;
-}
-.nb-view-btn:hover .nb-count { color: rgba(255,255,255,.7); }
-
-/* Photo grid + fullscreen slideshow (.pg- / .ss- classes) now live in the
-   shared src/components/PhotoGallery.css, imported by that component directly. */
+.pd-hero-cta:hover { background: var(--accent); color: #fff; transform: translateY(-2px); }
+.pd-hero-cta:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
 
 /* ═══════════════════════════════════════════════════
-   SECTION DIVIDER
+   CHAPTERS -- a short note on the left, the text beside it,
+   then the photographs
 ═══════════════════════════════════════════════════ */
-.pd-sep {
-  height: 1px;
-  margin: 0 var(--gutter);
-  background: linear-gradient(90deg, transparent, var(--rule) 20%, var(--rule) 80%, transparent);
-}
-
-/* ═══════════════════════════════════════════════════
-   PREV / NEXT BAR
-   — images & text aligned with page --gutter
-   — extra bottom pad so floating nav can't overlap
-═══════════════════════════════════════════════════ */
-.pd-pn {
+.pd-body { max-width: 1600px; margin: 0 auto; padding-top: clamp(40px, 6vw, 88px); }
+.pd-ch { padding-bottom: clamp(48px, 7vw, 104px); }
+.pd-ch-head {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  background: #0e0c09;
-  /* Safe bottom padding = nav height + extra breathing room */
-  padding-bottom: var(--nav-safe);
+  grid-template-columns: minmax(180px, 280px) minmax(0, 1fr);
+  gap: clamp(20px, 4vw, 72px);
+  padding: 0 var(--gutter) clamp(28px, 4vw, 52px);
 }
+.pd-ch-meta { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; padding-top: 6px; }
+.pd-ch-no { font-family: var(--display); font-size: clamp(2.2rem, 4vw, 3.4rem); line-height: 1; color: var(--accent); font-variant-numeric: tabular-nums; }
+.pd-ch-of { font-size: 1.1rem; color: var(--muted); }
+.pd-ch-count { font-family: var(--body); font-size: 1rem; color: var(--muted); }
+.pd-ch-view {
+  display: inline-flex; align-items: center; gap: 10px;
+  margin-top: 6px;
+  font-family: var(--body); font-size: 1rem; font-weight: 500; color: var(--ink);
+  background: var(--white); border: 1.5px solid var(--rule); border-radius: 100px;
+  padding: 10px 20px 10px 12px; cursor: pointer;
+  transition: background-color .2s, color .2s, border-color .2s;
+}
+.pd-ch-view:hover { background: var(--ink); color: #fff; border-color: var(--ink); }
+.pd-ch-view:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+.pd-ch-dot { width: 26px; height: 26px; border-radius: 50%; background: var(--accent); color: #fff; display: flex; align-items: center; justify-content: center; }
+.pd-ch-text { max-width: 62ch; }
+.pd-ch-text p { font-family: var(--body); font-size: clamp(1.08rem, 1.35vw, 1.2rem); line-height: 1.75; color: var(--sub); }
+.pd-ch-text p + p { margin-top: 1.1em; }
+/* the opening note leads: larger and darker */
+.pd-ch:first-child .pd-ch-text p:first-child { font-size: clamp(1.3rem, 2.2vw, 1.75rem); line-height: 1.5; color: var(--ink); }
 
-/* The global focus ring is accent-blue, which sits at ~2.5:1 against this
-   section's near-black background — under the 3:1 WCAG wants for a focus
-   indicator against its surroundings. White clears it easily. */
-.pd-pn-link:focus-visible {
-  outline-color: #fff;
+/* ═══════════════════════════════════════════════════
+   MORE PROJECTS
+═══════════════════════════════════════════════════ */
+.pd-more {
+  padding: clamp(40px, 6vw, 88px) var(--gutter) calc(clamp(48px, 7vw, 96px) + var(--nav-safe));
+  background: #efece5;
 }
-
-/* Divider between the two cells */
-.pd-pn-inner-sep {
-  position: absolute;
-  left: 50%; top: var(--gutter); bottom: var(--nav-safe);
-  width: 1px;
-  background: rgba(255,255,255,.07);
-  pointer-events: none;
-}
-.pd-pn { position: relative; }
-
-.pd-pn-cell { display: flex; }
-.pd-pn-cell-right { justify-content: flex-end; }
-
-.pd-pn-link {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-  /* Inner padding aligns with page --gutter exactly */
-  padding: clamp(32px, 4vw, 52px) var(--gutter);
-  text-decoration: none;
-  width: 100%;
-  position: relative;
-  overflow: hidden;
-  transition: background .3s;
-}
-.pd-pn-link:hover { background: rgba(255,255,255,.025); }
-
-/* Accent corner glow */
-.pd-pn-link::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(ellipse at 0% 100%, rgba(var(--accent-rgb),.07) 0%, transparent 65%);
-  opacity: 0;
-  transition: opacity .4s;
-  pointer-events: none;
-}
-.pd-pn-cell-right .pd-pn-link::before {
-  background: radial-gradient(ellipse at 100% 100%, rgba(var(--accent-rgb),.07) 0%, transparent 65%);
-}
-.pd-pn-link:hover::before { opacity: 1; }
-
-/* Right cell aligns content to the right */
-.pd-pn-cell-right .pd-pn-link {
-  align-items: flex-end;
-}
-
-/* Direction label */
-.pd-pn-dir {
-  font-size: 1rem;
-  font-weight: 500;
-  letter-spacing: .08em;
-  text-transform: uppercase;
-  /* .25 measured ~1.6:1 against this section's #0e0c09 — nowhere close to
-     readable. .6 clears 4.5:1 with margin. */
-  color: rgba(255,255,255,.6);
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  transition: color .2s;
-}
-.pd-pn-link:hover .pd-pn-dir { color: var(--accent); }
-
-/* Thumbnail */
-.pd-pn-thumb {
-  width: 100%;
-  max-width: clamp(220px, 35vw, 440px);
-  height: clamp(140px, 18vw, 210px);
-  border-radius: 10px;
-  overflow: hidden;
-  background: rgba(255,255,255,.05);
-  transition: transform .4s cubic-bezier(.25,.46,.45,.94);
-}
-.pd-pn-link:hover .pd-pn-thumb { transform: translateY(-5px); }
-.pd-pn-thumb img {
-  width: 100%; height: 100%;
-  object-fit: cover;
-  display: block;
-  opacity: .6;
-  transition: opacity .4s, transform .65s cubic-bezier(.25,.46,.45,.94);
-}
-.pd-pn-link:hover .pd-pn-thumb img { opacity: .88; transform: scale(1.06); }
-
-/* Title */
-.pd-pn-title {
-  font-family: var(--display);
-  font-style: italic;
-  /* min bumped 1.05rem -> 1.2rem — this is the name of the adjacent
-     project and the main label of a primary nav link, shouldn't shrink
-     to near-body size on smaller screens. */
-  font-size: clamp(1.2rem, 2.2vw, 1.55rem);
-  font-weight: 400;
-  color: rgba(255,255,255,.82);
-  line-height: 1.3;
-  max-width: clamp(200px, 32vw, 440px);
-  transition: color .2s;
-}
-.pd-pn-link:hover .pd-pn-title { color: #fff; }
-.pd-pn-cell-right .pd-pn-title { text-align: right; }
-
-/* Empty state */
-.pd-pn-empty {
-  opacity: .3;
-  pointer-events: none;
-}
+.pd-more-head { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin-bottom: clamp(20px, 3vw, 36px); }
+.pd-more-head h2 { font-family: var(--display); font-weight: 400; font-size: clamp(1.7rem, 3vw, 2.4rem); line-height: 1.1; letter-spacing: -0.01em; }
+.pd-more-head a { display: inline-block; padding: 6px 0; font-size: 1rem; font-weight: 500; color: var(--accent); text-decoration: none; }
+.pd-more-head a:hover { text-decoration: underline; text-underline-offset: 3px; }
+.pd-more-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(14px, 2vw, 28px); }
+.pd-more-card { display: flex; flex-direction: column; gap: 6px; text-decoration: none; color: inherit; }
+.pd-more-img { position: relative; display: block; aspect-ratio: 3 / 2; border-radius: 10px; overflow: hidden; background: #dcd7cc; }
+.pd-more-img img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .6s cubic-bezier(.16,1,.3,1); }
+.pd-more-card:hover .pd-more-img img { transform: scale(1.05); }
+.pd-more-next { position: absolute; left: 10px; top: 10px; font-size: 0.95rem; font-weight: 600; line-height: 1; padding: 6px 10px; border-radius: 4px; background: var(--ink); color: #fff; }
+.pd-more-meta { margin-top: 8px; font-size: 0.95rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); }
+.pd-more-title { font-family: var(--display); font-size: clamp(1.1rem, 1.6vw, 1.4rem); line-height: 1.25; color: var(--ink); }
+.pd-more-card:hover .pd-more-title { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 4px; }
+.pd-more-card:focus-visible { outline: 3px solid var(--accent); outline-offset: 4px; border-radius: 10px; }
 
 /* ═══════════════════════════════════════════════════
    ANIMATIONS
@@ -519,31 +327,22 @@
 /* ═══════════════════════════════════════════════════
    RESPONSIVE
 ═══════════════════════════════════════════════════ */
-
-/* ── Tablet ── */
 @media (max-width: 1024px) {
-  .nb { max-width: 100%; }
-  .pg-many { grid-template-columns: repeat(2,1fr); }
-  .pg-many .pg-item:first-child { grid-column: span 2; }
+  .pd-more-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .pd-ch-head { grid-template-columns: minmax(150px, 220px) minmax(0, 1fr); }
 }
-
-/* ── Mobile large ── */
 @media (max-width: 768px) {
   :root { --nav-safe: 80px; }
   .pd-bar { padding: 14px var(--gutter); }
   .pd-crumb { display: none; }
+  .pd-bar .pd-ss-btn { margin-left: auto; }
   .pd-back { padding: 10px 18px; font-size: 1rem; }
   .pd-ss-btn { padding: 10px 18px; font-size: 1rem; }
   .pd-ss-dot { width: 24px; height: 24px; }
-  .pd-hero { height: clamp(280px, 55vw, 480px); }
-
-  /* Prev/Next: stack vertically */
-  .pd-pn { grid-template-columns: 1fr; }
-  .pd-pn-inner-sep { left: var(--gutter); right: var(--gutter); top: auto; bottom: auto; width: auto; height: 1px; top: 50%; }
-  .pd-pn-cell-right { justify-content: flex-start; }
-  .pd-pn-cell-right .pd-pn-link { align-items: flex-start; }
-  .pd-pn-cell-right .pd-pn-title { text-align: left; }
-  .pd-pn-thumb { max-width: 100%; }
+  .pd-hero { height: clamp(420px, 68vh, 620px); }
+  .pd-ch-head { grid-template-columns: minmax(0, 1fr); gap: 18px; }
+  .pd-ch-meta { flex-direction: row; flex-wrap: wrap; align-items: center; gap: 8px 16px; }
+  .pd-ch-view { margin-top: 0; }
 
   .ss-wrap { padding: 20px 16px; }
   .ss-photo { max-width: calc(100vw - 28px); max-height: calc(100vh - 180px); }
@@ -562,13 +361,12 @@
   .ss-btn--next { right: 4px; }
 }
 
-/* ── Mobile small ── */
 @media (max-width: 540px) {
-  .pd-back span { display: none; }   /* icon only on very small screens */
-  .pg-2 { grid-template-columns: 1fr; }
-  .pg-4 .pg-item:first-child { height: clamp(200px, 55vw, 340px); }
-  .pg-many { grid-template-columns: 1fr 1fr; }
-  .pg-many .pg-item { height: clamp(160px, 28vw, 260px); }
-  .pg-many .pg-item:first-child { height: clamp(200px, 50vw, 320px); }
-  .pd-pn-thumb { height: 130px; }
+  .pd-more-grid { grid-template-columns: minmax(0, 1fr); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pd-hero-img { animation: none; }
+  .pd-hero-cta, .pd-ch-view, .pd-more-img img { transition: none; }
+  .pd-hero-cta:hover { transform: none; }
+  .pd-more-card:hover .pd-more-img img { transform: none; }
 }

@@ -2,45 +2,11 @@ import { useParams, Link, useNavigate, useLocation } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import { PROJECTS } from './projectData'
 import Reveal from '../components/Reveal'
-import { Slideshow, PhotoGrid } from '../components/PhotoGallery'
+import { Slideshow } from '../components/PhotoGallery'
+import MasonryGallery from '../components/MasonryGallery'
 import usePageTitle from '../hooks/usePageTitle'
 import { projectMeta, notFoundMeta } from '../seo/routes'
 import './ProjectDetail.css'
-
-/* ═══════════════════════════════════════════
-   Notebook text block with ruled-paper effect
-═══════════════════════════════════════════ */
-function Notebook({ section, onSlideshow }) {
-  return (
-    <div className="nb">
-      {/* Red margin rule */}
-      <div className="nb-redline" aria-hidden />
-
-      {/* Ruled paper with text */}
-      <div className="nb-paper">
-        {section.text.split('\n\n').map((para, i) => (
-          <p key={i} className="nb-p">{para}</p>
-        ))}
-      </div>
-
-      {/* Button row — below ruled area, aligned left */}
-      <div className="nb-actions">
-        <button
-          className="nb-view-btn"
-          onClick={() => onSlideshow(section.images)}
-        >
-          <span className="nb-play-dot">
-            <svg width="8" height="9" viewBox="0 0 10 12" fill="currentColor">
-              <path d="M0 0l10 6-10 6V0z"/>
-            </svg>
-          </span>
-          <span>View slideshow</span>
-          <span className="nb-count">— {section.images.length} photos</span>
-        </button>
-      </div>
-    </div>
-  )
-}
 
 /* ═══════════════════════════════════════════
    PAGE
@@ -57,8 +23,9 @@ export default function ProjectDetail() {
   const pIdx   = PROJECTS.findIndex(p => p.slug === slug)
   const project = PROJECTS[pIdx]
   usePageTitle(project ? projectMeta(project) : notFoundMeta())
-  const prevP   = pIdx > 0 ? PROJECTS[pIdx - 1] : null
-  const nextP   = pIdx < PROJECTS.length - 1 ? PROJECTS[pIdx + 1] : null
+  // Where to go next: the following project first, then the rest, wrapping
+  // round, so the end of the list never dead-ends.
+  const more = pIdx < 0 ? [] : [...PROJECTS.slice(pIdx + 1), ...PROJECTS.slice(0, pIdx)].slice(0, 4)
 
   /* All images flattened */
   const allImages = project ? project.sections.flatMap(s => s.images) : []
@@ -124,8 +91,6 @@ export default function ProjectDetail() {
         <nav className="pd-crumb" aria-label="Breadcrumb">
           <Link to="/work">Work</Link>
           <span className="sep" aria-hidden>/</span>
-          <Link to="/work">Photography</Link>
-          <span className="sep" aria-hidden>/</span>
           <span className="cur">{project.title}</span>
         </nav>
 
@@ -139,7 +104,7 @@ export default function ProjectDetail() {
               <polygon points="5 3 19 12 5 21 5 3"/>
             </svg>
           </span>
-          <span>Slide Show</span>
+          <span>Slideshow</span>
         </button>
       </header>
 
@@ -158,85 +123,79 @@ export default function ProjectDetail() {
           <span className="pd-hero-tag">{project.category}</span>
           <h1 className="pd-hero-title">{project.title}</h1>
           <p className="pd-hero-venue">{project.venue} &middot; {project.year}</p>
+          <button
+            type="button"
+            className="pd-hero-cta"
+            onClick={() => setSlideshow({ images: allImages, startIdx: 0 })}
+          >
+            View all {allImages.length} photographs <span aria-hidden="true">&rarr;</span>
+          </button>
         </div>
       </section>
 
-      {/* ── EDITORIAL SECTIONS ── */}
+      {/* ── CHAPTERS: a short note, then its photographs ── */}
       <div className="pd-body">
-        {project.sections.map((sec, si) => (
-          <Reveal
-            as="article"
-            key={si}
-            className={`pd-sec${si % 2 === 1 ? ' pd-sec-odd' : ''}`}
-          >
-            {/* Notebook text */}
-            {sec.text && (
-              <Notebook
-                section={sec}
-                onSlideshow={imgs => setSlideshow({ images: imgs, startIdx: 0 })}
+        {project.sections.map((sec, si) => {
+          const paras = sec.text ? sec.text.split('\n\n') : []
+          const many = project.sections.length > 1
+          return (
+            <Reveal as="section" key={si} className="pd-ch" aria-label={many ? `Part ${si + 1} of ${project.sections.length}` : 'Photographs'}>
+              {paras.length > 0 && (
+                <div className="pd-ch-head">
+                  <div className="pd-ch-meta">
+                    {many && (
+                      <span className="pd-ch-no" aria-hidden="true">
+                        {String(si + 1).padStart(2, '0')}<span className="pd-ch-of"> / {String(project.sections.length).padStart(2, '0')}</span>
+                      </span>
+                    )}
+                    <span className="pd-ch-count">{sec.images.length} photographs</span>
+                    <button
+                      type="button"
+                      className="pd-ch-view"
+                      onClick={() => setSlideshow({ images: sec.images, startIdx: 0 })}
+                    >
+                      <span className="pd-ch-dot" aria-hidden="true">
+                        <svg width="8" height="9" viewBox="0 0 10 12" fill="currentColor"><path d="M0 0l10 6-10 6V0z" /></svg>
+                      </span>
+                      View slideshow
+                    </button>
+                  </div>
+                  <div className="pd-ch-text">
+                    {paras.map((para, i) => <p key={i}>{para}</p>)}
+                  </div>
+                </div>
+              )}
+              <MasonryGallery
+                label={project.title}
+                images={sec.images}
+                onOpen={i => setSlideshow({ images: sec.images, startIdx: i })}
               />
-            )}
-
-            {/* Photo grid */}
-            <PhotoGrid
-              label={project.title}
-              images={sec.images}
-              onOpen={i => setSlideshow({ images: sec.images, startIdx: i })}
-            />
-
-            {/* Thin separator between sections */}
-            {si < project.sections.length - 1 && (
-              <div className="pd-sep" aria-hidden />
-            )}
-          </Reveal>
-        ))}
+            </Reveal>
+          )
+        })}
       </div>
 
-      {/* ── PREV / NEXT ── */}
-      <Reveal as="nav" className="pd-pn" aria-label="Adjacent projects">
-        {/* Hidden inner separator line */}
-        <div className="pd-pn-inner-sep" aria-hidden />
-
-        {/* Previous */}
-        <div className="pd-pn-cell">
-          {prevP ? (
-            <Link to={`/work/${prevP.slug}`} className="pd-pn-link" aria-label={`Previous: ${prevP.title}`}>
-              <span className="pd-pn-dir">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-                Previous
-              </span>
-              <div className="pd-pn-thumb">
-                <img src={prevP.cover} alt={prevP.title} loading="lazy" />
-              </div>
-              <span className="pd-pn-title">{prevP.title}</span>
-            </Link>
-          ) : (
-            <div className="pd-pn-link pd-pn-empty">
-              <span className="pd-pn-dir" style={{opacity:.2}}>— First project</span>
-            </div>
-          )}
-        </div>
-
-        {/* Next */}
-        <div className="pd-pn-cell pd-pn-cell-right">
-          {nextP ? (
-            <Link to={`/work/${nextP.slug}`} className="pd-pn-link" aria-label={`Next: ${nextP.title}`}>
-              <span className="pd-pn-dir">
-                Next
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-              </span>
-              <div className="pd-pn-thumb">
-                <img src={nextP.cover} alt={nextP.title} loading="lazy" />
-              </div>
-              <span className="pd-pn-title">{nextP.title}</span>
-            </Link>
-          ) : (
-            <div className="pd-pn-link pd-pn-empty">
-              <span className="pd-pn-dir" style={{opacity:.2}}>Last project —</span>
-            </div>
-          )}
-        </div>
-      </Reveal>
+      {/* ── MORE PROJECTS ── */}
+      {more.length > 0 && (
+        <nav className="pd-more" aria-labelledby="pd-more-title">
+          <div className="pd-more-head">
+            <h2 id="pd-more-title">More projects</h2>
+            <Link to="/work">All work <span aria-hidden="true">&rarr;</span></Link>
+          </div>
+          <div className="pd-more-grid">
+            {more.map((p, i) => (
+              <Link key={p.id} to={`/work/${p.slug}`} className="pd-more-card">
+                <span className="pd-more-img">
+                  <img src={p.cover} alt="" loading="lazy" decoding="async" />
+                  {i === 0 && <span className="pd-more-next">Next</span>}
+                </span>
+                <span className="pd-more-meta">{p.category} &middot; {p.year}</span>
+                <span className="pd-more-title">{p.title}</span>
+              </Link>
+            ))}
+          </div>
+        </nav>
+      )}
 
       {/* ── SLIDESHOW OVERLAY ── */}
       {slideshow && (

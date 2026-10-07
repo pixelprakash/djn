@@ -156,105 +156,47 @@
   transform: translateY(-3px);
 }
 
-/* ── Underline / text-swap link ──
-   An earlier version wrapped the words in an inline-flex box with
-   overflow:hidden to get a "slide up and reveal" hover effect — but a
-   clipped inline-flex box's baseline (CSS2.1 §10.8.1 synthesis vs.
-   Flexbox's own baseline algorithm) isn't computed identically across
-   browser engines, so a hand-tuned px/em correction that looked flush in
-   one browser sat visibly off in another. Nothing inside .hp-link uses
-   overflow:hidden any more (.hp-link-mask/-word/-word-real are all plain
-   `display:inline`, normal text), so .hp-link's own baseline — the
-   standard "baseline of its last line box" rule for inline-block — is
-   just the real text baseline, with zero correction needed. It stays
-   `inline-block` (not `inline`) so the underline's `width:100%` below
-   resolves against one unambiguous box — a bare `inline` element's
-   containing-block-for-absolute-children is a genuinely inconsistent
-   area across browser engines, which is what made the underline and the
-   hover swap flaky. The hover "clone" is an absolutely-positioned
-   ::before — out of flow entirely, so it can't affect the real text's
-   layout — that fades/rises in while the real word fades out. */
+/* ── Hero links ("Design Dept", "IIT Hyderabad") ──
+   A quiet hairline underline sits under the words at rest; on hover or
+   keyboard focus the colour eases to the accent blue and a blue underline
+   draws across from the left. Nothing moves or changes size -- the text,
+   its baseline and its line wrap stay exactly where they are -- so there is
+   nothing to jitter. (An earlier version swapped each word for a clone that
+   rose into place; the staggered movement read as glitchy.) The markup
+   still has one span per word; they are just plain inline text now. */
 .hp-link {
   position: relative;
   display: inline-block;
   color: var(--ink);
   font-weight: 600;
   text-decoration: none;
-  padding-bottom: 2px;
+  padding-bottom: 3px;
+  border-radius: 2px;
+  background-image:
+    linear-gradient(var(--accent), var(--accent)),
+    linear-gradient(rgba(26, 24, 20, .3), rgba(26, 24, 20, .3));
+  background-repeat: no-repeat;
+  background-position: 0 100%, 0 100%;
+  background-size: 0% 2px, 100% 1.5px;
+  transition:
+    background-size .5s cubic-bezier(.22, 1, .36, 1),
+    color .3s ease;
 }
+.hp-link:hover,
+.hp-link:focus-visible {
+  color: var(--accent);
+  background-size: 100% 2px, 100% 1.5px;
+}
+.hp-link:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
 .hp-link-mask {
   display: inline;
   white-space: nowrap; /* keeps "Design"/"Dept" from splitting across a wrap point on mobile */
 }
-.hp-link-word {
-  /* container only — its own opacity must stay untouched, since fading
-     THIS element would fade its ::before clone too (opacity applies to
-     an element and everything it generates as one unit). The real word
-     and the clone are siblings below, so each can fade independently. */
-  position: relative;
-  display: inline;
-}
+.hp-link-word { display: inline; }
 .hp-link-word:not(:last-child) { margin-right: 0.32em; }
-.hp-link-word-real {
-  /* inline-block (not plain inline) so it can safely receive `transform`
-     — plain inline boxes are outside the spec's "transformable element"
-     categories, which is exactly the kind of engine-dependent behavior
-     this component got burned by once already. It carries no overflow,
-     so it doesn't reintroduce the old baseline-synthesis bug. */
-  display: inline-block;
-  opacity: 1;
-  transform: translateY(0);
-  transition: opacity .22s ease, transform .3s cubic-bezier(.34,1.56,.64,1);
-}
-.hp-link-word::before {
-  content: attr(data-word);
-  position: absolute;
-  left: 0;
-  top: 0;
-  display: inline-block;
-  color: var(--accent);
-  opacity: 0;
-  transform: translateY(10px);
-  transition: opacity .22s ease, transform .3s cubic-bezier(.34,1.56,.64,1);
-}
-/* Each word rises and swaps for its clone in turn — the real word exits
-   upward as the accent-colored clone rises in from below, on the same
-   staggered beat, so the phrase reads as one continuous cascade rather
-   than two effects racing independently. */
-.hp-link:hover .hp-link-word-real,
-.hp-link:focus-visible .hp-link-word-real {
-  opacity: 0;
-  transform: translateY(-10px);
-}
-.hp-link:hover .hp-link-word::before,
-.hp-link:focus-visible .hp-link-word::before {
-  opacity: 1;
-  transform: translateY(0);
-}
-.hp-link:hover .hp-link-word:nth-child(1) .hp-link-word-real,
-.hp-link:focus-visible .hp-link-word:nth-child(1) .hp-link-word-real,
-.hp-link:hover .hp-link-word:nth-child(1)::before,
-.hp-link:focus-visible .hp-link-word:nth-child(1)::before { transition-delay: .04s; }
-.hp-link:hover .hp-link-word:nth-child(2) .hp-link-word-real,
-.hp-link:focus-visible .hp-link-word:nth-child(2) .hp-link-word-real,
-.hp-link:hover .hp-link-word:nth-child(2)::before,
-.hp-link:focus-visible .hp-link-word:nth-child(2)::before { transition-delay: .09s; }
-
-/* Underline sweep: hidden at rest, grows in left-to-right on hover */
-.hp-link::before {
-  content: '';
-  position: absolute;
-  left: 0; bottom: 0;
-  height: 2px;
-  width: 100%;
-  background: currentColor;
-  transform: scaleX(0);
-  transform-origin: right;
-  transition: transform .25s ease-out;
-}
-.hp-link:hover::before, .hp-link:focus-visible::before {
-  transform: scaleX(1);
-  transform-origin: left;
+.hp-link-word-real { display: inline; }
+@media (prefers-reduced-motion: reduce) {
+  .hp-link { transition: none; }
 }
 
 /* Negative top/bottom margin cancels the hero's own vertical padding so
