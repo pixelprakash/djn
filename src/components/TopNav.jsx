@@ -2,6 +2,7 @@ import { useState, useEffect, useLayoutEffect, useRef } from 'react'
 import { createPortal } from 'react-dom'
 import { Link, NavLink, useLocation } from 'react-router-dom'
 import { preloadForPath } from '../routePreload'
+import useNewsBadge from '../hooks/useNewsBadge'
 import { WORK_CV } from '../routeMeta'
 import './TopNav.css'
 
@@ -75,6 +76,17 @@ function isItemActive(item, pathname) {
   return pathname === item.path || pathname.startsWith(item.path + '/')
 }
 
+// Small red dot beside "News" while there is an update this visitor hasn't
+// seen. Colour alone isn't enough, so it also carries a screen-reader word.
+function NewDot() {
+  return (
+    <>
+      <span className="tn-new" aria-hidden="true" />
+      <span className="sr-only"> (new update)</span>
+    </>
+  )
+}
+
 // "Leaves this site" indicator for external nav items — a plain diagonal
 // arrow, not the dropdown chevron, so the two affordances stay visually
 // distinct (one says "opens a submenu here," the other "takes you away").
@@ -102,6 +114,7 @@ export default function TopNav() {
   // const progressRef = useRef(null) // reading-progress line -- switched off for now
   const escRef = useRef(false) // Escape just closed a menu: the refocus that follows must not reopen it
   const { pathname } = useLocation()
+  const newsBadge = useNewsBadge(pathname)
 
   const activeLabel = (NAV_ITEMS.find(it => isItemActive(it, pathname)) || {}).label || null
   const targetLabel = hoverLabel || activeLabel
@@ -260,6 +273,7 @@ export default function TopNav() {
                     onFocus={() => preloadForPath(item.path)}
                   >
                     {item.label}
+                    {item.label === 'News' && newsBadge && <NewDot />}
                     {item.groups && (
                       <svg className="tn-chevron" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
                         <polyline points="6 9 12 15 18 9"/>
@@ -400,7 +414,7 @@ export default function TopNav() {
                   onClick={() => { setMobileOpen(false); setMobileExp(null) }}
                   onFocus={() => preloadForPath(item.path)}
                 >
-                  {item.label}
+                  <span>{item.label}{item.label === 'News' && newsBadge && <NewDot />}</span>
                 </NavLink>
               )}
             </div>

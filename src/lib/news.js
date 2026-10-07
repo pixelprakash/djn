@@ -36,3 +36,13 @@ export const isOpen = post => {
   const c = closingInfo(post.closesOn)
   return !c || c.state !== 'closed'
 }
+
+// An update counts as "new" for this many days after it was posted (the
+// navbar shows a dot on News while the newest one is within it).
+export const NEW_DAYS = 3
+export const isFresh = iso => {
+  const t = Date.parse(iso)
+  if (Number.isNaN(t)) return false
+  const age = Date.now() - t
+  return age < NEW_DAYS * 86400000 && age > -86400000
+}

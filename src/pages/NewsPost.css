@@ -1,26 +1,129 @@
-.np { max-width: 760px; display: flex; flex-direction: column; align-items: flex-start; }
+/* Long titles are common ("Talk on ..."), so this hero sets smaller than the
+   shared one. */
+.ph.nw-post-hero .ph-title { font-size: clamp(2rem, 4.4vw, 3.8rem); max-width: 22ch; text-wrap: balance; }
+
 .np-back {
+  display: inline-block;
   font-family: var(--body);
   font-size: 1rem;
   font-weight: 500;
   color: var(--accent);
   text-decoration: none;
   padding: 6px 0;
+  margin-bottom: clamp(14px, 2vw, 24px);
 }
 .np-back:hover { text-decoration: underline; text-underline-offset: 3px; }
 .np-back:focus-visible,
-.np-link:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
-.np-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 12px 20px; margin-top: 20px; }
-.np-text {
-  margin: 24px 0 0;
+.np-ghost:focus-visible,
+.np-cover:focus-visible,
+.np-thumb:focus-visible,
+.np-more-head a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+/* picture + text on the left, details card on the right */
+.np {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(300px, 380px);
+  grid-template-areas: "media aside" "text aside";
+  grid-template-rows: auto 1fr;
+  column-gap: clamp(28px, 4vw, 64px);
+  row-gap: clamp(24px, 3vw, 40px);
+  align-items: start;
+}
+.np--no-media { grid-template-areas: "text aside"; grid-template-rows: auto; }
+.np-media { grid-area: media; min-width: 0; }
+.np-text { grid-area: text; min-width: 0; }
+.np-aside { grid-area: aside; }
+
+/* The picture is shown whole, on a blurred copy of itself. */
+.np-cover {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: clamp(300px, 44vw, 560px);
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: #ece8e1;
+  cursor: zoom-in;
+}
+.np-cover::before {
+  content: '';
+  position: absolute;
+  inset: -30px;
+  background: var(--np-fill) center / cover;
+  filter: blur(26px) saturate(1.15);
+  opacity: .6;
+}
+.np-cover img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
+.np-thumbs { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 10px; margin-top: 12px; }
+.np-thumb { padding: 0; border: 0; border-radius: 8px; overflow: hidden; aspect-ratio: 4 / 3; background: var(--rule); cursor: zoom-in; }
+.np-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .3s ease; }
+.np-thumb:hover img { transform: scale(1.05); }
+
+.np-text p {
+  margin: 0;
+  max-width: 66ch;
   font-family: var(--body);
-  font-size: clamp(1.1rem, 1.5vw, 1.2rem);
-  line-height: 1.7;
+  font-size: clamp(1.1rem, 1.4vw, 1.2rem);
+  line-height: 1.75;
   color: var(--ink);
   white-space: pre-line;
   overflow-wrap: anywhere;
 }
-.np-link { margin-top: 20px; font-family: var(--body); font-size: 1.05rem; font-weight: 500; color: var(--accent); text-decoration: none; }
-.np-link:hover { text-decoration: underline; text-underline-offset: 3px; }
-.np-photos { margin-top: clamp(28px, 4vw, 44px); width: min(100vw - 2 * var(--g), 1100px); }
+
+/* Details card: stays in view while the text scrolls. */
+.np-aside {
+  position: sticky;
+  top: 110px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: clamp(20px, 2.2vw, 28px);
+  background: #fff;
+  border: 1px solid rgba(26, 24, 20, .12);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 1px 2px rgba(26, 24, 20, .05), 0 12px 32px rgba(26, 24, 20, .07);
+}
+.np-aside-title { margin: 0; font-family: var(--display); font-weight: 400; font-size: 1.4rem; line-height: 1.2; }
+.np-facts { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 10px 18px; align-items: center; }
+.np-facts dt { font-family: var(--body); font-size: 0.95rem; color: var(--muted); }
+.np-facts dd { margin: 0; font-family: var(--body); font-size: 1.02rem; font-weight: 500; color: var(--ink); }
+.np-aside .np-cta { align-self: stretch; text-align: center; padding: 15px 22px; }
+.np-ghost {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px 18px;
+  font-family: var(--body);
+  font-size: 1rem;
+  font-weight: 500;
+  text-align: center;
+  color: var(--ink);
+  text-decoration: none;
+  background: none;
+  border: 1.5px solid var(--rule);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: border-color .2s, color .2s;
+}
+.np-ghost:hover { border-color: var(--ink); }
 .np-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* more updates */
+.np-more { margin-top: clamp(48px, 6vw, 88px); padding-top: clamp(28px, 3.5vw, 44px); border-top: 1px solid var(--rule); }
+.np-more-head { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin-bottom: clamp(18px, 2.4vw, 28px); }
+.np-more-head h2 { margin: 0; font-family: var(--display); font-weight: 400; font-size: clamp(1.5rem, 2.4vw, 2rem); line-height: 1.15; }
+.np-more-head a { display: inline-block; padding: 6px 0; font-family: var(--body); font-size: 1rem; font-weight: 500; color: var(--accent); text-decoration: none; }
+.np-more-head a:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+@media (max-width: 960px) {
+  .np,
+  .np--no-media { grid-template-columns: minmax(0, 1fr); grid-template-areas: "media" "aside" "text"; grid-template-rows: auto; }
+  .np--no-media { grid-template-areas: "aside" "text"; }
+  .np-aside { position: static; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .np-thumb img, .np-ghost { transition: none; }
+  .np-thumb:hover img { transform: none; }
+}

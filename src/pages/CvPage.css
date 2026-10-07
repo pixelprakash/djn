@@ -45,7 +45,8 @@
   text-transform: uppercase;
   color: var(--muted);
   text-decoration: none;
-  margin-bottom: clamp(20px, 3vw, 32px);
+  padding: 6px 0; /* >= 24px tall touch target (WCAG 2.5.8) */
+  margin-bottom: clamp(14px, 2.4vw, 26px);
   transition: color .2s ease, gap .2s ease;
   animation: cvpFade .5s ease both;
 }

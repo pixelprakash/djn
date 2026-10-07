@@ -410,3 +410,25 @@
   .tn-cta { transition: none; }
   .tn-slider, .tn-slider--instant, .tn-progress { transition: none; }
 }
+
+/* "New update" dot on News: a warm red (>= 3:1 against the cream bar), with a
+   soft ring that breathes for a few seconds, then holds still. */
+.tn-new {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin-left: 6px;
+  border-radius: 50%;
+  background: #c62828;
+  vertical-align: top;
+  position: relative;
+  top: 2px;
+  animation: tn-new-ring 2s ease-out 3;
+}
+@keyframes tn-new-ring {
+  0%   { box-shadow: 0 0 0 0 rgba(198, 40, 40, .45); }
+  70%  { box-shadow: 0 0 0 7px rgba(198, 40, 40, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(198, 40, 40, 0); }
+}
+.tn-mobile-link .tn-new { top: -4px; }
+@media (prefers-reduced-motion: reduce) { .tn-new { animation: none; } }

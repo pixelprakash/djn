@@ -1,25 +1,17 @@
-import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Slideshow } from './PhotoGallery'
-import RichText from './RichText'
 import { Deadline, Cta } from './NewsBits'
 import { fmtDate, newsPath } from '../lib/news'
 import './PostCard.css'
 
 /* One update as a card (the /news archive): photos first (a poster is shown
    whole, never cropped), then a topic label, date and deadline, the title
-   (a link to the update's own page), the text (long ones fold behind
-   "…see more"), the call-to-action button and an optional link out.
-   Photos open a slideshow. Content comes from Sanity ("News, update or
+   (a link to the update's own page), a short preview of the text, the
+   call-to-action button and an optional link out. The whole card opens the
+   update's page (the title's link is stretched over it); the photos and
+   full text live there. Content comes from Sanity ("News, update or
    announcement"). */
 
-const FOLD_CHARS = 240
-
 export default function PostCard({ post, wide = false }) {
-  const [open, setOpen] = useState(false)
-  const [slide, setSlide] = useState(null)
-
-  const long = post.text.length > FOLD_CHARS || post.text.split('\n').length > 4
   const shown = post.images.slice(0, 4)
   const extra = post.images.length - shown.length
 
@@ -28,21 +20,18 @@ export default function PostCard({ post, wide = false }) {
       {shown.length > 0 && (
         <div className={`pc-grid pc-grid--${Math.min(shown.length, 4)}`}>
           {shown.map((img, i) => (
-            <button
+            <div
               key={img.src}
-              type="button"
               className="pc-cell"
               // A lone image (usually a poster) sits whole on a blurred copy
               // of itself, so every card's picture area is the same shape.
               style={shown.length === 1 ? { '--pc-fill': `url("${img.thumb}")` } : undefined}
-              onClick={() => setSlide({ startIdx: i })}
-              aria-label={`Open photo ${i + 1} of ${post.images.length}${extra > 0 && i === shown.length - 1 ? ` (+${extra} more)` : ''}`}
             >
               <img src={img.thumb} alt={img.alt} loading="lazy" decoding="async" />
               {extra > 0 && i === shown.length - 1 && (
                 <span className="pc-extra" aria-hidden="true">+{extra}</span>
               )}
-            </button>
+            </div>
           ))}
         </div>
       )}
@@ -54,25 +43,11 @@ export default function PostCard({ post, wide = false }) {
           <time className="pc-date" dateTime={post.date}>{fmtDate(post.date)}</time>
           <Deadline closesOn={post.closesOn} />
         </div>
-        {post.title && (
-          <h3 className="pc-title">
-            <Link to={newsPath(post)}>{post.title}</Link>
-          </h3>
-        )}
+        <h3 className="pc-title">
+          <Link to={newsPath(post)}>{post.title || post.text.split('\n')[0]}</Link>
+        </h3>
 
-        <p className={`pc-text${long && !open ? ' pc-text--fold' : ''}`}>
-          <RichText text={post.text} />
-        </p>
-        {long && (
-          <button
-            type="button"
-            className="pc-more"
-            aria-expanded={open}
-            onClick={() => setOpen(v => !v)}
-          >
-            {open ? 'Show less' : '…see more'}
-          </button>
-        )}
+        <p className="pc-text">{post.text.replace(/\s+/g, ' ')}</p>
 
         {(post.cta || post.url) && (
           <div className="pc-actions">
@@ -85,14 +60,6 @@ export default function PostCard({ post, wide = false }) {
           </div>
         )}
       </div>
-
-      {slide && (
-        <Slideshow
-          images={post.images.map(i => i.src)}
-          startIdx={slide.startIdx}
-          onClose={() => setSlide(null)}
-        />
-      )}
     </article>
   )
 }
