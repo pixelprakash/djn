@@ -265,7 +265,7 @@
    CHAPTERS -- a short note on the left, the text beside it,
    then the photographs
 ═══════════════════════════════════════════════════ */
-.pd-body { max-width: 1600px; margin: 0 auto; padding-top: clamp(40px, 6vw, 88px); }
+.pd-body { padding-top: clamp(40px, 6vw, 88px); } /* full width: the text and photos share the hero's left edge on any screen */
 .pd-ch { padding-bottom: clamp(48px, 7vw, 104px); }
 .pd-ch-head {
   padding: 0 var(--gutter) clamp(28px, 4vw, 52px);

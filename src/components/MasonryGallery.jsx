@@ -30,7 +30,6 @@ export default function MasonryGallery({ images, label, onOpen, limit = 12 }) {
               aria-label={`Open photo ${i + 1} of ${images.length}${label ? ` from ${label}` : ''}`}
             >
               <img src={src} alt="" loading="lazy" decoding="async" />
-              <span className="mg-num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
             </button>
           </li>
         ))}
