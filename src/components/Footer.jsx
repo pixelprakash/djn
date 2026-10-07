@@ -9,6 +9,7 @@ const LINKS = [
   { label: 'Work',    path: '/work' },
   { label: 'Resume',  path: '/resume' },
   { label: 'DIC Lab', path: '/lab' },
+  { label: 'News',    path: '/news' },
   { label: 'Blogs',   path: '/blogs' },
   { label: 'Contact', path: '/contact' },
 ]

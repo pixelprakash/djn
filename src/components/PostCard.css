@@ -9,23 +9,33 @@
   border-radius: var(--radius-lg);
   overflow: hidden;
   min-width: 0;
+  height: 100%;
   box-shadow: 0 1px 2px rgba(26, 24, 20, .05);
   transition: box-shadow .25s ease;
 }
 .pc:hover { box-shadow: 0 10px 28px rgba(26, 24, 20, .1); }
 .pc--pinned { border-top: 3px solid var(--accent); }
 
-/* Photos lead the card, edge to edge. */
+/* Photos lead the card, edge to edge, in the same 4:3 area on every card. */
 .pc .pc-grid {
   display: grid;
   gap: 3px;
-  aspect-ratio: 16 / 10;
+  aspect-ratio: 4 / 3;
   background: var(--rule);
+  flex-shrink: 0;
 }
-/* A single image (usually a poster) is shown whole, never cropped. */
-.pc .pc-grid--1 { aspect-ratio: auto; max-height: 560px; }
-.pc .pc-grid--1 .pc-cell { background: #f1efeb; display: flex; justify-content: center; }
-.pc .pc-grid--1 .pc-cell img { position: static; width: auto; max-width: 100%; height: auto; max-height: 560px; object-fit: contain; }
+/* A single image (usually a poster) is shown whole, never cropped, on a
+   blurred, enlarged copy of itself. */
+.pc .pc-grid--1 .pc-cell { background: #ece8e1; }
+.pc .pc-grid--1 .pc-cell::before {
+  content: '';
+  position: absolute;
+  inset: -24px;
+  background: var(--pc-fill) center / cover;
+  filter: blur(22px) saturate(1.15);
+  opacity: .75;
+}
+.pc .pc-grid--1 .pc-cell img { object-fit: contain; }
 .pc .pc-grid--2 { grid-template-columns: 1fr 1fr; }
 .pc .pc-grid--3 { grid-template-columns: 1.6fr 1fr; grid-template-rows: 1fr 1fr; }
 .pc .pc-grid--3 .pc-cell:first-child { grid-row: 1 / span 2; }
@@ -57,7 +67,7 @@
   font-weight: 500;
 }
 
-.pc .pc-body { display: flex; flex-direction: column; padding: var(--pc-pad); }
+.pc .pc-body { display: flex; flex-direction: column; flex: 1; padding: var(--pc-pad); }
 
 .pc .pc-meta { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 12px; }
 .pc .pc-topic {
@@ -118,7 +128,6 @@
 .pc .pc-title a { color: inherit; text-decoration: none; }
 .pc .pc-title a:hover { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 4px; }
 .pc .pc-title a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
-.pc .pc-cta { margin-top: 16px; }
 
 .pc .pc-more {
   align-self: flex-start;
@@ -134,9 +143,8 @@
 }
 .pc .pc-more:hover { text-decoration: underline; text-underline-offset: 3px; }
 
+.pc .pc-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 12px 20px; margin-top: auto; padding-top: 18px; }
 .pc .pc-link {
-  align-self: flex-start;
-  margin-top: 14px;
   font-family: var(--body);
   font-size: 1rem;
   font-weight: 500;
@@ -154,6 +162,18 @@
 .pc .pc-more:focus-visible,
 .pc .pc-cell:focus-visible,
 .pc .pc-link:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+/* Wide lead card: picture beside the text. */
+.pc--wide { flex-direction: row; }
+.pc--wide .pc-grid { flex: 1.15 1 0; aspect-ratio: auto; min-height: 340px; }
+.pc--wide .pc-body { flex: 1 1 0; justify-content: center; }
+.pc--wide .pc-actions { margin-top: 20px; }
+.pc--wide .pc-title { font-size: clamp(1.5rem, 2.4vw, 2rem); }
+.pc--wide .pc-text--fold { -webkit-line-clamp: 6; line-clamp: 6; }
+@media (max-width: 700px) {
+  .pc--wide { flex-direction: column; }
+  .pc--wide .pc-grid { aspect-ratio: 4 / 3; min-height: 0; }
+}
 
 @media (prefers-reduced-motion: reduce) {
   .pc { transition: none; }

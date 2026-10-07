@@ -55,6 +55,7 @@ const NAV_ITEMS = [
       },
     ],
   },
+  { label: 'News', path: '/news' },
   { label: 'Blogs', path: '/blogs' },
   // Points off-site to the DIC Nodal centre's own site rather than the
   // in-repo /lab page — external, so it's a plain <a>, not a NavLink, and
@@ -71,7 +72,6 @@ function isItemActive(item, pathname) {
   if (item.external || !item.path) return false
   const [, seg, slug] = pathname.split('/')
   if (seg === 'cv') return item.path === (WORK_CV.has(slug) ? '/work' : '/resume')
-  if (seg === 'news') return item.path === '/about' // updates are the home page's News & Updates
   return pathname === item.path || pathname.startsWith(item.path + '/')
 }
 

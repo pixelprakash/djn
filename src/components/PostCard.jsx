@@ -15,7 +15,7 @@ import './PostCard.css'
 
 const FOLD_CHARS = 240
 
-export default function PostCard({ post }) {
+export default function PostCard({ post, wide = false }) {
   const [open, setOpen] = useState(false)
   const [slide, setSlide] = useState(null)
 
@@ -24,7 +24,7 @@ export default function PostCard({ post }) {
   const extra = post.images.length - shown.length
 
   return (
-    <article className={`pc${post.pinned ? ' pc--pinned' : ''}`}>
+    <article className={`pc${post.pinned ? ' pc--pinned' : ''}${wide ? ' pc--wide' : ''}`}>
       {shown.length > 0 && (
         <div className={`pc-grid pc-grid--${Math.min(shown.length, 4)}`}>
           {shown.map((img, i) => (
@@ -32,6 +32,9 @@ export default function PostCard({ post }) {
               key={img.src}
               type="button"
               className="pc-cell"
+              // A lone image (usually a poster) sits whole on a blurred copy
+              // of itself, so every card's picture area is the same shape.
+              style={shown.length === 1 ? { '--pc-fill': `url("${img.thumb}")` } : undefined}
               onClick={() => setSlide({ startIdx: i })}
               aria-label={`Open photo ${i + 1} of ${post.images.length}${extra > 0 && i === shown.length - 1 ? ` (+${extra} more)` : ''}`}
             >
@@ -71,12 +74,15 @@ export default function PostCard({ post }) {
           </button>
         )}
 
-        <Cta cta={post.cta} className="pc-cta" />
-
-        {post.url && (
-          <a className="pc-link" href={post.url} target="_blank" rel="noreferrer">
-            Read more<span className="pc-sr"> about {post.title || 'this update'}</span> <span aria-hidden="true">↗</span>
-          </a>
+        {(post.cta || post.url) && (
+          <div className="pc-actions">
+            <Cta cta={post.cta} />
+            {post.url && (
+              <a className="pc-link" href={post.url} target="_blank" rel="noreferrer">
+                Read more<span className="pc-sr"> about {post.title || 'this update'}</span> <span aria-hidden="true">↗</span>
+              </a>
+            )}
+          </div>
         )}
       </div>
 

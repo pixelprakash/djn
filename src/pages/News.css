@@ -29,9 +29,58 @@
 .nw-count { margin: clamp(16px, 2vw, 24px) 0; font-size: 1rem; color: var(--muted); min-height: 1.5em; }
 .nw-empty { font-size: 1.1rem; color: var(--sub); }
 
-/* Cards differ in height (a poster, a one-liner): flow them in columns. */
-.nw-grid { column-count: 3; column-gap: clamp(20px, 2.6vw, 36px); }
-.nw-cell { break-inside: avoid; margin-bottom: clamp(20px, 2.6vw, 36px); }
-@media (max-width: 1180px) { .nw-grid { column-count: 2; } }
-@media (max-width: 700px) { .nw-grid { column-count: 1; } }
+/* Equal-height cards in rows; the lead update spans two columns. */
+.nw-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(20px, 2.6vw, 36px);
+  align-items: stretch;
+}
+.nw-cell { min-width: 0; }
+.nw-cell--lead { grid-column: span 2; }
+@media (max-width: 1180px) {
+  .nw-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 700px) {
+  .nw-grid { grid-template-columns: minmax(0, 1fr); }
+  .nw-cell--lead { grid-column: auto; }
+}
+
+.nw-chip-n { font-size: 0.95rem; opacity: .7; font-variant-numeric: tabular-nums; margin-left: 2px; }
+
+/* "Open now": the live calls (admissions, applications) above everything. */
+.nw-open {
+  margin-bottom: clamp(24px, 3vw, 40px);
+  padding: clamp(18px, 2.2vw, 28px);
+  border-radius: var(--radius-lg);
+  background: linear-gradient(135deg, rgba(var(--accent-rgb), .09), rgba(var(--accent-rgb), .03));
+  border: 1px solid rgba(var(--accent-rgb), .22);
+}
+.nw-open-title {
+  display: flex; align-items: center; gap: 10px;
+  margin: 0 0 14px;
+  font-family: var(--display); font-weight: 400;
+  font-size: clamp(1.3rem, 2vw, 1.6rem); line-height: 1.2;
+}
+.nw-open-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 4px rgba(var(--accent-rgb), .18); }
+.nw-open-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+.nw-open-item {
+  display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px 24px;
+  padding: 14px clamp(14px, 1.8vw, 20px);
+  background: #fff;
+  border: 1px solid rgba(26, 24, 20, .1);
+  border-radius: 10px;
+}
+.nw-open-text { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 14px; min-width: 0; }
+.nw-open-topic {
+  font-size: 0.95rem; font-weight: 600; line-height: 1;
+  padding: 6px 10px; border-radius: 4px;
+  background: rgba(var(--accent-rgb), .1); color: var(--accent);
+}
+.nw-open-name { font-size: 1.1rem; font-weight: 600; color: var(--ink); text-decoration: none; }
+.nw-open-name:hover { text-decoration: underline; text-underline-offset: 4px; }
+.nw-open-more { font-size: 1rem; font-weight: 500; color: var(--accent); text-decoration: none; }
+.nw-open-more:hover { text-decoration: underline; text-underline-offset: 3px; }
+.nw-open-name:focus-visible,
+.nw-open-more:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 @media (prefers-reduced-motion: reduce) { .nw-chip { transition: none; } }

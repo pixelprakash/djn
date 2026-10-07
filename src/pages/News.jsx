@@ -1,9 +1,12 @@
 import { useMemo, useRef, useState } from 'react'
+import { Link } from 'react-router-dom'
 import PageHero from '../components/PageHero'
 import PostCard from '../components/PostCard'
 import usePageTitle from '../hooks/usePageTitle'
 import useStackedLayers from '../hooks/useStackedLayers'
 import { useCms, FEED_QUERY, mapFeed } from '../lib/cms'
+import { Deadline, Cta } from '../components/NewsBits'
+import { closingInfo, newsPath } from '../lib/news'
 import { newsMeta } from '../seo/routes'
 import './News.css'
 
@@ -18,6 +21,15 @@ export default function News() {
   const { data: feed, loading } = useCms('feed', FEED_QUERY, mapFeed, [])
 
   const topics = useMemo(() => ['All', ...new Set(feed.map(p => p.topic).filter(Boolean))], [feed])
+  const countFor = t => (t === 'All' ? feed.length : feed.filter(p => p.topic === t).length)
+
+  // Calls that are still open (a deadline that has not passed), soonest first.
+  const openNow = useMemo(
+    () => feed
+      .filter(p => p.closesOn && closingInfo(p.closesOn)?.state !== 'closed')
+      .sort((a, b) => a.closesOn.localeCompare(b.closesOn)),
+    [feed],
+  )
   // A topic that no longer exists (content changed under us) falls back to All.
   const current = topics.includes(active) ? active : 'All'
   const shown = current === 'All' ? feed : feed.filter(p => p.topic === current)
@@ -30,6 +42,29 @@ export default function News() {
       />
 
       <div className="nw-sheet">
+        {openNow.length > 0 && (
+          <section className="nw-open" aria-labelledby="nw-open-title">
+            <h2 className="nw-open-title" id="nw-open-title">
+              <span className="nw-open-dot" aria-hidden="true" />
+              Open now
+            </h2>
+            <ul className="nw-open-list">
+              {openNow.map(p => (
+                <li className="nw-open-item" key={p.id}>
+                  <div className="nw-open-text">
+                    {p.topic && <span className="nw-open-topic">{p.topic}</span>}
+                    <Link className="nw-open-name" to={newsPath(p)}>{p.title || p.text.split('\n')[0]}</Link>
+                    <Deadline closesOn={p.closesOn} />
+                  </div>
+                  {p.cta
+                    ? <Cta cta={p.cta} />
+                    : <Link className="nw-open-more" to={newsPath(p)}>Details <span aria-hidden="true">&rarr;</span></Link>}
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+
         {topics.length > 2 && (
           <div className="nw-filters" role="group" aria-label="Filter by topic">
             {topics.map(t => (
@@ -40,7 +75,7 @@ export default function News() {
                 aria-pressed={current === t}
                 onClick={() => setActive(t)}
               >
-                {t}
+                {t} <span className="nw-chip-n">{countFor(t)}</span>
               </button>
             ))}
           </div>
@@ -52,11 +87,16 @@ export default function News() {
 
         {shown.length > 0 ? (
           <div className="nw-grid">
-            {shown.map(post => (
-              <div className="nw-cell" key={post.id}>
-                <PostCard post={post} />
-              </div>
-            ))}
+            {shown.map((post, i) => {
+              // With three or more, the first update leads: two columns wide,
+              // picture beside text. The rest fill rows of equal-height cards.
+              const lead = i === 0 && shown.length >= 3
+              return (
+                <div className={`nw-cell${lead ? ' nw-cell--lead' : ''}`} key={post.id}>
+                  <PostCard post={post} wide={lead} />
+                </div>
+              )
+            })}
           </div>
         ) : (
           !loading && <p className="nw-empty">Nothing here yet.</p>
