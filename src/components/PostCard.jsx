@@ -2,14 +2,12 @@ import { useState } from 'react'
 import { Slideshow } from './PhotoGallery'
 import './PostCard.css'
 
-/* One short update, laid out the way it reads on LinkedIn: who posted and
-   when, the text (long ones fold behind "…see more"), a photo grid that
-   opens a slideshow, the reaction/comment counts, and a link back to the
-   original. Deliberately NOT a fake Like/Comment/Share bar -- those can't
-   do anything on a portfolio, and buttons that do nothing are worse than
-   none. Content comes from Sanity ("LinkedIn-style post"). */
+/* One news item, update or announcement: photos first (a poster is shown
+   whole, never cropped), then a topic label and date, the title, and the
+   text (long ones fold behind "…see more"). Photos open a slideshow; an
+   optional link goes to the original. Content comes from Sanity ("News,
+   update or announcement"). */
 
-const AUTHOR = { name: 'Deepak John Mathew', role: 'Professor of Design · IIT Hyderabad' }
 const FOLD_CHARS = 240
 
 // #hashtags and @names pick up the accent colour, like on LinkedIn; web
@@ -46,38 +44,7 @@ export default function PostCard({ post }) {
   const extra = post.images.length - shown.length
 
   return (
-    <article className="pc">
-      <header className="pc-head">
-        <span className="pc-avatar" aria-hidden="true">
-          <img src="/profliepicnobg.webp" alt="" draggable="false" />
-        </span>
-        <div className="pc-who">
-          <span className="pc-name">{AUTHOR.name}</span>
-          <span className="pc-role">{AUTHOR.role}</span>
-          <time className="pc-date" dateTime={post.date}>{fmtDate(post.date)}</time>
-        </div>
-        {(post.pinned || post.topic) && (
-          <span className="pc-badges">
-            {post.pinned && <span className="pc-badge pc-badge--pin">Pinned</span>}
-            {post.topic && <span className="pc-badge">{post.topic}</span>}
-          </span>
-        )}
-      </header>
-
-      <p className={`pc-text${long && !open ? ' pc-text--fold' : ''}`}>
-        <Rich text={post.text} />
-      </p>
-      {long && (
-        <button
-          type="button"
-          className="pc-more"
-          aria-expanded={open}
-          onClick={() => setOpen(v => !v)}
-        >
-          {open ? 'Show less' : '…see more'}
-        </button>
-      )}
-
+    <article className={`pc${post.pinned ? ' pc--pinned' : ''}`}>
       {shown.length > 0 && (
         <div className={`pc-grid pc-grid--${Math.min(shown.length, 4)}`}>
           {shown.map((img, i) => (
@@ -97,15 +64,34 @@ export default function PostCard({ post }) {
         </div>
       )}
 
-      {post.url && (
-        <footer className="pc-foot">
-          {post.url && (
-            <a className="pc-link" href={post.url} target="_blank" rel="noreferrer">
-              View on LinkedIn <span aria-hidden="true">↗</span>
-            </a>
-          )}
-        </footer>
-      )}
+      <div className="pc-body">
+        <div className="pc-meta">
+          {post.pinned && <span className="pc-pin">Pinned</span>}
+          {post.topic && <span className="pc-topic">{post.topic}</span>}
+          <time className="pc-date" dateTime={post.date}>{fmtDate(post.date)}</time>
+        </div>
+        {post.title && <h3 className="pc-title">{post.title}</h3>}
+
+        <p className={`pc-text${long && !open ? ' pc-text--fold' : ''}`}>
+          <Rich text={post.text} />
+        </p>
+        {long && (
+          <button
+            type="button"
+            className="pc-more"
+            aria-expanded={open}
+            onClick={() => setOpen(v => !v)}
+          >
+            {open ? 'Show less' : '…see more'}
+          </button>
+        )}
+
+        {post.url && (
+          <a className="pc-link" href={post.url} target="_blank" rel="noreferrer">
+            Read more<span className="pc-sr"> about {post.title || 'this update'}</span> <span aria-hidden="true">↗</span>
+          </a>
+        )}
+      </div>
 
       {slide && (
         <Slideshow

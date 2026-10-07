@@ -8,15 +8,24 @@ import {defineArrayMember, defineField, defineType} from 'sanity'
 export default defineType({
   name: 'feedPost',
   title: 'News, update or announcement',
+  description:
+    'For the posts that matter on the site: admissions, openings, awards, talks, publications. Everything else stays on LinkedIn (the site links there). Needs only a title, the text and photos.',
   type: 'document',
   fields: [
     defineField({
+      name: 'title',
+      title: 'Title',
+      type: 'string',
+      description: 'A short headline, e.g. "PhD admissions open, July 2026". Shown above the text.',
+      validation: (r) => r.required().max(120),
+    }),
+    defineField({
       name: 'text',
-      title: 'Post text',
+      title: 'Text',
       type: 'text',
       rows: 8,
       description:
-        'Paste the post text as it appears on LinkedIn. Line breaks are kept. #hashtags and @names are highlighted automatically.',
+        'The details. Line breaks are kept; web addresses become links and #hashtags are highlighted.',
       validation: (r) => r.required().max(3000),
     }),
     defineField({
@@ -59,9 +68,9 @@ export default defineType({
     }),
     defineField({
       name: 'linkedinUrl',
-      title: 'Link to the post on LinkedIn',
+      title: 'Link (optional)',
       type: 'url',
-      description: 'Optional. Adds a "View on LinkedIn" link under the card.',
+      description: 'The LinkedIn post, a news article or a page. Adds a "Read more" link under the card.',
       validation: (r) => r.uri({scheme: ['https']}),
     }),
     defineField({
@@ -76,9 +85,9 @@ export default defineType({
     {title: 'Newest first', name: 'newest', by: [{field: 'publishedAt', direction: 'desc'}]},
   ],
   preview: {
-    select: {text: 'text', date: 'publishedAt', media: 'images.0', pinned: 'pinned'},
-    prepare: ({text, date, media, pinned}) => ({
-      title: `${pinned ? '📌 ' : ''}${(text || '').split('\n')[0].slice(0, 80)}`,
+    select: {title: 'title', text: 'text', date: 'publishedAt', media: 'images.0', pinned: 'pinned'},
+    prepare: ({title, text, date, media, pinned}) => ({
+      title: `${pinned ? '📌 ' : ''}${title || (text || '').split('\n')[0].slice(0, 80)}`,
       subtitle: date ? new Date(date).toLocaleDateString('en-GB', {day: 'numeric', month: 'short', year: 'numeric'}) : '',
       media,
     }),

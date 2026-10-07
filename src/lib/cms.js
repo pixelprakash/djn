@@ -117,12 +117,13 @@ export const mapPosts = rows => rows.map(r => ({
 
 /* ── News, updates and announcements (LinkedIn-style posts) ── */
 export const FEED_QUERY = `*[_type == "feedPost"] | order(coalesce(pinned, false) desc, publishedAt desc){
-  _id, text, publishedAt, linkedinUrl, topic, pinned,
+  _id, title, text, publishedAt, linkedinUrl, topic, pinned,
   "images": images[]{ "url": asset->url, alt }
 }`
 
 export const mapFeed = rows => rows.map(r => ({
   id: r._id,
+  title: r.title || '',
   text: r.text || '',
   date: r.publishedAt,
   url: r.linkedinUrl || '',

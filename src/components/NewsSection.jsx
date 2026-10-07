@@ -6,12 +6,7 @@ import './NewsSection.css'
 
 // How many cards show before the "show all" toggle. Anything past this stays
 // one click away instead of pushing the portfolio further down the page.
-const VISIBLE = 4
-
-// LinkedIn's own embed of a post, shown first. Add more ids here.
-const LINKEDIN_EMBEDS = [
-  { id: 'urn:li:ugcPost:7390652751124439040', height: 1468 },
-]
+const VISIBLE = 6
 
 /* News, updates and announcements -- admissions windows, awards, talks,
    workshops, newly published work -- laid out like the LinkedIn posts they
@@ -23,21 +18,17 @@ export default function NewsSection() {
   const [all, setAll] = useState(false)
   const { data: feed } = useCms('feed', FEED_QUERY, mapFeed, [])
 
-  const items = [
-    ...LINKEDIN_EMBEDS.map(e => ({ kind: 'embed', key: e.id, ...e })),
-    ...feed.map(post => ({ kind: 'post', key: post.id, post })),
-  ]
-  if (!items.length) return null
+  if (!feed.length) return null
 
-  const shown = all ? items : items.slice(0, VISIBLE)
-  const extra = items.length - VISIBLE
+  const shown = all ? feed : feed.slice(0, VISIBLE)
+  const extra = feed.length - VISIBLE
 
   return (
     <section className="ns" aria-labelledby="ns-heading">
       <div className="ns-inner">
         <div className="ns-head">
           <h2 className="ns-heading" id="ns-heading">News &amp; Updates</h2>
-          <p className="ns-sub">Announcements, admissions, talks, and recent work.</p>
+          <p className="ns-sub">Announcements, admissions, openings, talks, and recent work.</p>
           <a
             className="ns-follow"
             href="https://www.linkedin.com/in/deepak-john-mathew-b079ab1a/"
@@ -49,21 +40,9 @@ export default function NewsSection() {
         </div>
 
         <div className="ns-grid">
-          {shown.map((item, i) => (
-            <Reveal className="ns-cell" key={item.key} delay={(i % 2) * 0.05}>
-              {item.kind === 'embed' ? (
-                <div className="ns-embed">
-                  <iframe
-                    src={`https://www.linkedin.com/embed/feed/update/${item.id}`}
-                    title="LinkedIn post by Deepak John Mathew"
-                    loading="lazy"
-                    height={item.height}
-                    allowFullScreen
-                  />
-                </div>
-              ) : (
-                <PostCard post={item.post} />
-              )}
+          {shown.map((post, i) => (
+            <Reveal className="ns-cell" key={post.id} delay={(i % 3) * 0.05}>
+              <PostCard post={post} />
             </Reveal>
           ))}
         </div>
@@ -75,7 +54,7 @@ export default function NewsSection() {
             aria-expanded={all}
             onClick={() => setAll(v => !v)}
           >
-            {all ? 'Show fewer' : `Show all ${items.length} updates`}
+            {all ? 'Show fewer' : `Show all ${feed.length} updates`}
           </button>
         )}
       </div>

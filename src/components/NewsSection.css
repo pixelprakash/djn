@@ -49,23 +49,13 @@ section.ns {
 /* Cards are different heights (a poster, a one-liner, an embed), so they
    flow in columns rather than a grid with gaps under the short ones. */
 .ns .ns-grid {
-  column-count: 2;
+  column-count: 3;
   column-gap: clamp(20px, 2.8vw, 40px);
 }
 .ns .ns-cell {
   break-inside: avoid;
   margin-bottom: clamp(20px, 2.8vw, 40px);
 }
-.ns .ns-embed {
-  max-width: 504px;
-  width: 100%;
-  background: #fff;
-  border: 1px solid rgba(26, 24, 20, .12);
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-}
-.ns .ns-embed iframe { display: block; width: 100%; border: 0; }
-
 .ns .ns-follow {
   margin-left: auto;
   font-family: var(--body);
@@ -96,6 +86,9 @@ section.ns {
   border-color: var(--accent);
 }
 
-@media (max-width: 800px) {
+@media (max-width: 1180px) {
+  .ns .ns-grid { column-count: 2; }
+}
+@media (max-width: 700px) {
   .ns .ns-grid { column-count: 1; }
 }
