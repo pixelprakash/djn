@@ -114,9 +114,11 @@
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
-.pc .pc-tag { color: var(--accent); font-weight: 500; }
-.pc .pc-url { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; overflow-wrap: anywhere; }
-.pc .pc-url:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.pc .pc-title a { color: inherit; text-decoration: none; }
+.pc .pc-title a:hover { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 4px; }
+.pc .pc-title a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.pc .pc-cta { margin-top: 16px; }
 
 .pc .pc-more {
   align-self: flex-start;

@@ -1,0 +1,37 @@
+.nw {
+  min-height: 100vh;
+  background: var(--bg);
+  font-family: var(--body);
+  color: var(--ink);
+  padding-bottom: var(--nav-safe);
+  width: 100%;
+  overflow-x: clip;
+  isolation: isolate;
+}
+.nw-sheet { padding: clamp(24px, 3.5vw, 44px) var(--g) clamp(48px, 6vw, 80px); }
+
+.nw-filters { display: flex; flex-wrap: wrap; gap: 8px; }
+.nw-chip {
+  font-family: var(--body);
+  font-size: 1rem;
+  color: var(--muted);
+  background: none;
+  border: 1.5px solid var(--rule);
+  border-radius: 100px;
+  padding: 8px 18px;
+  cursor: pointer;
+  transition: background-color .2s, color .2s, border-color .2s;
+}
+.nw-chip:hover,
+.nw-chip--on { background: var(--ink); color: var(--white); border-color: var(--ink); }
+.nw-chip:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+.nw-count { margin: clamp(16px, 2vw, 24px) 0; font-size: 1rem; color: var(--muted); min-height: 1.5em; }
+.nw-empty { font-size: 1.1rem; color: var(--sub); }
+
+/* Cards differ in height (a poster, a one-liner): flow them in columns. */
+.nw-grid { column-count: 3; column-gap: clamp(20px, 2.6vw, 36px); }
+.nw-cell { break-inside: avoid; margin-bottom: clamp(20px, 2.6vw, 36px); }
+@media (max-width: 1180px) { .nw-grid { column-count: 2; } }
+@media (max-width: 700px) { .nw-grid { column-count: 1; } }
+@media (prefers-reduced-motion: reduce) { .nw-chip { transition: none; } }

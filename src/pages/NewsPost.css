@@ -1,0 +1,26 @@
+.np { max-width: 760px; display: flex; flex-direction: column; align-items: flex-start; }
+.np-back {
+  font-family: var(--body);
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--accent);
+  text-decoration: none;
+  padding: 6px 0;
+}
+.np-back:hover { text-decoration: underline; text-underline-offset: 3px; }
+.np-back:focus-visible,
+.np-link:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.np-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 12px 20px; margin-top: 20px; }
+.np-text {
+  margin: 24px 0 0;
+  font-family: var(--body);
+  font-size: clamp(1.1rem, 1.5vw, 1.2rem);
+  line-height: 1.7;
+  color: var(--ink);
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+.np-link { margin-top: 20px; font-family: var(--body); font-size: 1.05rem; font-weight: 500; color: var(--accent); text-decoration: none; }
+.np-link:hover { text-decoration: underline; text-underline-offset: 3px; }
+.np-photos { margin-top: clamp(28px, 4vw, 44px); width: min(100vw - 2 * var(--g), 1100px); }
+.np-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }

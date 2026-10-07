@@ -27,7 +27,7 @@ const cache = new Map() // key -> { data, promise }
 // visitor sees their content immediately and it is refreshed in the
 // background (stale-while-revalidate) instead of waiting on the network.
 // Bump STORE's version if the shape the maps produce ever changes.
-const STORE = 'djm-cms:v2:'
+const STORE = 'djm-cms:v3:'
 const readStored = key => {
   try { const raw = localStorage.getItem(STORE + key); return raw ? JSON.parse(raw) : null } catch { return null }
 }
@@ -117,13 +117,19 @@ export const mapPosts = rows => rows.map(r => ({
 
 /* ── News, updates and announcements (LinkedIn-style posts) ── */
 export const FEED_QUERY = `*[_type == "feedPost"] | order(coalesce(pinned, false) desc, publishedAt desc){
-  _id, title, text, publishedAt, linkedinUrl, topic, pinned,
+  _id, title, "slug": slug.current, text, publishedAt, linkedinUrl, topic, pinned,
+  closesOn, ctaLabel, ctaUrl,
   "images": images[]{ "url": asset->url, alt }
 }`
 
 export const mapFeed = rows => rows.map(r => ({
   id: r._id,
+  // Posts made before slugs existed fall back to their id, so every update
+  // still has an address of its own.
+  slug: r.slug || r._id,
   title: r.title || '',
+  closesOn: r.closesOn || '',
+  cta: r.ctaUrl ? { label: r.ctaLabel || 'Learn more', url: r.ctaUrl } : null,
   text: r.text || '',
   date: r.publishedAt,
   url: r.linkedinUrl || '',
@@ -140,6 +146,6 @@ export const mapFeed = rows => rows.map(r => ({
 // Start the requests a page will need before React has even mounted, so the
 // network round trip overlaps with loading and running the app's code.
 export function prefetchFor(pathname) {
-  if (pathname === '/' || pathname.startsWith('/about')) load('feed', FEED_QUERY, mapFeed)
+  if (pathname === '/' || pathname.startsWith('/about') || pathname.startsWith('/news')) load('feed', FEED_QUERY, mapFeed)
   if (pathname.startsWith('/blogs')) load('posts', POSTS_QUERY, mapPosts)
 }

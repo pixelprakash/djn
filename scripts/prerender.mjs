@@ -13,7 +13,7 @@ import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import {
   SITE, NAME, HOME_TITLE, DEFAULT_IMAGE, CV_TITLES,
-  homeMeta, workMeta, resumeMeta, blogsMeta, contactMeta, labMeta, cvMeta, projectMeta, postMeta,
+  homeMeta, workMeta, resumeMeta, blogsMeta, newsMeta, newsPostMeta, contactMeta, labMeta, cvMeta, projectMeta, postMeta,
 } from '../src/seo/routes.js'
 import { PROJECTS } from '../src/pages/projectData.js'
 import { BLOG_POSTS } from '../src/pages/blogData.js'
@@ -49,14 +49,38 @@ async function cmsPosts() {
   }
 }
 
+// News & updates published in the CMS get their own page too.
+async function cmsNews() {
+  const API = 'https://q6natj20.apicdn.sanity.io/v2025-01-01/data/query/production'
+  const groq = '*[_type=="feedPost"]|order(publishedAt desc){"slug":coalesce(slug.current,_id),title,text,publishedAt,"image":images[0].asset->url}'
+  try {
+    const ctrl = new AbortController()
+    const timer = setTimeout(() => ctrl.abort(), 8000)
+    const res = await fetch(`${API}?query=${encodeURIComponent(groq)}`, { signal: ctrl.signal })
+    clearTimeout(timer)
+    if (!res.ok) throw new Error(`HTTP ${res.status}`)
+    const { result } = await res.json()
+    return (result || []).map(p => ({
+      slug: p.slug, title: p.title || '', text: p.text || '',
+      iso: p.publishedAt ? p.publishedAt.slice(0, 10) : undefined,
+      image: p.image ? `${p.image}?w=1200&h=630&fit=crop&auto=format` : undefined,
+    }))
+  } catch (e) {
+    console.warn(`[prerender] could not read the news (${e.message}); /news is written without per-update pages`)
+    return []
+  }
+}
+
 const live = await cmsPosts()
+const news = await cmsNews()
 const posts = [...live, ...BLOG_POSTS.filter(p => !live.some(l => l.slug === p.slug))]
 
 const pages = [
-  homeMeta(), workMeta(), resumeMeta(), blogsMeta(), contactMeta(), labMeta(),
+  homeMeta(), workMeta(), resumeMeta(), blogsMeta(), newsMeta(), contactMeta(), labMeta(),
   ...Object.keys(CV_TITLES).map(cvMeta),
   ...PROJECTS.map(projectMeta),
   ...posts.map(p => ({ ...postMeta(p), cover: p.cover || (p.images && p.images[0]) })),
+  ...news.map(newsPostMeta),
 ]
 
 function swap(html, re, value, label) {
@@ -103,7 +127,7 @@ function render(meta) {
   }
 
   // Visible only with JavaScript off (and read by crawlers that don't run it).
-  const nav = [['About', '/about'], ['Work', '/work'], ['Resume', '/resume'], ['Blogs', '/blogs'], ['Contact', '/contact']]
+  const nav = [['About', '/about'], ['Work', '/work'], ['Resume', '/resume'], ['News', '/news'], ['Blogs', '/blogs'], ['Contact', '/contact']]
     .map(([n, p]) => `<a href="${p}">${n}</a>`).join(' · ')
   const body = `<noscript><main><h1>${esc(meta.title || NAME)}</h1><p>${esc(meta.description)}</p><nav>${nav}</nav></main></noscript>`
   h = h.replace('<div id="root"></div>', () => `<div id="root"></div>\n    ${body}`)
@@ -124,4 +148,4 @@ const today = new Date().toISOString().slice(0, 10)
 const urls = pages.map(m => `  <url><loc>${SITE}${m.path}</loc><lastmod>${today}</lastmod></url>`).join('\n')
 writeFileSync(join(DIST, 'sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}\n</urlset>\n`)
 
-console.log(`[prerender] wrote ${written} pages and sitemap.xml (${posts.length} blog posts, ${PROJECTS.length} projects, ${Object.keys(CV_TITLES).length} CV pages)`)
+console.log(`[prerender] wrote ${written} pages and sitemap.xml (${posts.length} blog posts, ${news.length} news updates, ${PROJECTS.length} projects, ${Object.keys(CV_TITLES).length} CV pages)`)

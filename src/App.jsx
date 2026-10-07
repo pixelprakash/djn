@@ -44,6 +44,8 @@ const Resume       = lazy(routeImports.resume)
 const Lab          = lazy(routeImports.lab)
 const Blog         = lazy(routeImports.blog)
 const BlogPost     = lazy(routeImports.blogPost)
+const News         = lazy(routeImports.news)
+const NewsPost     = lazy(routeImports.newsPost)
 const Contact      = lazy(routeImports.contact)
 const CvPage       = lazy(routeImports.cv)
 
@@ -75,6 +77,8 @@ function RouteSwitch({ location }) {
         <Route path="/lab"     element={<Lab />} />
         <Route path="/blogs"   element={<Blog />} />
         <Route path="/blogs/:slug" element={<BlogPost />} />
+        <Route path="/news"    element={<News />} />
+        <Route path="/news/:slug" element={<NewsPost />} />
         {/* The section used to live at /blog: old links, bookmarks and search
             results keep working. */}
         <Route path="/blog"    element={<Navigate to="/blogs" replace />} />
@@ -114,6 +118,7 @@ function labelFor(pathname) {
     case 'resume':  return 'Resume'
     case 'lab':     return 'DIC Lab'
     case 'blogs':   return 'Blogs'
+    case 'news':    return 'News & Updates'
     case 'contact': return 'Contact'
     case 'cv':      return CV_TITLES[slug] || 'Resume'
     default:        return 'About'

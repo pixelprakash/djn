@@ -71,6 +71,7 @@ function isItemActive(item, pathname) {
   if (item.external || !item.path) return false
   const [, seg, slug] = pathname.split('/')
   if (seg === 'cv') return item.path === (WORK_CV.has(slug) ? '/work' : '/resume')
+  if (seg === 'news') return item.path === '/about' // updates are the home page's News & Updates
   return pathname === item.path || pathname.startsWith(item.path + '/')
 }
 

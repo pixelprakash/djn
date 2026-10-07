@@ -11,6 +11,8 @@ export const routeImports = {
   lab:           () => import('./pages/Lab'),
   blog:          () => import('./pages/Blog'),
   blogPost:      () => import('./pages/BlogPost'),
+  news:          () => import('./pages/News'),
+  newsPost:      () => import('./pages/NewsPost'),
   contact:       () => import('./pages/Contact'),
   cv:            () => import('./pages/CvPage'),
 }
@@ -20,12 +22,14 @@ export function preloadForPath(path) {
   if (path.startsWith('/cv/'))   return routeImports.cv()
   if (path.startsWith('/work/')) return routeImports.projectDetail()
   if (path.startsWith('/blogs/')) return routeImports.blogPost()
+  if (path.startsWith('/news/')) return routeImports.newsPost()
   switch (path) {
     case '/about':   return routeImports.about()
     case '/work':    return routeImports.work()
     case '/resume':  return routeImports.resume()
     case '/lab':     return routeImports.lab()
     case '/blogs':   return routeImports.blog()
+    case '/news':    return routeImports.news()
     case '/contact': return routeImports.contact()
     default: return
   }

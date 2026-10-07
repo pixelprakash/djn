@@ -95,6 +95,42 @@ export const blogsMeta = () => ({
   ld: [crumbs([['Blogs', '/blogs']])],
 })
 
+export const newsMeta = () => ({
+  title: 'News & Updates',
+  description:
+    'Announcements, admissions, openings, talks and recent work from Prof. Deepak John Mathew at IIT Hyderabad.',
+  path: '/news',
+  type: 'website',
+  ld: [crumbs([['News & Updates', '/news']])],
+})
+
+export const newsPostMeta = post => {
+  const path = `/news/${post.slug}`
+  const title = post.title || clip(post.text, 70)
+  const iso = post.iso || (post.date ? String(post.date).slice(0, 10) : undefined)
+  const image = post.image || (post.images && post.images[0] && post.images[0].src)
+  return {
+    title,
+    description: clip(post.text),
+    path,
+    type: 'article',
+    image,
+    ld: [
+      crumbs([['News & Updates', '/news'], [title, path]]),
+      {
+        '@context': 'https://schema.org',
+        '@type': 'NewsArticle',
+        headline: title,
+        description: clip(post.text),
+        ...(iso ? { datePublished: iso } : {}),
+        ...(image ? { image } : {}),
+        author: { '@type': 'Person', name: NAME, url: SITE + '/' },
+        mainEntityOfPage: SITE + path,
+      },
+    ],
+  }
+}
+
 export const contactMeta = () => ({
   title: 'Contact',
   description:

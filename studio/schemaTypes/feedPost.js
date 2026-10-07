@@ -20,6 +20,14 @@ export default defineType({
       validation: (r) => r.required().max(120),
     }),
     defineField({
+      name: 'slug',
+      title: 'Web address',
+      type: 'slug',
+      description: 'Click Generate. This becomes the update\'s own page: /news/this-part.',
+      options: {source: 'title', maxLength: 80},
+      validation: (r) => r.required(),
+    }),
+    defineField({
       name: 'text',
       title: 'Text',
       type: 'text',
@@ -67,6 +75,27 @@ export default defineType({
       validation: (r) => r.required(),
     }),
     defineField({
+      name: 'closesOn',
+      title: 'Closes on (optional)',
+      type: 'date',
+      description:
+        'For a deadline: last date to apply or register. The card shows "Closes in N days", and once the date has passed it leaves the home page (it stays on the News page, marked Closed).',
+    }),
+    defineField({
+      name: 'ctaLabel',
+      title: 'Button text (optional)',
+      type: 'string',
+      description: 'e.g. "Apply now", "Register". Used with the button link below.',
+      validation: (r) => r.max(24),
+    }),
+    defineField({
+      name: 'ctaUrl',
+      title: 'Button link (optional)',
+      type: 'url',
+      description: 'Adds a clear button to the card, e.g. the application form.',
+      validation: (r) => r.uri({scheme: ['https']}),
+    }),
+    defineField({
       name: 'linkedinUrl',
       title: 'Link (optional)',
       type: 'url',
@@ -85,10 +114,12 @@ export default defineType({
     {title: 'Newest first', name: 'newest', by: [{field: 'publishedAt', direction: 'desc'}]},
   ],
   preview: {
-    select: {title: 'title', text: 'text', date: 'publishedAt', media: 'images.0', pinned: 'pinned'},
-    prepare: ({title, text, date, media, pinned}) => ({
+    select: {title: 'title', text: 'text', date: 'publishedAt', media: 'images.0', pinned: 'pinned', closes: 'closesOn'},
+    prepare: ({title, text, date, media, pinned, closes}) => ({
       title: `${pinned ? '📌 ' : ''}${title || (text || '').split('\n')[0].slice(0, 80)}`,
-      subtitle: date ? new Date(date).toLocaleDateString('en-GB', {day: 'numeric', month: 'short', year: 'numeric'}) : '',
+      subtitle:
+        (date ? new Date(date).toLocaleDateString('en-GB', {day: 'numeric', month: 'short', year: 'numeric'}) : '') +
+        (closes ? `  ·  closes ${closes}` : ''),
       media,
     }),
   },

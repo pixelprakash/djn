@@ -1,39 +1,19 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import { Slideshow } from './PhotoGallery'
+import RichText from './RichText'
+import { Deadline, Cta } from './NewsBits'
+import { fmtDate, newsPath } from '../lib/news'
 import './PostCard.css'
 
-/* One news item, update or announcement: photos first (a poster is shown
-   whole, never cropped), then a topic label and date, the title, and the
-   text (long ones fold behind "…see more"). Photos open a slideshow; an
-   optional link goes to the original. Content comes from Sanity ("News,
-   update or announcement"). */
+/* One update as a card (the /news archive): photos first (a poster is shown
+   whole, never cropped), then a topic label, date and deadline, the title
+   (a link to the update's own page), the text (long ones fold behind
+   "…see more"), the call-to-action button and an optional link out.
+   Photos open a slideshow. Content comes from Sanity ("News, update or
+   announcement"). */
 
 const FOLD_CHARS = 240
-
-// #hashtags and @names pick up the accent colour, like on LinkedIn; web
-// addresses in the text (posters often say "Apply here https://...") become
-// real links, without swallowing the full stop that ends the sentence.
-function Rich({ text }) {
-  return text.split(/(https?:\/\/[^\s<>"]+|#[\p{L}\p{N}_]+|(?<![\p{L}\p{N}_.])@[\p{L}\p{N}_.]+)/u).map((part, i) => {
-    if (/^https?:\/\//.test(part)) {
-      const url = part.replace(/[.,;:!?)\]]+$/, '')
-      return (
-        <span key={i}>
-          <a className="pc-url" href={url} target="_blank" rel="noreferrer">{url.replace(/^https?:\/\/(www\.)?/, '')}</a>
-          {part.slice(url.length)}
-        </span>
-      )
-    }
-    return /^[#@]/.test(part) ? <span key={i} className="pc-tag">{part}</span> : part
-  })
-}
-
-const fmtDate = iso => {
-  const d = new Date(iso)
-  return Number.isNaN(d.getTime())
-    ? ''
-    : d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
-}
 
 export default function PostCard({ post }) {
   const [open, setOpen] = useState(false)
@@ -69,11 +49,16 @@ export default function PostCard({ post }) {
           {post.pinned && <span className="pc-pin">Pinned</span>}
           {post.topic && <span className="pc-topic">{post.topic}</span>}
           <time className="pc-date" dateTime={post.date}>{fmtDate(post.date)}</time>
+          <Deadline closesOn={post.closesOn} />
         </div>
-        {post.title && <h3 className="pc-title">{post.title}</h3>}
+        {post.title && (
+          <h3 className="pc-title">
+            <Link to={newsPath(post)}>{post.title}</Link>
+          </h3>
+        )}
 
         <p className={`pc-text${long && !open ? ' pc-text--fold' : ''}`}>
-          <Rich text={post.text} />
+          <RichText text={post.text} />
         </p>
         {long && (
           <button
@@ -85,6 +70,8 @@ export default function PostCard({ post }) {
             {open ? 'Show less' : '…see more'}
           </button>
         )}
+
+        <Cta cta={post.cta} className="pc-cta" />
 
         {post.url && (
           <a className="pc-link" href={post.url} target="_blank" rel="noreferrer">
