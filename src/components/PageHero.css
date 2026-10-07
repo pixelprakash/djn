@@ -72,7 +72,7 @@
 .ph + * {
   margin-top: calc(-1 * var(--ph-sheet-r));
   border-radius: var(--ph-sheet-r) var(--ph-sheet-r) 0 0;
-  box-shadow: 0 -14px 36px rgba(26, 24, 20, .10);
+  box-shadow: 0 -4px 12px rgba(26, 24, 20, .02), 0 -18px 48px rgba(26, 24, 20, .06);
 }
 
 /* ── Resume: the name is long, so it sets in two lines beside the

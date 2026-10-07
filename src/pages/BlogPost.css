@@ -119,13 +119,13 @@
   aspect-ratio: 16 / 8;
   max-height: 600px;
   cursor: pointer;
-  box-shadow: 0 1px 2px rgba(26,24,20,.06), 0 14px 44px rgba(26,24,20,.16);
+  box-shadow: var(--shadow-float);
   transition: transform .4s cubic-bezier(.34,1.56,.64,1), box-shadow .3s ease;
   animation: bpFade .6s ease .12s both;
 }
 .bp-cover:hover {
   transform: translateY(-6px);
-  box-shadow: 0 2px 4px rgba(26,24,20,.08), 0 22px 56px rgba(26,24,20,.22);
+  box-shadow: var(--shadow-float-hover);
 }
 .bp-cover:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
 .bp-cover-img {
@@ -226,7 +226,7 @@
   border: 1px solid rgba(26,24,20,.08);
   border-radius: var(--radius-lg);
   padding: clamp(20px, 2.2vw, 28px);
-  box-shadow: 0 1px 2px rgba(26,24,20,.06), 0 8px 24px rgba(26,24,20,.08);
+  box-shadow: var(--shadow-rest);
 }
 .bp-card-title {
   font-family: var(--display);

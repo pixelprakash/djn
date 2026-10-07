@@ -43,6 +43,15 @@
   --title-tracking-sm: -2px;
 
   /* Radius scale — nested elements use the smaller step */
+  /* Shadows: layered and faint -- each layer roughly doubles the blur of the one
+     before it and stays low in opacity, so a card lifts off the page softly with
+     no hard edge or dark core. rest = a card sitting on the page, hover = the
+     same card lifted, float = a large hero image or panel standing off the page. */
+  --shadow-rest:  0 1px 1px rgba(26,24,20,.02), 0 2px 4px rgba(26,24,20,.03), 0 8px 20px rgba(26,24,20,.05);
+  --shadow-hover: 0 2px 3px rgba(26,24,20,.02), 0 8px 16px rgba(26,24,20,.04), 0 22px 48px rgba(26,24,20,.09);
+  --shadow-float: 0 2px 4px rgba(26,24,20,.02), 0 10px 24px rgba(26,24,20,.05), 0 30px 70px rgba(26,24,20,.10);
+  --shadow-float-hover: 0 4px 8px rgba(26,24,20,.03), 0 16px 36px rgba(26,24,20,.07), 0 40px 90px rgba(26,24,20,.13);
+
   /* Cards and panels have square corners (a deliberate, plain look): these two
      are 0 on purpose. Pills, chips and round icon buttons keep their own radii. */
   --radius-lg: 0; /* outer containers, e.g. the Works/Research panels */

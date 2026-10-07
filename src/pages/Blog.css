@@ -92,13 +92,13 @@
   text-decoration: none;
   background: var(--white);
   border: 1px solid var(--rule);
-  box-shadow: 0 1px 2px rgba(26,24,20,.06), 0 8px 24px rgba(26,24,20,.08);
+  box-shadow: var(--shadow-rest);
   animation: fadeUp .45s ease .1s both;
   transition: transform .3s cubic-bezier(.34,1.56,.64,1), box-shadow .3s;
 }
 .bl-featured:hover {
   transform: translateY(-5px);
-  box-shadow: 0 4px 10px rgba(26,24,20,.1), 0 28px 56px rgba(26,24,20,.16);
+  box-shadow: var(--shadow-hover);
 }
 
 .bl-featured-img {
@@ -194,7 +194,7 @@
   border: 1px solid var(--rule);
   border-radius: var(--radius-lg);
   overflow: hidden;
-  box-shadow: 0 1px 2px rgba(26,24,20,.06), 0 8px 24px rgba(26,24,20,.08);
+  box-shadow: var(--shadow-rest);
   transition:
     transform .38s cubic-bezier(.34,1.56,.64,1),
     box-shadow .3s,
@@ -202,7 +202,7 @@
 }
 .bl-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 4px 10px rgba(26,24,20,.1), 0 24px 48px rgba(26,24,20,.14);
+  box-shadow: var(--shadow-hover);
 }
 
 .bl-card-img {
@@ -297,7 +297,7 @@
 }
 .bl-banner:hover {
   transform: translateY(-4px);
-  box-shadow: 0 16px 48px rgba(2,79,70,.22);
+  box-shadow: 0 6px 16px rgba(2,79,70,.08), 0 22px 56px rgba(2,79,70,.16);
 }
 
 .bl-banner-label {
