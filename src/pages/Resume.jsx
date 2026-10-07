@@ -1,4 +1,5 @@
 import Reveal from '../components/Reveal'
+import { social } from '../data/socials'
 import { useRef } from 'react'
 import Portrait from '../components/Portrait'
 import PageHero from '../components/PageHero'
@@ -70,8 +71,8 @@ const researchAreas = [
 const links = [
   { label: 'Website',       href: 'https://deepakjohnmathew.net',                                          text: 'deepakjohnmathew.net' },
   { label: 'IIT Hyderabad', href: 'https://design.iith.ac.in/iitdesign_peoples/deepak-john-mathew-phd/',   text: 'IIT Profile' },
-  { label: 'Google Scholar',href: 'https://scholar.google.com/citations?hl=en&user=UBODlvYAAAAJ',          text: 'Scholar' },
-  { label: 'LinkedIn',      href: 'https://www.linkedin.com/in/deepak-john-mathew',                        text: 'LinkedIn' },
+  { label: 'Google Scholar',href: social('Google Scholar').href,                                    text: 'Scholar' },
+  { label: 'LinkedIn',      href: social('LinkedIn').href,                                          text: 'LinkedIn' },
 ]
 
 /* -- COMPONENT -- */
@@ -197,8 +198,8 @@ export default function Resume() {
           <div className="r-entry">
             <span className="r-period">Social</span>
             <div className="r-profile-links">
-              <a href="https://www.instagram.com/deepakjohnmathew/" target="_blank" rel="noreferrer">Instagram <span aria-hidden="true">&#8594;</span></a>
-              <a href="https://www.facebook.com/deepakjohnmathew/" target="_blank" rel="noreferrer">Facebook <span aria-hidden="true">&#8594;</span></a>
+              <a href={social('Instagram').href} target="_blank" rel="noreferrer">Instagram <span aria-hidden="true">&#8594;</span></a>
+              <a href={social('Facebook').href} target="_blank" rel="noreferrer">Facebook <span aria-hidden="true">&#8594;</span></a>
             </div>
           </div>
         </div>

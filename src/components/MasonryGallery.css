@@ -18,21 +18,9 @@
 .mg-item:hover::after { background: rgba(8, 7, 5, .16); }
 .mg-item:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
 
-.mg-more { display: flex; justify-content: center; padding: clamp(8px, 1.5vw, 16px) 0 0; }
-.mg-more-btn {
-  font-family: var(--body); font-size: 1.05rem; font-weight: 500;
-  color: var(--ink); background: var(--white);
-  border: 1.5px solid var(--rule); border-radius: 100px;
-  padding: 14px 28px; cursor: pointer;
-  transition: background-color .2s, color .2s, border-color .2s;
-}
-.mg-more-btn:hover { background: var(--ink); color: var(--white); border-color: var(--ink); }
-.mg-more-btn:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
-.mg-more-n { margin-left: 8px; opacity: .65; font-weight: 400; }
-
 @media (min-width: 1800px) { .mg-grid { column-count: 4; } }
 @media (max-width: 900px) { .mg-grid { column-count: 2; } }
 @media (prefers-reduced-motion: reduce) {
-  .mg-item img, .mg-item::after, .mg-more-btn { transition: none; }
+  .mg-item img, .mg-item::after { transition: none; }
   .mg-item:hover img { transform: none; }
 }

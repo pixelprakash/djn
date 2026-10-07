@@ -123,7 +123,6 @@ export const PROJECTS = [
           "https://deepakjohnmathew.net/wp-content/uploads/2024/09/DJM-_0011-1-1024x773.jpg",
           "https://deepakjohnmathew.net/wp-content/uploads/2024/09/DJM_0007-1-1024x778.jpg",
           "https://deepakjohnmathew.net/wp-content/uploads/2024/09/DJM_0011-1-1024x778.jpg",
-          "https://deepakjohnmathew.net/wp-content/uploads/2024/09/DJM-_0002-1-1024x778.jpg",
           "https://deepakjohnmathew.net/wp-content/uploads/2024/09/DJM_0009-1-1024x778.jpg",
           "https://deepakjohnmathew.net/wp-content/uploads/2024/09/DJM_0004-1-1024x777.jpg",
           "https://deepakjohnmathew.net/wp-content/uploads/2024/09/DJM_A__0783-1-1024x777.jpg",

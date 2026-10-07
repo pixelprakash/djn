@@ -3,6 +3,7 @@ import PageHero from '../components/PageHero'
 import usePageTitle from '../hooks/usePageTitle'
 import { contactMeta } from '../seo/routes'
 import useStackedLayers from '../hooks/useStackedLayers'
+import { social } from '../data/socials'
 import './Contact.css'
 
 // ── One thing to fill in ─────────────────────────────────────────────
@@ -11,12 +12,15 @@ import './Contact.css'
 // submission fails and the visitor sees the error message below.
 const FORM_ENDPOINT = 'https://formspree.io/f/YOUR_FORM_ID'
 
+// Social profiles come from the shared list (src/data/socials.js); the two
+// non-social links are added here.
 const links = [
-  { label: 'LinkedIn',       value: 'deepak-john-mathew',    href: 'https://www.linkedin.com/in/deepak-john-mathew-b079ab1a/' },
-  { label: 'Instagram',      value: '@deepakjohnmathew',     href: 'https://www.instagram.com/deepakjohnmathew/' },
-  { label: 'Google Scholar', value: 'View publications',     href: 'https://scholar.google.com/citations?hl=en&user=UBODlvYAAAAJ' },
-  { label: 'ResearchGate',   value: 'Deepak Mathew',         href: 'https://www.researchgate.net/profile/Deepak-Mathew-3' },
-  { label: 'Website',        value: 'deepakjohnmathew.net',  href: 'https://deepakjohnmathew.net' },
+  ...['LinkedIn', 'Instagram', 'Facebook', 'Google Scholar'].map(l => {
+    const { href, handle } = social(l)
+    return { label: l, value: handle, href }
+  }),
+  { label: 'ResearchGate', value: 'Deepak Mathew',        href: 'https://www.researchgate.net/profile/Deepak-Mathew-3' },
+  { label: 'Website',      value: 'deepakjohnmathew.net', href: 'https://deepakjohnmathew.net' },
 ]
 
 const MAP_URL = 'https://www.google.com/maps/search/?api=1&query=Indian+Institute+of+Technology+Hyderabad+Kandi+Sangareddy'
