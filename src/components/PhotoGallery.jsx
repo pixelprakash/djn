@@ -11,6 +11,7 @@ export function Slideshow({ images, startIdx, onClose }) {
   const stripRef  = useRef(null)
   const dialogRef = useRef(null)
   const closeRef  = useRef(null)
+  const touchX    = useRef(null)
 
   const prev = useCallback(() => setIdx(i => (i - 1 + total) % total), [total])
   const next = useCallback(() => setIdx(i => (i + 1) % total), [total])
@@ -77,7 +78,16 @@ export function Slideshow({ images, startIdx, onClose }) {
 
         <button className="ss-x" ref={closeRef} onClick={onClose} aria-label="Close slideshow">✕</button>
 
-        <div className="ss-stage">
+        <div
+          className="ss-stage"
+          onTouchStart={e => { touchX.current = e.touches[0].clientX }}
+          onTouchEnd={e => {
+            // A horizontal swipe changes photo, like the arrows do.
+            const dx = e.changedTouches[0].clientX - (touchX.current ?? e.changedTouches[0].clientX)
+            touchX.current = null
+            if (Math.abs(dx) > 50) (dx < 0 ? next : prev)()
+          }}
+        >
           <button className="ss-btn ss-btn--prev" onClick={prev} aria-label="Previous photo">‹</button>
           <img
             key={idx}

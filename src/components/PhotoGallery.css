@@ -147,6 +147,21 @@
 .ss-btn:hover { background: var(--accent); color: #fff; transform: scale(1.12); }
 .ss-btn:active { transform: scale(.93); }
 
+.ss-btn--prev,
+.ss-btn--next {
+  /* Pinned to the screen edges, not to the photo: they stay put whatever
+     shape the picture is. Vertically they sit on the middle of the photo
+     area (the screen minus the counter and thumbnail strip below it). */
+  position: absolute;
+  top: calc(50% - 50px);
+  transform: translateY(-50%);
+  z-index: 2;
+}
+.ss-btn--prev { left: clamp(12px, 2vw, 28px); }
+.ss-btn--next { right: clamp(12px, 2vw, 28px); }
+.ss-btn--prev:hover, .ss-btn--next:hover { transform: translateY(-50%) scale(1.12); }
+.ss-btn--prev:active, .ss-btn--next:active { transform: translateY(-50%) scale(.93); }
+
 .ss-foot {
   display: flex; flex-direction: column;
   align-items: center; gap: 12px;
@@ -185,8 +200,11 @@
 @media (max-width: 640px) {
   .ss-wrap { padding: 16px; gap: 12px; }
   .ss-photo { max-width: 100%; max-height: calc(100vh - 160px); }
-  .ss-stage { gap: 6px; }
-  .ss-btn { width: 40px; height: 40px; font-size: 1.6rem; }
+  .ss-btn { width: 44px; height: 44px; font-size: 1.6rem; }
+  /* Over the photo's edges here, so they need their own backing to stay legible. */
+  .ss-btn--prev, .ss-btn--next { background: rgba(10, 9, 7, .55); top: calc(50% - 40px); }
+  .ss-btn--prev { left: 8px; }
+  .ss-btn--next { right: 8px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

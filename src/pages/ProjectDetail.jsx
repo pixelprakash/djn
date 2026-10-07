@@ -137,29 +137,10 @@ export default function ProjectDetail() {
       <div className="pd-body">
         {project.sections.map((sec, si) => {
           const paras = sec.text ? sec.text.split('\n\n') : []
-          const many = project.sections.length > 1
           return (
-            <Reveal as="section" key={si} className="pd-ch" aria-label={many ? `Part ${si + 1} of ${project.sections.length}` : 'Photographs'}>
+            <Reveal as="section" key={si} className="pd-ch" aria-label={`Photographs, part ${si + 1} of ${project.sections.length}`}>
               {paras.length > 0 && (
                 <div className="pd-ch-head">
-                  <div className="pd-ch-meta">
-                    {many && (
-                      <span className="pd-ch-no" aria-hidden="true">
-                        {String(si + 1).padStart(2, '0')}<span className="pd-ch-of"> / {String(project.sections.length).padStart(2, '0')}</span>
-                      </span>
-                    )}
-                    <span className="pd-ch-count">{sec.images.length} photographs</span>
-                    <button
-                      type="button"
-                      className="pd-ch-view"
-                      onClick={() => setSlideshow({ images: sec.images, startIdx: 0 })}
-                    >
-                      <span className="pd-ch-dot" aria-hidden="true">
-                        <svg width="8" height="9" viewBox="0 0 10 12" fill="currentColor"><path d="M0 0l10 6-10 6V0z" /></svg>
-                      </span>
-                      View slideshow
-                    </button>
-                  </div>
                   <div className="pd-ch-text">
                     {paras.map((para, i) => <p key={i}>{para}</p>)}
                   </div>

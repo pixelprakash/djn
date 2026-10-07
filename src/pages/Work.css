@@ -309,32 +309,27 @@
 }
 .seg-lbl::after { content: ''; flex: 1; height: 1px; background: var(--rule); }
 
-.solo-grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: clamp(16px, 2.2vw, 28px); }
-.solo-card { grid-column: span 2; }
-.solo-card--half { grid-column: span 3; }
-.solo-card--full { grid-column: 1 / -1; }
-.solo-card {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding: clamp(20px, 2.4vw, 30px);
-  background: var(--white);
-  border: 1px solid rgba(26,24,20,.1);
-  border-top: 3px solid var(--accent);
-  border-radius: var(--radius-lg);
-  box-shadow: 0 1px 2px rgba(26,24,20,.05);
-  transition: box-shadow .3s ease, transform .3s ease, opacity .5s ease;
+/* Solo shows: a plain catalogue list -- year, title, venue -- ruled with
+   hairlines, no boxes. */
+.solo-list { list-style: none; border-top: 1px solid var(--rule); }
+.solo-row {
+  display: grid;
+  grid-template-columns: clamp(96px, 13vw, 190px) minmax(0, 1fr);
+  gap: clamp(16px, 3vw, 40px);
+  align-items: baseline;
+  padding: clamp(20px, 2.6vw, 32px) 0;
+  border-bottom: 1px solid var(--rule);
 }
-.solo-card:hover { box-shadow: 0 14px 34px rgba(26,24,20,.12); transform: translateY(-3px); }
-.solo-year { font-family: var(--display); font-size: clamp(2rem, 3.4vw, 2.8rem); line-height: 1; color: var(--accent); font-variant-numeric: tabular-nums; }
-.solo-title { font-family: var(--display); font-weight: 400; font-size: clamp(1.15rem, 1.7vw, 1.4rem); line-height: 1.3; letter-spacing: -0.01em; color: var(--ink); margin-top: 6px; }
-.solo-venue { font-family: var(--body); font-size: 1.02rem; line-height: 1.5; color: var(--sub); }
+.solo-year { font-family: var(--display); font-size: clamp(1.8rem, 3.4vw, 2.8rem); line-height: 1; color: var(--ink); font-variant-numeric: tabular-nums; }
+.solo-info { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.solo-title { font-family: var(--display); font-weight: 400; font-size: clamp(1.3rem, 2.2vw, 1.8rem); line-height: 1.25; letter-spacing: -0.01em; color: var(--ink); }
+.solo-venue { font-family: var(--body); font-size: clamp(1.02rem, 1.3vw, 1.15rem); line-height: 1.5; color: var(--sub); }
 
 /* group exhibitions: one year heading, its shows beside it */
 .yr-list { border-top: 1px solid var(--rule); }
 .yr-group {
   display: grid;
-  grid-template-columns: clamp(84px, 11vw, 150px) minmax(0, 1fr);
+  grid-template-columns: clamp(96px, 13vw, 190px) minmax(0, 1fr); /* same as .solo-row, so both lists share one text edge */
   gap: clamp(16px, 3vw, 40px);
   padding: clamp(18px, 2.4vw, 28px) 0;
   border-bottom: 1px solid var(--rule);
@@ -348,12 +343,6 @@
 /* ==========================================
    RESPONSIVE
 ========================================== */
-@media (max-width: 1000px) {
-  /* two across; an odd last card takes the full row */
-  .solo-card,
-  .solo-card--half { grid-column: span 3; }
-  .solo-card:last-child:nth-child(odd) { grid-column: 1 / -1; }
-}
 @media (max-width: 800px) {
   .wk-grid,
   .sp-grid { grid-template-columns: minmax(0, 1fr); }
@@ -383,19 +372,15 @@
   .wk-stats { gap: 8px; }
   .wk-stat { padding: 14px 12px; }
   .wk-stat dt { font-size: 0.95rem; }
-  .solo-grid { grid-template-columns: minmax(0, 1fr); }
-  .solo-card,
-  .solo-card--half,
-  .solo-card--full,
-  .solo-card:last-child:nth-child(odd) { grid-column: 1 / -1; }
   .wk-lead { min-height: 420px; }
 }
-@media (max-width: 420px) {
+@media (max-width: 480px) {
+  .solo-row { grid-template-columns: 1fr; gap: 6px; }
   .yr-group { grid-template-columns: 60px minmax(0, 1fr); gap: 12px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .wk-lead img, .wk-card, .wk-card-img img, .sp-card, .solo-card, .wk-lead-cta, .wk-chip { transition: none; }
+  .wk-lead img, .wk-card, .wk-card-img img, .sp-card, .wk-lead-cta, .wk-chip { transition: none; }
   .wk-lead:hover img, .wk-card:hover .wk-card-img img { transform: none; }
-  .wk-card:hover, .sp-card:hover, .solo-card:hover, .wk-lead:hover .wk-lead-cta { transform: none; }
+  .wk-card:hover, .sp-card:hover, .wk-lead:hover .wk-lead-cta { transform: none; }
 }

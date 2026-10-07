@@ -218,21 +218,17 @@ export default function Work() {
 
             <section aria-labelledby="solo-h">
               <h2 className="seg-lbl" id="solo-h">Solo Shows</h2>
-              <div className="solo-grid">
-                {SOLO_SHOWS.map((s, i) => {
-                  // Rows of three; if the last row is short, its cards share the width.
-                  const left = SOLO_SHOWS.length % 3
-                  const tail = left && i >= SOLO_SHOWS.length - left
-                  const span = tail ? (left === 1 ? ' solo-card--full' : ' solo-card--half') : ''
-                  return (
-                  <Reveal as="article" key={i} className={`solo-card${span}`} delay={(i % 3) * 0.05}>
+              <ol className="solo-list">
+                {SOLO_SHOWS.map((s, i) => (
+                  <Reveal as="li" key={i} className="solo-row" delay={Math.min(i, 4) * 0.04}>
                     <span className="solo-year">{s.year}</span>
-                    <h3 className="solo-title">{s.title}</h3>
-                    <p className="solo-venue">{s.venue}</p>
+                    <div className="solo-info">
+                      <h3 className="solo-title">{s.title}</h3>
+                      <p className="solo-venue">{s.venue}</p>
+                    </div>
                   </Reveal>
-                  )
-                })}
-              </div>
+                ))}
+              </ol>
             </section>
 
             <section aria-labelledby="group-h">

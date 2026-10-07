@@ -268,27 +268,9 @@
 .pd-body { max-width: 1600px; margin: 0 auto; padding-top: clamp(40px, 6vw, 88px); }
 .pd-ch { padding-bottom: clamp(48px, 7vw, 104px); }
 .pd-ch-head {
-  display: grid;
-  grid-template-columns: minmax(180px, 280px) minmax(0, 1fr);
-  gap: clamp(20px, 4vw, 72px);
   padding: 0 var(--gutter) clamp(28px, 4vw, 52px);
 }
-.pd-ch-meta { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; padding-top: 6px; }
-.pd-ch-no { font-family: var(--display); font-size: clamp(2.2rem, 4vw, 3.4rem); line-height: 1; color: var(--accent); font-variant-numeric: tabular-nums; }
-.pd-ch-of { font-size: 1.1rem; color: var(--muted); }
-.pd-ch-count { font-family: var(--body); font-size: 1rem; color: var(--muted); }
-.pd-ch-view {
-  display: inline-flex; align-items: center; gap: 10px;
-  margin-top: 6px;
-  font-family: var(--body); font-size: 1rem; font-weight: 500; color: var(--ink);
-  background: var(--white); border: 1.5px solid var(--rule); border-radius: 100px;
-  padding: 10px 20px 10px 12px; cursor: pointer;
-  transition: background-color .2s, color .2s, border-color .2s;
-}
-.pd-ch-view:hover { background: var(--ink); color: #fff; border-color: var(--ink); }
-.pd-ch-view:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
-.pd-ch-dot { width: 26px; height: 26px; border-radius: 50%; background: var(--accent); color: #fff; display: flex; align-items: center; justify-content: center; }
-.pd-ch-text { max-width: 62ch; }
+.pd-ch-text { max-width: 62ch; text-align: left; }
 .pd-ch-text p { font-family: var(--body); font-size: clamp(1.08rem, 1.35vw, 1.2rem); line-height: 1.75; color: var(--sub); }
 .pd-ch-text p + p { margin-top: 1.1em; }
 /* the opening note leads: larger and darker */
@@ -329,7 +311,6 @@
 ═══════════════════════════════════════════════════ */
 @media (max-width: 1024px) {
   .pd-more-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .pd-ch-head { grid-template-columns: minmax(150px, 220px) minmax(0, 1fr); }
 }
 @media (max-width: 768px) {
   :root { --nav-safe: 80px; }
@@ -340,25 +321,9 @@
   .pd-ss-btn { padding: 10px 18px; font-size: 1rem; }
   .pd-ss-dot { width: 24px; height: 24px; }
   .pd-hero { height: clamp(420px, 68vh, 620px); }
-  .pd-ch-head { grid-template-columns: minmax(0, 1fr); gap: 18px; }
-  .pd-ch-meta { flex-direction: row; flex-wrap: wrap; align-items: center; gap: 8px 16px; }
-  .pd-ch-view { margin-top: 0; }
 
   .ss-wrap { padding: 20px 16px; }
   .ss-photo { max-width: calc(100vw - 28px); max-height: calc(100vh - 180px); }
-  /* The photo alone claims almost the full viewport width here, so
-     keeping prev/next as flex siblings (as on desktop) pushed them
-     mostly off-screen — overlay them on the photo's edges instead. */
-  .ss-stage { position: relative; gap: 0; }
-  .ss-btn { width: 44px; height: 44px; font-size: 1.6rem; }
-  .ss-btn--prev, .ss-btn--next {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 1;
-  }
-  .ss-btn--prev { left: 4px; }
-  .ss-btn--next { right: 4px; }
 }
 
 @media (max-width: 540px) {
@@ -366,7 +331,7 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .pd-hero-img { animation: none; }
-  .pd-hero-cta, .pd-ch-view, .pd-more-img img { transition: none; }
+  .pd-hero-cta, .pd-more-img img { transition: none; }
   .pd-hero-cta:hover { transform: none; }
   .pd-more-card:hover .pd-more-img img { transform: none; }
 }
