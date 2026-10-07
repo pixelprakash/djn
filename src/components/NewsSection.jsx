@@ -39,7 +39,7 @@ export default function NewsSection() {
         <div className={`ns-layout${rows.length ? '' : ' ns-layout--solo'}`}>
           <Reveal as="article" className="ns-lead">
             {cover && (
-              <Link className="ns-lead-media" to={newsPath(lead)} tabIndex={-1} aria-hidden="true">
+              <Link className="ns-lead-media" to={newsPath(lead)} tabIndex={-1} aria-hidden="true" style={{ '--ns-fill': `url("${cover.thumb}")` }}>
                 <img src={cover.thumb} alt="" loading="lazy" decoding="async" />
               </Link>
             )}
@@ -69,7 +69,7 @@ export default function NewsSection() {
                 <Reveal as="li" className="ns-row" key={p.id} delay={0.05 * (i + 1)}>
                   <Link className="ns-row-link" to={newsPath(p)}>
                     {p.images[0] && (
-                      <span className="ns-row-thumb" aria-hidden="true">
+                      <span className="ns-row-thumb" aria-hidden="true" style={{ '--ns-fill': `url("${p.images[0].thumb}")` }}>
                         <img src={p.images[0].thumb} alt="" loading="lazy" decoding="async" />
                       </span>
                     )}
@@ -79,6 +79,7 @@ export default function NewsSection() {
                         <time className="ns-date" dateTime={p.date}>{fmtDate(p.date)}</time>
                       </span>
                       <span className="ns-row-title">{p.title || p.text.split('\n')[0]}</span>
+                      <span className="ns-row-text">{p.text.replace(/\s+/g, ' ')}</span>
                       <Deadline closesOn={p.closesOn} />
                     </span>
                   </Link>
