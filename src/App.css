@@ -117,6 +117,17 @@
 /* Long section titles (e.g. "Teaching Experience & Permanent Posts") */
 .pt-label-text[data-long="true"] { font-size: clamp(2rem, 4.6vw, 4rem); }
 .pt-label-mask { max-width: min(92vw, 1100px); }
+/* News-update transition: a full-screen ink wipe that slides in from the left
+   and out to the right, an accent line along each vertical edge. */
+.pt-wipe {
+  position: absolute;
+  inset: 0;
+  display: none;
+  background: var(--ink);
+  border-left: 3px solid var(--accent);
+  border-right: 3px solid var(--accent);
+  will-change: transform;
+}
 /* Blog-article transition: a 2px accent line along the top edge. */
 .pt-bar {
   position: absolute;

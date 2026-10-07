@@ -12,6 +12,8 @@ import { routeImports, preloadAllRoutes } from "./routePreload"
 import About from "./pages/About"
 import { PROJECTS } from "./pages/projectData"
 import { CV_TITLES } from "./seo/routes"
+import { peekFeed } from "./lib/cms"
+import { fmtDate } from "./lib/news"
 import NotFound from "./pages/NotFound"
 import ShutterBlades from "./components/ShutterBlades"
 import { applyShutter, makeShutterRefs, shutterRegistrar } from "./utils/shutter"
@@ -111,6 +113,16 @@ const isArticle = pathname => {
   return seg === 'blogs' && Boolean(slug)
 }
 
+// An update's own page (/news/:slug) opens with a sideways ink wipe that names
+// it: its topic and date as a kicker, its title as the label. The feed is read
+// from what this browser already has, so the name is there before the page is.
+function newsItemFor(pathname) {
+  const [seg, slug] = pathname.split('/').filter(Boolean)
+  if (seg !== 'news' || !slug) return null
+  const post = peekFeed().find(p => p.slug === slug)
+  return { title: post ? (post.title || post.text.split('\n')[0]) : 'News & Updates', kicker: post ? [post.topic, fmtDate(post.date)] : ['News & Updates'] }
+}
+
 function labelFor(pathname) {
   const [seg, slug] = pathname.split('/').filter(Boolean)
   switch (seg) {
@@ -118,7 +130,7 @@ function labelFor(pathname) {
     case 'resume':  return 'Resume'
     case 'lab':     return 'DIC Lab'
     case 'blogs':   return 'Blogs'
-    case 'news':    return 'News & Updates'
+    case 'news':    return newsItemFor(pathname)?.title || 'News & Updates'
     case 'contact': return 'Contact'
     case 'cv':      return CV_TITLES[slug] || 'Resume'
     default:        return 'About'
@@ -154,6 +166,7 @@ function PageTransition() {
   const panel = useRef(null)       // the curved ink sheet (every page but projects)
   const shutterBox = useRef(null)  // the camera shutter (project pages)
   const bar = useRef(null)         // the thin progress line (blog articles)
+  const wipe = useRef(null)        // the sideways ink wipe (news updates)
   const shutterRefs = useRef(makeShutterRefs())
   const kicker = useRef(null)
   const label = useRef(null)
@@ -190,9 +203,12 @@ function PageTransition() {
     // camera shutter (with a wall label), blog articles a plain crossfade,
     // everything else the curved ink curtain.
     const article = !project && isArticle(latest.current.pathname)
-    const meta = project ? { kicker: [project.category, project.year], venue: project.venue } : null
-    const covers = !article // the curtain / shutter surfaces and the label
-    panel.current.style.display = project || article ? 'none' : 'block'
+    const item = !project && !article ? newsItemFor(latest.current.pathname) : null
+    const meta = project ? { kicker: [project.category, project.year], venue: project.venue }
+      : item ? { kicker: item.kicker, venue: '' } : null
+    const covers = !article // the curtain / shutter / wipe surfaces and the label
+    panel.current.style.display = project || article || item ? 'none' : 'block'
+    wipe.current.style.display = item ? 'block' : 'none'
     shutterBox.current.style.display = project ? 'block' : 'none'
     label.current.closest('.pt-label').style.display = covers ? '' : 'none'
     const kickerText = meta ? meta.kicker.filter(Boolean).join('  \u00b7  ') : ''
@@ -247,6 +263,26 @@ function PageTransition() {
         .to(sh, { o: 1, duration: 0.8, ease: 'power3.inOut', onUpdate: drive }, 1.28)
         .to(page.current, { y: 0, duration: 0.85, ease: 'power3.out' }, 1.28)
         .set(textEls, { opacity: 1 })
+    } else if (item) {
+      // ── News update: an ink wipe sweeps in from the left, names the update
+      // (kicker, title), then carries on off to the right as it opens ──
+      gsap.set(wipe.current, { xPercent: -100 })
+      tl.to(wipe.current, { xPercent: 0, duration: 0.55, ease: 'power4.inOut' }, 0)
+        .to(page.current, { opacity: 0.45, duration: 0.55, ease: 'power2.in' }, 0)
+
+        .fromTo(kicker.current, { yPercent: 115 }, { yPercent: 0, duration: 0.4, ease: 'power3.out' }, 0.42)
+        .fromTo(label.current, { yPercent: 115 }, { yPercent: 0, duration: 0.5, ease: 'power3.out' }, 0.5)
+        .fromTo(rule.current, { scaleX: 0 }, { scaleX: 1, duration: 0.42, ease: 'power3.out' }, 0.58)
+
+        .call(() => {
+          commit(latest.current)
+          gsap.set(page.current, { opacity: 1, x: -56, overflow: 'clip' })
+        }, null, 0.66)
+
+        .to(textEls, { opacity: 0, duration: 0.25, ease: 'power2.in' }, 0.98)
+        .to(wipe.current, { xPercent: 100, duration: 0.7, ease: 'power4.inOut' }, 0.98)
+        .to(page.current, { x: 0, duration: 0.85, ease: 'power3.out' }, 0.98)
+        .set(textEls, { opacity: 1 })
     } else if (article) {
       // ── Article: crossfade, with a thin accent line sweeping the top ──
       // The article's own entrance (title, meta, cover) plays on mount, so
@@ -299,7 +335,7 @@ function PageTransition() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location, reduceMotion])
 
-  useEffect(() => () => { if (gsap) gsap.killTweensOf([panel.current, bar.current, kicker.current, label.current, rule.current, venue.current, page.current]) }, [])
+  useEffect(() => () => { if (gsap) gsap.killTweensOf([panel.current, wipe.current, bar.current, kicker.current, label.current, rule.current, venue.current, page.current]) }, [])
 
   return (
     <>
@@ -318,6 +354,7 @@ function PageTransition() {
         <div ref={shutterBox} className="pt-shutterbox">
           <ShutterBlades prefix="ps" startOpen reg={shutterRegistrar(shutterRefs.current)} />
         </div>
+        <div ref={wipe} className="pt-wipe" />
         <div ref={bar} className="pt-bar" />
         <div className="pt-label">
           <div className="pt-label-mask pt-label-mask--sm"><span ref={kicker} className="pt-kicker" /></div>
