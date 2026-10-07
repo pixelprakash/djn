@@ -114,7 +114,7 @@ export default function About() {
 
       {/* Admissions, openings, talks, recent work -- right under the hero so
           time-sensitive news is seen before the long pinned portfolio
-          scroll, not after it. See src/data/newsData.js to add/edit. */}
+          scroll, not after it. Posts come from Sanity ("News, update or announcement"). */}
       <NewsSection />
 
       {/* Scroll-driven filmstrip through all 5 projects' real photos —

@@ -2,8 +2,7 @@ import { useMemo, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import Reveal from '../components/Reveal'
 import { BLOG_POSTS } from './blogData'
-import { useCms, POSTS_QUERY, mapPosts, FEED_QUERY, mapFeed } from '../lib/cms'
-import PostCard from '../components/PostCard'
+import { useCms, POSTS_QUERY, mapPosts } from '../lib/cms'
 import PageHero from '../components/PageHero'
 import usePageTitle from '../hooks/usePageTitle'
 import { blogsMeta } from '../seo/routes'
@@ -32,8 +31,6 @@ export default function Blog() {
   const { data: posts, loading } = useCms('posts', POSTS_QUERY, mapPosts, BLOG_POSTS)
   // Photos differ between the live and built-in copies, so the cards wait
   // for the live answer instead of swapping pictures a moment after paint.
-  // Short LinkedIn-style updates. No built-in copy: nothing published, nothing shown.
-  const { data: feed } = useCms('feed', FEED_QUERY, mapFeed, [])
   const POSTS = useMemo(() => (loading ? [] : posts.map(toCard)), [loading, posts])
   const ALL_TAGS = useMemo(() => ['All', ...new Set(POSTS.map(p => p.tag))], [POSTS])
 
@@ -49,42 +46,6 @@ export default function Blog() {
         title="Blogs &amp; Notes"
         sub="Photography, design research, education, and everything in between."
       />
-
-      {/* -- FROM LINKEDIN: short updates -- */}
-      {feed.length > 0 && (
-        <section className="bl-feed" aria-labelledby="bl-feed-title">
-          <div className="bl-feed-head">
-            <h2 className="bl-section-title" id="bl-feed-title">From LinkedIn</h2>
-            <p className="bl-feed-sub">Short updates, as he shares them.</p>
-          </div>
-          <div className="bl-feed-grid">
-            <div className="bl-feed-list">
-              {feed.map(post => <PostCard key={post.id} post={post} />)}
-            </div>
-
-            {/* Right-hand panel: balances the single feed column, and is the
-                one place to follow him for new posts. */}
-            <aside className="bl-follow" aria-label="Follow on LinkedIn">
-              <h3 className="bl-follow-title">Follow for new posts</h3>
-              <p className="bl-follow-text">
-                New updates are shared on LinkedIn first and collected here.
-              </p>
-              <a
-                className="bl-follow-btn"
-                href="https://www.linkedin.com/in/deepak-john-mathew-b079ab1a/"
-                target="_blank"
-                rel="noreferrer"
-              >
-                Follow on LinkedIn <span aria-hidden="true">&#8599;</span>
-              </a>
-            </aside>
-          </div>
-        </section>
-      )}
-
-      {feed.length > 0 && (
-        <h2 className="bl-section-title bl-section-title--articles">Articles &amp; exhibitions</h2>
-      )}
 
       {/* -- TAG FILTERS -- */}
       <div className="bl-filters">

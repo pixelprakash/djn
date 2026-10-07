@@ -12,11 +12,22 @@ import './PostCard.css'
 const AUTHOR = { name: 'Deepak John Mathew', role: 'Professor of Design · IIT Hyderabad' }
 const FOLD_CHARS = 240
 
-// #hashtags and @names pick up the accent colour, like on LinkedIn.
+// #hashtags and @names pick up the accent colour, like on LinkedIn; web
+// addresses in the text (posters often say "Apply here https://...") become
+// real links, without swallowing the full stop that ends the sentence.
 function Rich({ text }) {
-  return text.split(/(#[\p{L}\p{N}_]+|@[\p{L}\p{N}_.]+)/u).map((part, i) =>
-    /^[#@]/.test(part) ? <span key={i} className="pc-tag">{part}</span> : part
-  )
+  return text.split(/(https?:\/\/[^\s<>"]+|#[\p{L}\p{N}_]+|(?<![\p{L}\p{N}_.])@[\p{L}\p{N}_.]+)/u).map((part, i) => {
+    if (/^https?:\/\//.test(part)) {
+      const url = part.replace(/[.,;:!?)\]]+$/, '')
+      return (
+        <span key={i}>
+          <a className="pc-url" href={url} target="_blank" rel="noreferrer">{url.replace(/^https?:\/\/(www\.)?/, '')}</a>
+          {part.slice(url.length)}
+        </span>
+      )
+    }
+    return /^[#@]/.test(part) ? <span key={i} className="pc-tag">{part}</span> : part
+  })
 }
 
 const fmtDate = iso => {
@@ -26,8 +37,6 @@ const fmtDate = iso => {
     : d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
 }
 
-const fmtCount = n => n.toLocaleString('en-IN')
-
 export default function PostCard({ post }) {
   const [open, setOpen] = useState(false)
   const [slide, setSlide] = useState(null)
@@ -35,7 +44,6 @@ export default function PostCard({ post }) {
   const long = post.text.length > FOLD_CHARS || post.text.split('\n').length > 4
   const shown = post.images.slice(0, 4)
   const extra = post.images.length - shown.length
-  const hasCounts = post.reactions != null || post.comments != null
 
   return (
     <article className="pc">
@@ -48,6 +56,12 @@ export default function PostCard({ post }) {
           <span className="pc-role">{AUTHOR.role}</span>
           <time className="pc-date" dateTime={post.date}>{fmtDate(post.date)}</time>
         </div>
+        {(post.pinned || post.topic) && (
+          <span className="pc-badges">
+            {post.pinned && <span className="pc-badge pc-badge--pin">Pinned</span>}
+            {post.topic && <span className="pc-badge">{post.topic}</span>}
+          </span>
+        )}
       </header>
 
       <p className={`pc-text${long && !open ? ' pc-text--fold' : ''}`}>
@@ -83,22 +97,8 @@ export default function PostCard({ post }) {
         </div>
       )}
 
-      {(hasCounts || post.url) && (
+      {post.url && (
         <footer className="pc-foot">
-          <span className="pc-counts">
-            {post.reactions != null && (
-              <span className="pc-count">
-                <svg className="pc-like" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
-                  <circle cx="12" cy="12" r="12" fill="currentColor" />
-                  <path fill="#fff" d="M8 11h2.2v6H8zm3.2 6V10.7l2.2-3.9c.9 0 1.5.8 1.3 1.6l-.4 1.8h2.4c.8 0 1.4.7 1.2 1.5l-.8 3.5c-.1.5-.6.9-1.2.9h-4.7z" />
-                </svg>
-                {fmtCount(post.reactions)}<span className="pc-sr"> reactions</span>
-              </span>
-            )}
-            {post.comments != null && (
-              <span className="pc-count">{fmtCount(post.comments)} comments</span>
-            )}
-          </span>
           {post.url && (
             <a className="pc-link" href={post.url} target="_blank" rel="noreferrer">
               View on LinkedIn <span aria-hidden="true">↗</span>

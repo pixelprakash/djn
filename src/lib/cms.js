@@ -1,15 +1,15 @@
 import { useEffect, useState } from 'react'
 
-// Content for News & Updates and the Blog comes from Sanity (the studio in
+// Content for News & Updates (home page) and the Blog comes from Sanity (the studio in
 // /studio, deployed separately). Reading is public -- the project id below
 // is not a secret, and no token is shipped with the site.
 //
 // Every read is fetched once per page load and shared (NewsSection, Blog
 // and BlogPost all ask for what they need through the same cache). The
-// built-in copies in src/data/newsData.js and src/pages/blogData.js stay in
-// place as the fallback: they render immediately, and are swapped for the
-// live content when it arrives. If the request fails -- or the dataset has
-// nothing published yet -- they simply stay.
+// built-in copy in src/pages/blogData.js stays in place as the Blog's
+// fallback: it renders immediately, and is swapped for the live content
+// when it arrives. News has no built-in copy: nothing published, nothing
+// shown.
 //
 // A plain fetch against Sanity's public query endpoint (the CDN one) rather
 // than the @sanity/client package: same result, a fraction of the bundle.
@@ -27,7 +27,7 @@ const cache = new Map() // key -> { data, promise }
 // visitor sees their content immediately and it is refreshed in the
 // background (stale-while-revalidate) instead of waiting on the network.
 // Bump STORE's version if the shape the maps produce ever changes.
-const STORE = 'djm-cms:v1:'
+const STORE = 'djm-cms:v2:'
 const readStored = key => {
   try { const raw = localStorage.getItem(STORE + key); return raw ? JSON.parse(raw) : null } catch { return null }
 }
@@ -96,18 +96,6 @@ const monthYear = iso => {
   return m ? `${MONTHS[Number(m) - 1]} ${y}` : ''
 }
 
-export const NEWS_QUERY = `*[_type == "newsItem"] | order(publishedAt desc){
-  title, tag, "date": dateLabel, desc, href
-}`
-
-export const mapNews = rows => rows.map(r => ({
-  title: r.title,
-  tag: r.tag,
-  date: r.date,
-  desc: r.desc || '',
-  href: r.href || '',
-}))
-
 export const POSTS_QUERY = `*[_type == "blogPost" && defined(slug.current)] | order(publishedAt desc){
   "slug": slug.current, title, tag, publishedAt, venue, desc, originalHref, externalNote, body,
   "images": images[].asset->url
@@ -127,9 +115,9 @@ export const mapPosts = rows => rows.map(r => ({
   thumbs: (r.images || []).map(u => sized(u, 900)),
 }))
 
-/* ── LinkedIn-style feed posts ── */
-export const FEED_QUERY = `*[_type == "feedPost"] | order(publishedAt desc){
-  _id, text, publishedAt, linkedinUrl, reactions, comments,
+/* ── News, updates and announcements (LinkedIn-style posts) ── */
+export const FEED_QUERY = `*[_type == "feedPost"] | order(coalesce(pinned, false) desc, publishedAt desc){
+  _id, text, publishedAt, linkedinUrl, topic, pinned,
   "images": images[]{ "url": asset->url, alt }
 }`
 
@@ -138,8 +126,8 @@ export const mapFeed = rows => rows.map(r => ({
   text: r.text || '',
   date: r.publishedAt,
   url: r.linkedinUrl || '',
-  reactions: typeof r.reactions === 'number' ? r.reactions : null,
-  comments: typeof r.comments === 'number' ? r.comments : null,
+  topic: r.topic || '',
+  pinned: Boolean(r.pinned),
   images: (r.images || []).filter(i => i.url).map(i => ({
     src: sized(i.url, 1600),
     thumb: sized(i.url, 800),
@@ -151,9 +139,6 @@ export const mapFeed = rows => rows.map(r => ({
 // Start the requests a page will need before React has even mounted, so the
 // network round trip overlaps with loading and running the app's code.
 export function prefetchFor(pathname) {
-  if (pathname === '/' || pathname.startsWith('/about')) load('news', NEWS_QUERY, mapNews)
-  if (pathname.startsWith('/blogs')) {
-    load('posts', POSTS_QUERY, mapPosts)
-    load('feed', FEED_QUERY, mapFeed)
-  }
+  if (pathname === '/' || pathname.startsWith('/about')) load('feed', FEED_QUERY, mapFeed)
+  if (pathname.startsWith('/blogs')) load('posts', POSTS_QUERY, mapPosts)
 }

@@ -88,8 +88,6 @@ docs.push({
     'One more down… happy to announce the successful PhD completion of Ketan today. Congratulations to Ketan and thank you prof Satyaki, Prof Apurva, Dr Mahesh and Dr Delwyn as examiners.\nAnd thanks to Prasad and prof Rajlakshmi for supporting him as DC members',
   publishedAt: '2026-05-27T12:24:06.041Z',
   linkedinUrl: 'https://lnkd.in/p/dAANfuq6',
-  reactions: 473,
-  comments: 38,
   images: FEED_IMAGES.map((url, i) => ({
     _type: 'image',
     _key: key(),

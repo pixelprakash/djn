@@ -46,86 +46,36 @@ section.ns {
   color: var(--sub);
 }
 
-/* One row of columns on a wide screen, each topped by its own hairline --
-   reads like a newspaper's column heads, and stays correct however the
-   grid wraps (a vertical divider between cells would not). */
+/* Cards are different heights (a poster, a one-liner, an embed), so they
+   flow in columns rather than a grid with gaps under the short ones. */
 .ns .ns-grid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: clamp(28px, 3vw, 44px) clamp(24px, 2.8vw, 40px);
+  column-count: 2;
+  column-gap: clamp(20px, 2.8vw, 40px);
 }
-
-.ns .ns-item {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding: 16px 0 4px;
-  border-top: 1.5px solid var(--ink);
-  text-decoration: none;
-  color: inherit;
-  transition: border-color .2s ease;
+.ns .ns-cell {
+  break-inside: avoid;
+  margin-bottom: clamp(20px, 2.8vw, 40px);
 }
-.ns .ns-item--link { cursor: pointer; }
-.ns .ns-item--link:hover,
-.ns .ns-item--link:focus-visible { border-top-color: var(--accent); }
-
-.ns .ns-meta {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
+.ns .ns-embed {
+  max-width: 504px;
+  width: 100%;
+  background: #fff;
+  border: 1px solid rgba(26, 24, 20, .12);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
 }
+.ns .ns-embed iframe { display: block; width: 100%; border: 0; }
 
-.ns .ns-tag {
-  font-family: var(--body);
-  font-size: 0.82rem;
-  font-weight: 600;
-  letter-spacing: .06em;
-  text-transform: uppercase;
-  color: var(--accent);
-  background: rgba(255, 255, 255, .7);
-  border: 1px solid rgba(var(--accent-rgb), .22);
-  border-radius: 100px;
-  padding: 3px 11px;
-}
-
-.ns .ns-date {
+.ns .ns-follow {
+  margin-left: auto;
   font-family: var(--body);
   font-size: 1rem;
   font-weight: 500;
-  color: var(--muted);
-  font-variant-numeric: tabular-nums;
-}
-
-.ns .ns-title {
-  font-family: var(--body);
-  font-weight: 600;
-  font-size: clamp(1.05rem, 1.4vw, 1.18rem);
-  line-height: 1.35;
-  color: var(--ink);
-}
-
-.ns .ns-desc {
-  font-family: var(--body);
-  font-weight: 400;
-  font-size: 1rem;
-  line-height: 1.55;
-  color: var(--sub);
-}
-
-.ns .ns-arrow {
-  margin-top: auto;
-  padding-top: 6px;
-  font-size: 1.2rem;
-  color: var(--muted);
-  transition: color .2s ease, transform .2s ease;
-}
-.ns .ns-item--link:hover .ns-arrow,
-.ns .ns-item--link:focus-visible .ns-arrow {
   color: var(--accent);
-  transform: translateX(4px);
+  text-decoration: none;
 }
+.ns .ns-follow:hover { text-decoration: underline; text-underline-offset: 3px; }
+.ns .ns-follow:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 
 .ns .ns-more {
   margin-top: clamp(22px, 3vw, 32px);
@@ -146,14 +96,6 @@ section.ns {
   border-color: var(--accent);
 }
 
-@media (max-width: 1100px) {
-  .ns .ns-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-}
-@media (max-width: 640px) {
-  .ns .ns-grid { grid-template-columns: minmax(0, 1fr); }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .ns .ns-item, .ns .ns-arrow { transition: none; }
-  .ns .ns-item--link:hover .ns-arrow { transform: none; }
+@media (max-width: 800px) {
+  .ns .ns-grid { column-count: 1; }
 }
