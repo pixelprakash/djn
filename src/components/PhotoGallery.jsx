@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
+import { createPortal } from 'react-dom'
 import './PhotoGallery.css'
 
 /* Shared by ProjectDetail and BlogPost -- any page that needs a click-to-
@@ -60,7 +61,10 @@ export function Slideshow({ images, startIdx, onClose }) {
     }
   }, [])
 
-  return (
+  // Rendered on <body>, not where it was opened: a position:fixed overlay
+  // inside any transformed or clipped ancestor (a Reveal wrapper, a card with
+  // overflow:hidden) is sized and clipped to that ancestor, not the screen.
+  return createPortal(
     <div className="ss-bg" onClick={onClose}>
       <div
         className="ss-wrap"
@@ -106,7 +110,8 @@ export function Slideshow({ images, startIdx, onClose }) {
           </div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   )
 }
 
