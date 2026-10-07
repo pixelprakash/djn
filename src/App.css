@@ -76,6 +76,10 @@
   stroke-width: 1px;
 }
 .pt-fill { fill: var(--ink); }
+/* The lazy-loading placeholder keeps its size but is invisible while a page
+   transition is running (App.jsx sets data-pt on <html> for its duration). */
+html[data-pt] .page-loader { visibility: hidden; }
+
 .pt-edge {
   fill: none;
   stroke: var(--accent);
@@ -117,15 +121,15 @@
 /* Long section titles (e.g. "Teaching Experience & Permanent Posts") */
 .pt-label-text[data-long="true"] { font-size: clamp(2rem, 4.6vw, 4rem); }
 .pt-label-mask { max-width: min(92vw, 1100px); }
-/* News-update transition: a full-screen ink wipe that slides in from the left
-   and out to the right, an accent line along each vertical edge. */
-.pt-wipe {
+/* News-update transition: a thin accent line that sweeps across the screen
+   (App.jsx drives its position); the page slides in behind it. */
+.pt-edge {
   position: absolute;
-  inset: 0;
+  top: 0; bottom: 0; left: 0;
+  width: 3px;
   display: none;
-  background: var(--ink);
-  border-left: 3px solid var(--accent);
-  border-right: 3px solid var(--accent);
+  background: var(--accent);
+  box-shadow: 0 0 28px 3px rgba(var(--accent-rgb), .5);
   will-change: transform;
 }
 /* Blog-article transition: a 2px accent line along the top edge. */

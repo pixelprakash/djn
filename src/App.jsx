@@ -5,15 +5,13 @@ import useReducedMotion from "./hooks/useReducedMotion"
 import TopNav     from "./components/TopNav"
 import CustomCursor from "./components/CustomCursor"
 import Footer from "./components/Footer"
-import { routeImports, preloadAllRoutes } from "./routePreload"
+import { routeImports, preloadAllRoutes, preloadForPath } from "./routePreload"
 // About is the default landing route ("/" redirects here), so it's imported
 // eagerly — lazy-loading it would add a chunk-fetch round trip to the most
 // common page load instead of saving one.
 import About from "./pages/About"
 import { PROJECTS } from "./pages/projectData"
 import { CV_TITLES } from "./seo/routes"
-import { peekFeed } from "./lib/cms"
-import { fmtDate } from "./lib/news"
 import NotFound from "./pages/NotFound"
 import ShutterBlades from "./components/ShutterBlades"
 import { applyShutter, makeShutterRefs, shutterRegistrar } from "./utils/shutter"
@@ -113,14 +111,12 @@ const isArticle = pathname => {
   return seg === 'blogs' && Boolean(slug)
 }
 
-// An update's own page (/news/:slug) opens with a sideways ink wipe that names
-// it: its topic and date as a kicker, its title as the label. The feed is read
-// from what this browser already has, so the name is there before the page is.
-function newsItemFor(pathname) {
+// An update's own page (/news/:slug) opens with a thin accent line that sweeps
+// across the screen with the page sliding in behind it. No text: the page's own
+// heading is the first thing you read, so the transition doesn't repeat it.
+const isNewsItem = pathname => {
   const [seg, slug] = pathname.split('/').filter(Boolean)
-  if (seg !== 'news' || !slug) return null
-  const post = peekFeed().find(p => p.slug === slug)
-  return { title: post ? (post.title || post.text.split('\n')[0]) : 'News & Updates', kicker: post ? [post.topic, fmtDate(post.date)] : ['News & Updates'] }
+  return seg === 'news' && Boolean(slug)
 }
 
 function labelFor(pathname) {
@@ -130,7 +126,7 @@ function labelFor(pathname) {
     case 'resume':  return 'Resume'
     case 'lab':     return 'DIC Lab'
     case 'blogs':   return 'Blogs'
-    case 'news':    return newsItemFor(pathname)?.title || 'News & Updates'
+    case 'news':    return 'News & Updates'
     case 'contact': return 'Contact'
     case 'cv':      return CV_TITLES[slug] || 'Resume'
     default:        return 'About'
@@ -166,7 +162,7 @@ function PageTransition() {
   const panel = useRef(null)       // the curved ink sheet (every page but projects)
   const shutterBox = useRef(null)  // the camera shutter (project pages)
   const bar = useRef(null)         // the thin progress line (blog articles)
-  const wipe = useRef(null)        // the sideways ink wipe (news updates)
+  const edge = useRef(null)        // the sweeping accent line (news updates)
   const shutterRefs = useRef(makeShutterRefs())
   const kicker = useRef(null)
   const label = useRef(null)
@@ -194,6 +190,10 @@ function PageTransition() {
       return
     }
     busy.current = true
+    // While a transition runs, the lazy-loading placeholder is hidden (see
+    // App.css): React holds it for a moment after the page code arrives, and it
+    // must not flash through the open transitions.
+    document.documentElement.dataset.pt = '1'
     const project = projectFor(latest.current.pathname)
     const text = labelFor(latest.current.pathname)
     label.current.textContent = text
@@ -203,12 +203,11 @@ function PageTransition() {
     // camera shutter (with a wall label), blog articles a plain crossfade,
     // everything else the curved ink curtain.
     const article = !project && isArticle(latest.current.pathname)
-    const item = !project && !article ? newsItemFor(latest.current.pathname) : null
-    const meta = project ? { kicker: [project.category, project.year], venue: project.venue }
-      : item ? { kicker: item.kicker, venue: '' } : null
-    const covers = !article // the curtain / shutter / wipe surfaces and the label
+    const item = !project && !article && isNewsItem(latest.current.pathname)
+    const meta = project ? { kicker: [project.category, project.year], venue: project.venue } : null
+    const covers = !article && !item // the curtain / shutter surfaces and the label
     panel.current.style.display = project || article || item ? 'none' : 'block'
-    wipe.current.style.display = item ? 'block' : 'none'
+    edge.current.style.display = item ? 'block' : 'none'
     shutterBox.current.style.display = project ? 'block' : 'none'
     label.current.closest('.pt-label').style.display = covers ? '' : 'none'
     const kickerText = meta ? meta.kicker.filter(Boolean).join('  \u00b7  ') : ''
@@ -224,6 +223,7 @@ function PageTransition() {
     const tl = gsap.timeline({
       onComplete: () => {
         busy.current = false
+        delete document.documentElement.dataset.pt
         gsap.set(page.current, { clearProps: 'transform,opacity,overflow' })
         gsap.set(curtain.current, { autoAlpha: 0, pointerEvents: 'none' })
         // Something else was asked for while this ran.
@@ -264,25 +264,28 @@ function PageTransition() {
         .to(page.current, { y: 0, duration: 0.85, ease: 'power3.out' }, 1.28)
         .set(textEls, { opacity: 1 })
     } else if (item) {
-      // ── News update: an ink wipe sweeps in from the left, names the update
-      // (kicker, title), then carries on off to the right as it opens ──
-      gsap.set(wipe.current, { xPercent: -100 })
-      tl.to(wipe.current, { xPercent: 0, duration: 0.55, ease: 'power4.inOut' }, 0)
-        .to(page.current, { opacity: 0.45, duration: 0.55, ease: 'power2.in' }, 0)
-
-        .fromTo(kicker.current, { yPercent: 115 }, { yPercent: 0, duration: 0.4, ease: 'power3.out' }, 0.42)
-        .fromTo(label.current, { yPercent: 115 }, { yPercent: 0, duration: 0.5, ease: 'power3.out' }, 0.5)
-        .fromTo(rule.current, { scaleX: 0 }, { scaleX: 1, duration: 0.42, ease: 'power3.out' }, 0.58)
-
+      // ── News update: a thin accent line leads, the page follows ──
+      // The old page slides a little left and fades; the line crosses the
+      // screen left to right; the new page slides in from the right behind it.
+      const W = window.innerWidth
+      // The new page's code is fetched while the old page leaves; if it isn't
+      // here yet when the swap is due (slow connection), the line simply waits
+      // with the timeline instead of the page showing its loading placeholder.
+      const ready = Promise.resolve(preloadForPath(latest.current.pathname)).catch(() => {})
+      gsap.set(edge.current, { x: -6, autoAlpha: 1 })
+      tl.set(curtain.current, { pointerEvents: 'none' })
+        .to(page.current, { opacity: 0, x: -36, duration: 0.3, ease: 'power2.in' }, 0)
+        .to(edge.current, { x: W + 6, duration: 0.85, ease: 'power3.inOut' }, 0)
         .call(() => {
-          commit(latest.current)
-          gsap.set(page.current, { opacity: 1, x: -56, overflow: 'clip' })
-        }, null, 0.66)
-
-        .to(textEls, { opacity: 0, duration: 0.25, ease: 'power2.in' }, 0.98)
-        .to(wipe.current, { xPercent: 100, duration: 0.7, ease: 'power4.inOut' }, 0.98)
-        .to(page.current, { x: 0, duration: 0.85, ease: 'power3.out' }, 0.98)
-        .set(textEls, { opacity: 1 })
+          tl.pause()
+          Promise.race([ready, new Promise(r => setTimeout(r, 2500))]).then(() => {
+            commit(latest.current)
+            gsap.set(page.current, { opacity: 0, x: 56, overflow: 'clip' })
+            tl.resume()
+          })
+        }, null, 0.32)
+        .to(page.current, { opacity: 1, x: 0, duration: 0.7, ease: 'power3.out' }, 0.36)
+        .to(edge.current, { autoAlpha: 0, duration: 0.15 }, 0.78)
     } else if (article) {
       // ── Article: crossfade, with a thin accent line sweeping the top ──
       // The article's own entrance (title, meta, cover) plays on mount, so
@@ -335,7 +338,7 @@ function PageTransition() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location, reduceMotion])
 
-  useEffect(() => () => { if (gsap) gsap.killTweensOf([panel.current, wipe.current, bar.current, kicker.current, label.current, rule.current, venue.current, page.current]) }, [])
+  useEffect(() => () => { if (gsap) gsap.killTweensOf([panel.current, edge.current, bar.current, kicker.current, label.current, rule.current, venue.current, page.current]) }, [])
 
   return (
     <>
@@ -354,7 +357,7 @@ function PageTransition() {
         <div ref={shutterBox} className="pt-shutterbox">
           <ShutterBlades prefix="ps" startOpen reg={shutterRegistrar(shutterRefs.current)} />
         </div>
-        <div ref={wipe} className="pt-wipe" />
+        <div ref={edge} className="pt-edge" />
         <div ref={bar} className="pt-bar" />
         <div className="pt-label">
           <div className="pt-label-mask pt-label-mask--sm"><span ref={kicker} className="pt-kicker" /></div>

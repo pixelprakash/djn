@@ -9,7 +9,9 @@
 // with --replace updates the same documents instead of duplicating them.
 // Photos are referenced by URL; the importer downloads them into Sanity.
 import {writeFileSync} from 'node:fs'
-import {NEWS} from '../../src/data/newsData.js'
+// The old one-line news cards are retired (src/data/newsData.js was removed), so
+// there is nothing to seed for them any more.
+const NEWS = []
 import {BLOG_POSTS} from '../../src/pages/blogData.js'
 
 const key = (() => {

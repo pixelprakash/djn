@@ -38,10 +38,6 @@ const writeStored = (key, data) => {
   } catch { /* private mode or storage full: just skip caching */ }
 }
 
-// What this browser last saw for the news feed (instant, no network): lets the
-// page transition name an update before its page has loaded.
-export const peekFeed = () => readStored('feed') || []
-
 function load(key, groq, map) {
   let entry = cache.get(key)
   if (!entry) {
