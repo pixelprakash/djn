@@ -42,6 +42,9 @@ export default defineType({
       description: 'e.g. "Lalit Kala Akademi, New Delhi, curated by Johny ML".',
       validation: (r) => r.required().max(200),
     }),
+    // Keeps the order of entries from the same year as first set up; new entries
+    // simply sort after them. Editors never see or need this.
+    defineField({name: 'order', type: 'number', hidden: true}),
   ],
   orderings: [{title: 'Newest first', name: 'newest', by: [{field: 'year', direction: 'desc'}]}],
   preview: {

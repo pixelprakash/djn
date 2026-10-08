@@ -21,6 +21,9 @@ export default defineType({
       description: 'Four digits, like 2025.',
       validation: (r) => r.required().regex(/^\d{4}$/, {name: 'year'}).error('Use a four-digit year, like 2025'),
     }),
+    // Keeps the order of entries from the same year as first set up; new entries
+    // simply sort after them. Editors never see or need this.
+    defineField({name: 'order', type: 'number', hidden: true}),
   ],
   orderings: [{title: 'Newest first', name: 'newest', by: [{field: 'year', direction: 'desc'}]}],
   preview: {

@@ -12,6 +12,8 @@ import {PROJECTS} from '../../src/pages/projectData.js'
 import {SPONSORED, SOLO_SHOWS, EXHIBITIONS} from '../../src/pages/exhibitionData.js'
 import {positions, education, awards, papers, researchAreas} from '../../src/pages/resumeData.js'
 import {PAGES} from '../../src/pages/cvData.js'
+import {SOCIALS} from '../../src/data/socials.js'
+import {homeMeta} from '../../src/seo/routes.js'
 
 const key = (() => {
   let n = 0
@@ -51,14 +53,53 @@ SPONSORED.forEach((s, i) => {
     year: String(s.year),
     role: s.role,
     funder: s.funder,
+    order: i + 1,
     ...(s.amount ? {amount: s.amount} : {}),
   })
 })
 SOLO_SHOWS.forEach((e, i) => {
-  docs.push({_id: `exhibition-solo-${i + 1}`, _type: 'exhibition', kind: 'solo', title: e.title, year: String(e.year), venue: e.venue})
+  docs.push({_id: `exhibition-solo-${i + 1}`, _type: 'exhibition', kind: 'solo', title: e.title, year: String(e.year), venue: e.venue, order: i + 1})
 })
 EXHIBITIONS.forEach((e, i) => {
-  docs.push({_id: `exhibition-group-${i + 1}`, _type: 'exhibition', kind: 'group', title: e.title, year: String(e.year), venue: e.venue})
+  docs.push({_id: `exhibition-group-${i + 1}`, _type: 'exhibition', kind: 'group', title: e.title, year: String(e.year), venue: e.venue, order: i + 1})
+})
+
+/* ── Whole-site pages: About (home) and Site settings ── */
+docs.push({
+  _id: 'aboutPage',
+  _type: 'aboutPage',
+  name: 'Prof. Deepak John Mathew',
+  roleLine: [
+    {
+      _type: 'block',
+      _key: key(),
+      style: 'normal',
+      markDefs: [
+        {_key: 'dept', _type: 'link', href: 'https://design.iith.ac.in'},
+        {_key: 'inst', _type: 'link', href: 'https://www.iith.ac.in'},
+      ],
+      children: [
+        {_type: 'span', _key: key(), text: 'Professor & Founding head of ', marks: []},
+        {_type: 'span', _key: key(), text: 'Design Dept', marks: ['dept']},
+        {_type: 'span', _key: key(), text: ' at ', marks: []},
+        {_type: 'span', _key: key(), text: 'IIT Hyderabad', marks: ['inst']},
+      ],
+    },
+  ],
+  bio: 'A designer, researcher, and creative artist at heart \u2014 driven by curiosity, mentorship, and a hands-on love of experimentation.',
+  interests: ['Photography', 'Painting & Printmaking', 'Design Education', 'Heritage Preservation', 'Design Research', 'VR & Immersive World', 'Sustainable Design'],
+})
+docs.push({
+  _id: 'siteSettings',
+  _type: 'siteSettings',
+  place: 'Indian Institute of Technology Hyderabad',
+  addressLines: 'Kandi, Sangareddy\nTelangana 502284, India',
+  mapUrl: 'https://www.google.com/maps/search/?api=1&query=Indian+Institute+of+Technology+Hyderabad+Kandi+Sangareddy',
+  socials: [
+    ...SOCIALS.map((s) => ({_key: key(), _type: 'social', label: s.label, url: s.href})),
+    {_key: key(), _type: 'social', label: 'ResearchGate', url: 'https://www.researchgate.net/profile/Deepak-Mathew-3'},
+  ],
+  siteDescription: homeMeta().description,
 })
 
 /* ── Resume page ── */
@@ -97,9 +138,9 @@ positions.forEach((p, i) => docs.push({_id: `resume-position-${i + 1}`, _type: '
 education.forEach((e, i) =>
   docs.push({_id: `resume-education-${i + 1}`, _type: 'education', degree: e.degree, institution: e.inst, year: String(e.year), order: i + 1}),
 )
-awards.forEach((a, i) => docs.push({_id: `resume-award-${i + 1}`, _type: 'award', text: a.text, year: String(a.year)}))
+awards.forEach((a, i) => docs.push({_id: `resume-award-${i + 1}`, _type: 'award', text: a.text, year: String(a.year), order: i + 1}))
 papers.forEach((p, i) =>
-  docs.push({_id: `resume-publication-${i + 1}`, _type: 'publication', title: p.title, venue: p.venue, year: String(p.year)}),
+  docs.push({_id: `resume-publication-${i + 1}`, _type: 'publication', title: p.title, venue: p.venue, year: String(p.year), order: i + 1}),
 )
 
 /* ── CV detail pages (/cv/<slug>) ── */
@@ -128,5 +169,5 @@ const count = (t) => docs.filter((d) => d._type === t).length
 console.log(
   `Wrote ${docs.length} documents: ${count('project')} projects, ${count('sponsoredProject')} sponsored, ${count('exhibition')} exhibitions, ` +
     `${count('position')} positions, ${count('education')} education, ${count('award')} awards, ${count('publication')} publications, ` +
-    `${count('cvPage')} CV pages, 1 resume header.`,
+    `${count('cvPage')} CV pages, 1 resume header, About page, site settings.`,
 )

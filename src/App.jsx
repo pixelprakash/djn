@@ -1,11 +1,11 @@
-import { Suspense, lazy, useEffect, useRef, useState } from "react"
+import { Suspense, lazy, startTransition, useEffect, useRef, useState } from "react"
 import { flushSync } from "react-dom"
 import { BrowserRouter, Routes, Route, Navigate, useLocation, useParams } from "react-router-dom"
 import useReducedMotion from "./hooks/useReducedMotion"
 import TopNav     from "./components/TopNav"
 import CustomCursor from "./components/CustomCursor"
 import Footer from "./components/Footer"
-import { routeImports, preloadAllRoutes, preloadForPath } from "./routePreload"
+import { routeImports, preloadAllRoutes } from "./routePreload"
 // About is the default landing route ("/" redirects here), so it's imported
 // eagerly — lazy-loading it would add a chunk-fetch round trip to the most
 // common page load instead of saving one.
@@ -111,10 +111,8 @@ const isArticle = pathname => {
   return seg === 'blogs' && Boolean(slug)
 }
 
-// An update's own page (/news/:slug) opens with a set of newspaper-style columns
-// that drop across the screen in a wave and slide away again as the page rises.
-// No text: the page's own heading is the first thing you read, so the
-// transition doesn't repeat it.
+// An update's own page (/news/:slug) deliberately has no transition: moving
+// between it and the News list is an instant swap (see the navigation effect).
 const isNewsItem = pathname => {
   const [seg, slug] = pathname.split('/').filter(Boolean)
   return seg === 'news' && Boolean(slug)
@@ -163,13 +161,29 @@ function PageTransition() {
   const panel = useRef(null)       // the curved ink sheet (every page but projects)
   const shutterBox = useRef(null)  // the camera shutter (project pages)
   const bar = useRef(null)         // the thin progress line (blog articles)
-  const cols = useRef(null)        // the newspaper columns (news updates)
   const shutterRefs = useRef(makeShutterRefs())
   const kicker = useRef(null)
   const label = useRef(null)
   const rule = useRef(null)
   const venue = useRef(null)
   const page = useRef(null)
+
+  // An instant swap (no animation): done as a React transition, so the old page
+  // stays on screen until the new one is ready instead of the loading
+  // placeholder flashing in between. Scroll reset and the screen-reader
+  // announcement then happen once the new page has actually been shown.
+  const quiet = useRef(false)
+  const commitQuiet = next => {
+    shownRef.current = next
+    quiet.current = true
+    startTransition(() => setShown(next))
+  }
+  useEffect(() => {
+    if (!quiet.current) return
+    quiet.current = false
+    document.getElementById('root')?.scrollTo({ top: 0 })
+    window.dispatchEvent(new Event('route-shown'))
+  }, [shown])
 
   const commit = next => {
     shownRef.current = next
@@ -204,11 +218,9 @@ function PageTransition() {
     // camera shutter (with a wall label), blog articles a plain crossfade,
     // everything else the curved ink curtain.
     const article = !project && isArticle(latest.current.pathname)
-    const item = !project && !article && isNewsItem(latest.current.pathname)
     const meta = project ? { kicker: [project.category, project.year], venue: project.venue } : null
-    const covers = !article && !item // the curtain / shutter surfaces and the label
-    panel.current.style.display = project || article || item ? 'none' : 'block'
-    cols.current.style.display = item ? 'flex' : 'none'
+    const covers = !article // the curtain / shutter surfaces and the label
+    panel.current.style.display = project || article ? 'none' : 'block'
     shutterBox.current.style.display = project ? 'block' : 'none'
     label.current.closest('.pt-label').style.display = covers ? '' : 'none'
     const kickerText = meta ? meta.kicker.filter(Boolean).join('  \u00b7  ') : ''
@@ -264,31 +276,6 @@ function PageTransition() {
         .to(sh, { o: 1, duration: 0.8, ease: 'power3.inOut', onUpdate: drive }, 1.28)
         .to(page.current, { y: 0, duration: 0.85, ease: 'power3.out' }, 1.28)
         .set(textEls, { opacity: 1 })
-    } else if (item) {
-      // ── News update: columns drop in across the screen, hold, slide away ──
-      // Six ink columns, each edged in the brand blue, fall into place left to
-      // right (the page dims under them), the page is swapped while they cover
-      // it, then they slide off the bottom in the same wave as the new page
-      // rises into view. No text, so nothing repeats the page's own heading.
-      const colEls = [...cols.current.children]
-      const gap = 0.055
-      const covered = 0.55 + gap * (colEls.length - 1) // when the last column lands
-      // The new page's code is fetched meanwhile; if it isn't here yet when the
-      // swap is due (slow connection) the columns simply hold until it is.
-      const ready = Promise.resolve(preloadForPath(latest.current.pathname)).catch(() => {})
-      gsap.set(colEls, { yPercent: -101 })
-      tl.to(colEls, { yPercent: 0, duration: 0.55, ease: 'power4.inOut', stagger: gap }, 0)
-        .to(page.current, { opacity: 0.5, duration: 0.7, ease: 'power2.in' }, 0)
-        .call(() => {
-          tl.pause()
-          Promise.race([ready, new Promise(r => setTimeout(r, 2500))]).then(() => {
-            commit(latest.current)
-            gsap.set(page.current, { opacity: 1, y: 56, overflow: 'clip' })
-            tl.resume()
-          })
-        }, null, covered + 0.04)
-        .to(colEls, { yPercent: 101, duration: 0.6, ease: 'power4.inOut', stagger: gap }, covered + 0.2)
-        .to(page.current, { y: 0, duration: 0.95, ease: 'power3.out' }, covered + 0.2)
     } else if (article) {
       // ── Article: crossfade, with a thin accent line sweeping the top ──
       // The article's own entrance (title, meta, cover) plays on mount, so
@@ -336,12 +323,16 @@ function PageTransition() {
       if (location !== cur && !busy.current) { shownRef.current = location; setShown(location) }
       return
     }
-    if (reduceMotion) { queueMicrotask(() => commit(location)); return }
+    // Reduced motion, and the News list <-> an update page, swap without ceremony.
+    if (reduceMotion || isNewsItem(location.pathname) || isNewsItem(cur.pathname)) {
+      queueMicrotask(() => commitQuiet(location))
+      return
+    }
     if (!busy.current) playRef.current()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location, reduceMotion])
 
-  useEffect(() => () => { if (gsap) gsap.killTweensOf([panel.current, ...(cols.current ? cols.current.children : []), bar.current, kicker.current, label.current, rule.current, venue.current, page.current]) }, [])
+  useEffect(() => () => { if (gsap) gsap.killTweensOf([panel.current, bar.current, kicker.current, label.current, rule.current, venue.current, page.current]) }, [])
 
   return (
     <>
@@ -359,9 +350,6 @@ function PageTransition() {
         </div>
         <div ref={shutterBox} className="pt-shutterbox">
           <ShutterBlades prefix="ps" startOpen reg={shutterRegistrar(shutterRefs.current)} />
-        </div>
-        <div ref={cols} className="pt-cols">
-          {[0, 1, 2, 3, 4, 5].map(i => <span key={i} className="pt-col" />)}
         </div>
         <div ref={bar} className="pt-bar" />
         <div className="pt-label">

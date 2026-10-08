@@ -43,6 +43,9 @@ export default defineType({
       type: 'string',
       description: 'Kept for the record. It is not shown on the Work page.',
     }),
+    // Keeps the order of entries from the same year as first set up; new entries
+    // simply sort after them. Editors never see or need this.
+    defineField({name: 'order', type: 'number', hidden: true}),
   ],
   orderings: [{title: 'Newest first', name: 'newest', by: [{field: 'year', direction: 'desc'}]}],
   preview: {

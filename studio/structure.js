@@ -2,7 +2,7 @@
 // it is grouped the way the website is, so a team member looks for the page
 // they want to change: "News", "Work", "Resume". The Resume header is a
 // single page (there is only ever one), so it opens straight to the editor.
-const SINGLETONS = ['resumePage']
+const SINGLETONS = ['aboutPage', 'siteSettings', 'resumePage']
 
 const list = (S, title, type, id) =>
   S.listItem()
@@ -14,6 +14,15 @@ export const structure = (S) =>
   S.list()
     .title('Website content')
     .items([
+      S.listItem()
+        .title('About page (home)')
+        .id('aboutPage')
+        .child(S.document().schemaType('aboutPage').documentId('aboutPage').title('About page (home)')),
+      S.listItem()
+        .title('Site settings (contact, social links, CV)')
+        .id('siteSettings')
+        .child(S.document().schemaType('siteSettings').documentId('siteSettings').title('Site settings')),
+      S.divider(),
       S.listItem()
         .title('News, updates & blogs')
         .child(

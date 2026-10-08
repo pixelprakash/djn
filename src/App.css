@@ -121,28 +121,6 @@ html[data-pt] .page-loader { visibility: hidden; }
 /* Long section titles (e.g. "Teaching Experience & Permanent Posts") */
 .pt-label-text[data-long="true"] { font-size: clamp(2rem, 4.6vw, 4rem); }
 .pt-label-mask { max-width: min(92vw, 1100px); }
-/* News-update transition: six newspaper-style ink columns of slightly
-   different widths and tones, edged in the brand blue (App.jsx drives them). */
-.pt-cols {
-  position: absolute;
-  inset: 0;
-  display: none;
-  overflow: hidden;
-}
-.pt-col {
-  flex: 1 1 0;
-  margin-right: -1px; /* no hairline gap between columns while they move */
-  background: var(--ink);
-  border-top: 3px solid var(--accent);
-  border-bottom: 3px solid var(--accent);
-  box-shadow: inset 1px 0 0 rgba(245, 243, 238, .07);
-  will-change: transform;
-}
-.pt-col:nth-child(2) { flex-grow: 1.35; background: #211e19; }
-.pt-col:nth-child(3) { flex-grow: .8; }
-.pt-col:nth-child(4) { flex-grow: 1.2; background: #211e19; }
-.pt-col:nth-child(5) { flex-grow: .9; }
-.pt-col:nth-child(6) { flex-grow: 1.15; background: #211e19; margin-right: 0; }
 /* Blog-article transition: a 2px accent line along the top edge. */
 .pt-bar {
   position: absolute;
