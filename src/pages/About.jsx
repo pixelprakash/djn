@@ -3,6 +3,7 @@ import { PROJECTS } from './projectData'
 import { SOCIALS } from '../data/socials'
 import NewsSection from '../components/NewsSection'
 import WorkIndex from '../components/WorkIndex'
+import AtWork from '../components/AtWork'
 import hero640 from '../assets/djteaching-640.webp'
 import hero960 from '../assets/djteaching-960.webp'
 import hero1280 from '../assets/djteaching-1280.webp'
@@ -88,6 +89,9 @@ export default function About() {
           </nav>
         </div>
       </header>
+
+      {/* A short silent clip of him at work (plays only on screen, with a pause button). */}
+      <AtWork />
 
       {/* A typographic index of the projects: title, a soft stepped gradient, year. */}
       <WorkIndex projects={PROJECTS} />
