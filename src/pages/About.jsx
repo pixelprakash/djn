@@ -4,6 +4,7 @@ import { SOCIALS } from '../data/socials'
 import NewsSection from '../components/NewsSection'
 import WorkIndex from '../components/WorkIndex'
 import AtWork from '../components/AtWork'
+import HeroSlider from '../components/HeroSlider'
 import LatestNotice from '../components/LatestNotice'
 import HomeLayoutSwitch from '../components/HomeLayoutSwitch'
 import useHomeLayout from '../hooks/useHomeLayout'
@@ -45,11 +46,6 @@ function MotionLink({ href, label }) {
   )
 }
 
-// Option 2's hero shows one project. Change the slug to feature a different one
-// (pick one whose cover is a clean wide photograph).
-const FEATURED_SLUG = 'doob-gaya'
-const FEATURED = PROJECTS.find(p => p.slug === FEATURED_SLUG) || PROJECTS[0]
-
 /* The intro text, shared by both layouts. */
 function Intro() {
   return (
@@ -88,34 +84,15 @@ export default function About() {
       {layout === 2 ? (
         <>
           {/* OPTION 2 -- work first. A slim notice for anything open or new, the
-              newest project as the hero, the work index, then the news. */}
+              selected works as a slideshow hero, then the news. */}
           <LatestNotice />
 
           <header className="hp-hero">
-            <figure className="hp-art hp-art--wide">
-              <Link className="hp-art-link" to={`/work/${FEATURED.slug}`} aria-label={`${FEATURED.title}, ${FEATURED.year}: view the project`}>
-                <img
-                  className="hp-art-img"
-                  src={FEATURED.cover}
-                  width="1280"
-                  height="923"
-                  alt=""
-                  loading="eager"
-                  decoding="async"
-                  fetchPriority="high"
-                />
-              </Link>
-              <figcaption className="hp-art-cap">
-                <span className="hp-art-kicker">Selected work &middot; {FEATURED.category}</span>
-                <Link className="hp-art-title" to={`/work/${FEATURED.slug}`}>
-                  {FEATURED.title} <span className="hp-art-year">{FEATURED.year}</span> <span aria-hidden="true">&rarr;</span>
-                </Link>
-              </figcaption>
-            </figure>
+            {/* The selected works, one by one, as a slideshow. */}
+            <HeroSlider projects={PROJECTS} />
             <Intro />
           </header>
 
-          <WorkIndex projects={PROJECTS} />
           <NewsSection />
           <AtWork withPhoto />
         </>
