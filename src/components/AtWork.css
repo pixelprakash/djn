@@ -65,6 +65,11 @@
 .aw .aw-toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 .aw .aw-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
+/* Optional teaching photograph under the caption (home Option 2). */
+.aw .aw-photo { margin: clamp(28px, 3.6vw, 52px) 0 0; max-width: 560px; }
+.aw .aw-photo img { display: block; width: 100%; height: auto; aspect-ratio: 1280 / 923; object-fit: cover; }
+.aw .aw-photo figcaption { margin-top: 10px; font-size: 0.95rem; color: var(--muted); }
+
 @media (max-width: 860px) {
   .aw { grid-template-columns: minmax(0, 1fr); gap: clamp(28px, 7vw, 44px); padding-bottom: clamp(56px, 10vw, 88px); }
   .aw .aw-fig { width: min(78%, 360px); justify-self: start; }

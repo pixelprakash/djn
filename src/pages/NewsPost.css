@@ -7,12 +7,12 @@
   font-family: var(--body);
   font-size: 1rem;
   font-weight: 500;
-  color: var(--accent);
+  color: var(--ink);
   text-decoration: none;
   padding: 6px 0;
   margin-bottom: clamp(14px, 2vw, 24px);
 }
-.np-back:hover { text-decoration: underline; text-underline-offset: 3px; }
+.np-back:hover { color: var(--accent); }
 .np-back:focus-visible,
 .np-ghost:focus-visible,
 .np-cover:focus-visible,
@@ -42,7 +42,7 @@
   height: clamp(300px, 44vw, 560px);
   padding: 0;
   border: 0;
-  border-radius: var(--radius-lg);
+  border-radius: 0;
   overflow: hidden;
   background: #ebebeb;
   cursor: zoom-in;
@@ -72,21 +72,20 @@
   overflow-wrap: anywhere;
 }
 
-/* Details card: stays in view while the text scrolls. */
+/* Details: a plain column that stays in view while the text scrolls, set off
+   by a heavy rule on top and hairlines between rows. No box. */
 .np-aside {
   position: sticky;
   top: 110px;
   display: flex;
   flex-direction: column;
-  gap: 14px;
-  padding: clamp(20px, 2.2vw, 28px);
-  background: #fff;
-  border: 1px solid rgba(26, 24, 20, .12);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-rest);
+  gap: 16px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(20, 20, 20, .5);
 }
-.np-aside-title { margin: 0; font-family: var(--display); font-weight: 400; font-size: 1.4rem; line-height: 1.2; }
-.np-facts { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 10px 18px; align-items: center; }
+.np-aside-title { margin: 0; font-family: var(--body); font-weight: 500; font-size: 0.9rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.np-facts { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 0 18px; align-items: baseline; }
+.np-facts dt, .np-facts dd { padding: 10px 0; border-bottom: 1px solid var(--rule); }
 .np-facts dt { font-family: var(--body); font-size: 0.95rem; color: var(--muted); }
 .np-facts dd { margin: 0; font-family: var(--body); font-size: 1.02rem; font-weight: 500; color: var(--ink); }
 .np-aside .np-cta { align-self: stretch; text-align: center; padding: 15px 22px; }
@@ -94,7 +93,7 @@
   display: block;
   width: 100%;
   box-sizing: border-box;
-  padding: 12px 18px;
+  padding: 13px 18px;
   font-family: var(--body);
   font-size: 1rem;
   font-weight: 500;
@@ -102,20 +101,20 @@
   color: var(--ink);
   text-decoration: none;
   background: none;
-  border: 1.5px solid var(--rule);
-  border-radius: 4px;
+  border: 1px solid rgba(20, 20, 20, .35);
+  border-radius: 0;
   cursor: pointer;
-  transition: border-color .2s, color .2s;
+  transition: background-color .2s, color .2s, border-color .2s;
 }
-.np-ghost:hover { border-color: var(--ink); }
+.np-ghost:hover { background: var(--ink); color: var(--bg); border-color: var(--ink); }
 .np-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
 /* more updates */
 .np-more { margin-top: clamp(48px, 6vw, 88px); padding-top: clamp(28px, 3.5vw, 44px); border-top: 1px solid var(--rule); }
 .np-more-head { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin-bottom: clamp(18px, 2.4vw, 28px); }
-.np-more-head h2 { margin: 0; font-family: var(--display); font-weight: 400; font-size: clamp(1.5rem, 2.4vw, 2rem); line-height: 1.15; }
-.np-more-head a { display: inline-block; padding: 6px 0; font-family: var(--body); font-size: 1rem; font-weight: 500; color: var(--accent); text-decoration: none; }
-.np-more-head a:hover { text-decoration: underline; text-underline-offset: 3px; }
+.np-more-head h2 { margin: 0; font-family: var(--display); font-weight: 400; font-size: clamp(1.8rem, 3.4vw, 3rem); line-height: 1.08; letter-spacing: -0.02em; }
+.np-more-head a { display: inline-block; padding: 6px 0; font-family: var(--body); font-size: 1rem; font-weight: 500; color: var(--ink); text-decoration: none; }
+.np-more-head a:hover { color: var(--accent); }
 
 @media (max-width: 960px) {
   .np,

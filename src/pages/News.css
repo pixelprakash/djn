@@ -14,9 +14,9 @@
 .nw-chip {
   font-family: var(--body);
   font-size: 1rem;
-  color: var(--muted);
+  color: var(--ink);
   background: none;
-  border: 1.5px solid var(--rule);
+  border: 1px solid rgba(20, 20, 20, .3);
   border-radius: 100px;
   padding: 8px 18px;
   cursor: pointer;
@@ -48,39 +48,28 @@
 
 .nw-chip-n { font-size: 0.95rem; opacity: .7; font-variant-numeric: tabular-nums; margin-left: 2px; }
 
-/* "Open now": the live calls (admissions, applications) above everything. */
-.nw-open {
-  margin-bottom: clamp(24px, 3vw, 40px);
-  padding: clamp(18px, 2.2vw, 28px);
-  border-radius: var(--radius-lg);
-  background: linear-gradient(135deg, rgba(var(--accent-rgb), .09), rgba(var(--accent-rgb), .03));
-  border: 1px solid rgba(var(--accent-rgb), .22);
-}
+/* "Open now": the live calls (admissions, applications) above everything, as a
+   ruled list under a plain heading -- no box. */
+.nw-open { margin-bottom: clamp(32px, 4vw, 56px); }
 .nw-open-title {
   display: flex; align-items: center; gap: 10px;
-  margin: 0 0 14px;
-  font-family: var(--display); font-weight: 400;
-  font-size: clamp(1.3rem, 2vw, 1.6rem); line-height: 1.2;
+  margin: 0 0 4px;
+  font-family: var(--display); font-weight: 500;
+  font-size: clamp(1.4rem, 2.2vw, 1.9rem); line-height: 1.2; letter-spacing: -0.025em;
 }
-.nw-open-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 4px rgba(var(--accent-rgb), .18); }
-.nw-open-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+.nw-open-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--accent); }
+.nw-open-list { list-style: none; margin: 0; padding: 0; border-top: 1px solid rgba(20, 20, 20, .35); }
 .nw-open-item {
   display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px 24px;
-  padding: 14px clamp(14px, 1.8vw, 20px);
-  background: #fff;
-  border: 1px solid rgba(26, 24, 20, .1);
-  border-radius: 0;
+  padding: clamp(14px, 1.8vw, 20px) 0;
+  border-bottom: 1px solid var(--rule);
 }
-.nw-open-text { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 14px; min-width: 0; }
-.nw-open-topic {
-  font-size: 0.95rem; font-weight: 600; line-height: 1;
-  padding: 6px 10px; border-radius: 4px;
-  background: rgba(var(--accent-rgb), .1); color: var(--accent);
-}
-.nw-open-name { font-size: 1.1rem; font-weight: 600; color: var(--ink); text-decoration: none; }
-.nw-open-name:hover { text-decoration: underline; text-underline-offset: 4px; }
-.nw-open-more { font-size: 1rem; font-weight: 500; color: var(--accent); text-decoration: none; }
-.nw-open-more:hover { text-decoration: underline; text-underline-offset: 3px; }
+.nw-open-text { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 16px; min-width: 0; }
+.nw-open-topic { font-size: 0.9rem; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--ink); }
+.nw-open-name { font-family: var(--display); font-size: clamp(1.15rem, 1.7vw, 1.4rem); font-weight: 500; letter-spacing: -0.02em; color: var(--ink); text-decoration: none; }
+.nw-open-name:hover { color: var(--accent); }
+.nw-open-more { font-size: 1rem; font-weight: 500; color: var(--ink); text-decoration: none; }
+.nw-open-more:hover { color: var(--accent); }
 .nw-open-name:focus-visible,
 .nw-open-more:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 @media (prefers-reduced-motion: reduce) { .nw-chip { transition: none; } }

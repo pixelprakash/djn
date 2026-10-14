@@ -1,23 +1,21 @@
 /* News / update card (see PostCard.jsx). Every rule is under .pc so it can't
    leak, and keeps the site's reading sizes: nothing under 0.95rem. */
 .pc {
-  --pc-pad: clamp(18px, 2vw, 24px);
+  --pc-pad: 0px;
   display: flex;
   flex-direction: column;
-  background: #fff;
-  border: 1px solid rgba(26, 24, 20, .12);
-  border-radius: var(--radius-lg);
   position: relative;
-  overflow: hidden;
   min-width: 0;
   height: 100%;
-  box-shadow: var(--shadow-rest);
-  transition: box-shadow .25s ease;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
 }
-.pc:hover { box-shadow: var(--shadow-hover); }
 .pc:hover .pc-title a { color: var(--accent); }
 
-/* Photos lead the card, edge to edge, in the same 4:3 area on every card. */
+/* The picture leads, in the same 4:3 area on every card; the text sits under it
+   on the page itself (no box). */
 .pc .pc-grid {
   display: grid;
   gap: 3px;
@@ -51,7 +49,8 @@
 }
 /* Multi-photo cells fill the grid's fixed ratio: the image is positioned
    inside the cell so its own size can't stretch the rows. */
-.pc .pc-cell img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+.pc .pc-cell img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .6s cubic-bezier(.16, 1, .3, 1); }
+.pc:hover .pc-cell img { transform: scale(1.03); }
 .pc .pc-extra {
   position: absolute;
   inset: 0;
@@ -65,26 +64,23 @@
   font-weight: 500;
 }
 
-.pc .pc-body { display: flex; flex-direction: column; flex: 1; padding: var(--pc-pad); }
+.pc .pc-body { display: flex; flex-direction: column; flex: 1; padding: clamp(16px, 1.8vw, 22px) 0 0; }
 
 .pc .pc-meta { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 12px; }
 .pc .pc-topic {
   font-family: var(--body);
-  font-size: 0.95rem;
-  font-weight: 600;
-  line-height: 1;
-  padding: 6px 10px;
-  border-radius: 4px;
-  background: rgba(var(--accent-rgb), .1);
-  color: var(--accent);
+  font-size: 0.9rem;
+  font-weight: 500;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--ink);
 }
 .pc .pc-pin {
   font-family: var(--body);
-  font-size: 0.95rem;
-  font-weight: 600;
-  line-height: 1;
-  padding: 6px 10px;
-  border-radius: 4px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  letter-spacing: .06em;
+  padding: 5px 8px;
   background: var(--ink);
   color: var(--bg);
 }
@@ -98,10 +94,10 @@
 .pc .pc-title {
   margin: 12px 0 0;
   font-family: var(--display);
-  font-weight: 400;
-  font-size: clamp(1.3rem, 1.8vw, 1.55rem);
-  line-height: 1.2;
-  letter-spacing: -0.01em;
+  font-weight: 500;
+  font-size: clamp(1.35rem, 1.9vw, 1.7rem);
+  line-height: 1.15;
+  letter-spacing: -0.025em;
   color: var(--ink);
   text-wrap: balance;
 }
@@ -111,7 +107,7 @@
   font-family: var(--body);
   font-size: 1.02rem;
   line-height: 1.6;
-  color: var(--sub);
+  color: #5d5d5d;
   overflow-wrap: anywhere;
   display: -webkit-box;
   -webkit-line-clamp: 4;
@@ -121,7 +117,7 @@
 }
 
 .pc .pc-title a { color: inherit; text-decoration: none; }
-.pc .pc-title a:hover { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 4px; }
+.pc .pc-title a:hover { color: var(--accent); }
 .pc .pc-title a:focus-visible { outline: none; }
 /* The title's link covers the whole card, so the card is one big target. */
 .pc .pc-title a::after { content: ''; position: absolute; inset: 0; z-index: 1; }
@@ -134,10 +130,10 @@
   font-family: var(--body);
   font-size: 1rem;
   font-weight: 500;
-  color: var(--accent);
+  color: var(--ink);
   text-decoration: none;
 }
-.pc .pc-link:hover { text-decoration: underline; text-underline-offset: 3px; }
+.pc .pc-link:hover { color: var(--accent); }
 .pc .pc-sr {
   position: absolute;
   width: 1px; height: 1px;
@@ -150,15 +146,17 @@
 /* Wide lead card: picture beside the text. */
 .pc--wide { flex-direction: row; }
 .pc--wide .pc-grid { flex: 1.15 1 0; aspect-ratio: auto; min-height: 340px; }
-.pc--wide .pc-body { flex: 1 1 0; justify-content: center; }
+.pc--wide .pc-body { flex: 1 1 0; justify-content: center; padding: 0 0 0 clamp(20px, 3vw, 44px); }
 .pc--wide .pc-actions { margin-top: 20px; }
 .pc--wide .pc-title { font-size: clamp(1.5rem, 2.4vw, 2rem); }
 .pc--wide .pc-text { -webkit-line-clamp: 6; line-clamp: 6; }
 @media (max-width: 700px) {
   .pc--wide { flex-direction: column; }
   .pc--wide .pc-grid { aspect-ratio: 4 / 3; min-height: 0; }
+  .pc--wide .pc-body { padding: clamp(16px, 1.8vw, 22px) 0 0; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .pc { transition: none; }
+  .pc .pc-cell img { transition: none; }
+  .pc:hover .pc-cell img { transform: none; }
 }

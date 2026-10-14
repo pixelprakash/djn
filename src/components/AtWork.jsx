@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import clip from '../assets/at-work.mp4'
 import poster from '../assets/at-work-poster.webp'
+import photo640 from '../assets/djteaching-640.webp'
+import photo960 from '../assets/djteaching-960.webp'
 import './AtWork.css'
 
 /* "At work": a short silent clip of him on set, on the home page under the
@@ -16,7 +18,7 @@ import './AtWork.css'
      (preload="none" until then), so it never competes with the hero. */
 const CAPTION = 'On set, in the studio.' // edit this line to change the caption
 
-export default function AtWork() {
+export default function AtWork({ withPhoto = false }) {
   const videoRef = useRef(null)
   const boxRef = useRef(null)
   const [playing, setPlaying] = useState(false)
@@ -58,6 +60,21 @@ export default function AtWork() {
       <div className="aw-text">
         <h2 className="aw-heading" id="aw-heading">At work</h2>
         <p className="aw-caption">{CAPTION}</p>
+        {withPhoto && (
+          <figure className="aw-photo">
+            <img
+              src={photo960}
+              srcSet={`${photo640} 640w, ${photo960} 960w`}
+              sizes="(max-width: 860px) 92vw, 40vw"
+              width="1280"
+              height="923"
+              alt="Prof. Deepak John Mathew teaching a photography workshop, seated on the floor with students around a low table of camera lenses."
+              loading="lazy"
+              decoding="async"
+            />
+            <figcaption>Teaching, seated with students and lenses.</figcaption>
+          </figure>
+        )}
       </div>
 
       <figure className="aw-fig" ref={boxRef}>
