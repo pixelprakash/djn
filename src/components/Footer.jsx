@@ -1,7 +1,5 @@
 import { NavLink } from 'react-router-dom'
 import { SOCIALS } from '../data/socials'
-import SocialIcon from './SocialIcon'
-import GridPulse from './GridPulse'
 import './Footer.css'
 
 const LINKS = [
@@ -14,50 +12,44 @@ const LINKS = [
   { label: 'Contact', path: '/contact' },
 ]
 
+/* The site footer, on every page: a light surface with a thin edge of the
+   signature gradient, the name, a one-line statement, the pages and the
+   profiles as plain text links. */
 export default function Footer() {
   const year = new Date().getFullYear()
 
   return (
     <footer className="ft">
-      {/* Prism-spectrum grid under everything -- see GridPulse.jsx. Text
-          marked data-grid-avoid is what the light holds back from. */}
-      <GridPulse />
-      <span className="ft-spectrum" aria-hidden="true" />
+      <span className="ft-edge" aria-hidden="true" />
 
       <div className="ft-inner">
         <div className="ft-brand">
-          <NavLink to="/about" className="ft-logo" data-grid-avoid>DJM</NavLink>
-          <p className="ft-tagline" data-grid-avoid>
-            Designer, researcher, and creative artist — teaching, making,
+          <NavLink to="/about" className="ft-logo">Deepak John Mathew</NavLink>
+          <p className="ft-tagline">
+            Designer, researcher, and creative artist: teaching, making,
             and documenting at IIT Hyderabad.
           </p>
         </div>
 
-        <nav className="ft-links" aria-label="Footer">
+        <nav className="ft-col" aria-label="Footer">
+          <p className="ft-col-label" aria-hidden="true">Pages</p>
           {LINKS.map(l => (
-            <NavLink key={l.path} to={l.path} className="ft-link" data-grid-avoid>{l.label}</NavLink>
+            <NavLink key={l.path} to={l.path} className="ft-link">{l.label}</NavLink>
           ))}
         </nav>
 
-        <div className="ft-socials" aria-label="Social links">
+        <div className="ft-col" aria-label="Profiles" role="group">
+          <p className="ft-col-label" aria-hidden="true">Profiles</p>
           {SOCIALS.map(s => (
-            <a
-              key={s.label}
-              href={s.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="ft-social"
-              data-grid-avoid
-              aria-label={s.label}
-            >
-              <SocialIcon name={s.icon} size={16} />
+            <a key={s.label} href={s.href} target="_blank" rel="noopener noreferrer" className="ft-link">
+              {s.label} <span aria-hidden="true">&#8599;</span>
             </a>
           ))}
         </div>
       </div>
 
       <div className="ft-bottom">
-        <p data-grid-avoid>© {year} Deepak John Mathew. All rights reserved.</p>
+        <p>© {year} Deepak John Mathew. All rights reserved.</p>
       </div>
     </footer>
   )

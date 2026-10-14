@@ -8,7 +8,7 @@
 // Vercel serves dist/about.html at /about (cleanUrls) before falling back to
 // the single-page app, so these are what a crawler receives. The app still
 // takes over in the browser exactly as before.
-import { readFileSync, writeFileSync, mkdirSync } from 'node:fs'
+import { readFileSync, writeFileSync, mkdirSync, readdirSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import {
@@ -91,8 +91,20 @@ function swap(html, re, value, label) {
 // The hero portrait is the largest thing on Home and Resume. It is only
 // discovered once the app has run, so say so up front and it downloads in
 // parallel with the app's code instead of after it.
-const PORTRAIT_PAGES = new Set(['/about', '/resume'])
+const PORTRAIT_PAGES = new Set(['/resume'])
 const portraitPreload = `    <link rel="preload" as="image" href="/profliepicnobg-900.webp" imagesrcset="/profliepicnobg-560.webp 560w, /profliepicnobg-900.webp 900w, /profliepicnobg.webp 1380w" imagesizes="(max-width: 860px) 300px, 560px" fetchpriority="high" />\n`
+
+// The home page's hero photograph (src/assets/djteaching-<w>.webp) is the largest
+// thing above the fold. Its hashed file names are only known after the build, so
+// look them up and preload the same responsive set the page uses.
+const heroSet = (() => {
+  const files = readdirSync(join(DIST, 'assets')).filter(f => /^djteaching-(\d+)-.*\.webp$/.test(f))
+  const byWidth = files.map(f => [Number(f.match(/^djteaching-(\d+)-/)[1]), f]).sort((a, b) => a[0] - b[0])
+  if (!byWidth.length) return ''
+  const set = byWidth.map(([w, f]) => `/assets/${f} ${w}w`).join(', ')
+  const mid = (byWidth.find(([w]) => w === 960) || byWidth[byWidth.length - 1])[1]
+  return `    <link rel="preload" as="image" href="/assets/${mid}" imagesrcset="${set}" imagesizes="(max-width: 860px) 92vw, 62vw" fetchpriority="high" />\n`
+})()
 
 function render(meta) {
   const title = meta.title ? `${meta.title} — ${NAME}` : HOME_TITLE
@@ -120,6 +132,7 @@ function render(meta) {
   }
 
   if (PORTRAIT_PAGES.has(meta.path)) h = h.replace('</head>', () => portraitPreload + '  </head>')
+  if (meta.path === '/about' && heroSet) h = h.replace('</head>', () => heroSet + '  </head>')
 
   if (meta.ld && meta.ld.length) {
     const json = JSON.stringify(meta.ld.length === 1 ? meta.ld[0] : meta.ld).replace(/</g, '\\u003c')

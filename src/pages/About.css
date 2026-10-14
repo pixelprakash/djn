@@ -4,6 +4,8 @@
 .hp, .hp * { background: transparent; }
 
 .hp {
+  position: relative;
+  isolation: isolate;
   background: var(--bg) !important;
   min-height: 100%;
   font-family: var(--body);
@@ -22,155 +24,85 @@
   animation: hpFadeUp .4s ease both;
 }
 
+/* A very faint wash of the signature gradient behind the top of the page. */
+.hp::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: min(70vh, 640px);
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(60% 80% at 82% 0%, rgba(250, 204, 192, .38), transparent 70%),
+    radial-gradient(55% 70% at 12% 0%, rgba(205, 203, 245, .34), transparent 70%);
+}
+
 @keyframes hpFadeUp {
   from { opacity: 0; transform: translateY(14px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
 /* ══════════════════════════════════════════
-   HERO
+   HERO -- the work first
+   A large photograph (a teaching session) on the left with a soft gradient
+   plate offset behind it; a quiet text column beside it. The gradient is the
+   site's signature (see --gradient-soft in tokens.css).
 ══════════════════════════════════════════ */
-/* Trial: full-bleed portrait, top-to-bottom on the right (see
-   .hp-hero-photo-col) -- the hero is a stretch-height row so the photo
-   column can fill it edge to edge, while the text column stays centered
-   within that same tall row via its own align-self below. */
 .hp-hero {
-  --hero-pad-y: clamp(48px, 7vw, 96px);
-  display: flex;
-  align-items: stretch;
-  justify-content: space-between;
-  gap: clamp(32px, 5vw, 72px);
-  min-height: calc(var(--hero-h) + clamp(40px, 6vw, 90px));
-  padding: var(--hero-pad-y) 0 var(--hero-pad-y) var(--g);
+  isolation: isolate;
+  display: grid;
+  grid-template-columns: minmax(0, 1.85fr) minmax(260px, 1fr);
+  align-items: end;
+  gap: clamp(36px, 5vw, 88px);
+  padding: clamp(24px, 3.6vw, 52px) var(--g) clamp(56px, 7vw, 104px);
 }
 
-.hp-hero-text { min-width: 0; align-self: center; }
+.hp-art { position: relative; margin: 0; }
+/* The plate: the same size as the photo, shifted down and right, so a band of
+   gradient shows along the photo's right and bottom edges. */
+.hp-art::before {
+  content: '';
+  position: absolute;
+  inset: clamp(18px, 2.6vw, 44px) calc(-1 * clamp(18px, 2.6vw, 44px)) calc(-1 * clamp(18px, 2.6vw, 44px)) clamp(18px, 2.6vw, 44px);
+  background: linear-gradient(96deg, var(--g-lavender) 0%, var(--g-peach) 38%, var(--g-cream) 68%, var(--g-salmon) 100%);
+  z-index: 0;
+}
+.hp-art-img {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1280 / 923;
+  object-fit: cover;
+}
 
+.hp-hero-text { min-width: 0; padding-bottom: clamp(8px, 1.6vw, 24px); }
+
+/* A modest name, not a banner: the work is the headline here. */
 .hp-title {
-  /* Trial: Literata on headings, Home page only for now. DM Sans's
-     --title-tracking (-5px) was tuned for a sans display face at this
-     size -- far too tight for a serif, whose letterforms need more room
-     to read clean, so it's eased way off here rather than reused as-is. */
-  font-family: var(--display);
-  font-weight: 400;
-  /* Own clamp instead of the shared --fs-h1 (5vw/72px): the full-bleed
-     photo column eats into this column's width at common laptop sizes
-     (e.g. 907px of text needed at 72px, but only ~820px free at 1512px
-     wide) -- 5vw hit its 72px ceiling well before the text column had
-     room for it, wrapping "Mathew" onto its own line. 4vw reaches the
-     same 72px ceiling only once the column is actually wide enough
-     (confirmed one line from 900px through 2560px). */
-  font-size: clamp(36px, 4vw, 72px);
-  line-height: 1.05;
-  letter-spacing: -0.01em;
+  font-family: var(--grotesk);
+  font-weight: 560;
+  font-size: clamp(1.9rem, 3.2vw, 3rem);
+  line-height: 1.1;
+  letter-spacing: -0.018em;
   color: var(--ink);
   animation: titleReveal .7s cubic-bezier(.16,1,.3,1) .08s both;
-}
-
-.hp-sub {
-  margin-top: clamp(18px, 2.6vw, 26px);
-  font-family: var(--body);
-  font-weight: 400;
-  /* Wraps naturally rather than forcing one line + ellipsis -- the
-     full-bleed photo trial narrowed this column enough that "at IIT
-     Hyderabad" was silently clipping off the end at common widths. */
-  font-size: clamp(1.1rem, 2.3vw, 2.05rem);
-  line-height: 1.25;
-  letter-spacing: -0.01em;
-  color: var(--sub);
-  max-width: 100%;
-}
-
-.hp-bio {
-  margin-top: clamp(24px, 3.2vw, 36px);
-  font-family: var(--body);
-  font-weight: 400;
-  font-size: clamp(1.1rem, 1.4vw, 1.2rem); /* a notch up from --fs-body */
-  line-height: 1.65;
-  color: var(--sub);
-  max-width: 68ch;
-}
-.hp-bio em { font-style: italic; color: var(--ink); }
-
-/* ── Areas of interest — set apart as its own block (hairline rule +
-   real margin above) rather than reading as a third paragraph of the
-   bio. Label and list are split onto separate lines with opposite
-   weighting on purpose: the label is a quiet, small-caps category tag
-   (it names the field, nothing more), while the list -- the actual
-   content someone reads this for -- gets real size and body-text
-   contrast instead of being dimmed down to a caption color. ── */
-.hp-interests {
-  margin-top: clamp(32px, 4vw, 44px);
-  padding-top: clamp(20px, 2.6vw, 28px);
-  border-top: 1px solid var(--rule);
-  max-width: 68ch;
-}
-/* A real heading, not a small uppercase eyebrow label -- DM Sans bold
-   rather than the Literata used for every other heading on the page, so
-   it still reads as a heading (size, weight, full color) without
-   competing with .hp-title's serif voice right above it. */
-.hp-interests-label {
-  font-family: var(--body);
-  font-size: clamp(1.1rem, 1.6vw, 1.35rem);
-  font-weight: 700;
-  letter-spacing: -0.01em;
-  color: var(--ink);
-  margin-bottom: 10px;
-}
-.hp-interests-list {
-  font-family: var(--body);
-  font-weight: 400;
-  font-size: clamp(1.05rem, 1.3vw, 1.15rem);
-  line-height: 1.7;
-  color: var(--sub);
-}
-
-/* ── Social links — filled brand marks, a different register from the
-   rest of the hero. ── */
-.hp-socials {
-  display: flex;
-  flex-wrap: wrap;
-  /* Left-aligned now that this sits in the text column (previously
-     centered under the narrow photo column it used to live in) --
-     matches every other left-aligned block above it. */
-  justify-content: flex-start;
-  gap: 10px;
-  margin-top: clamp(24px, 3vw, 32px);
-}
-.hp-social {
-  flex-shrink: 0; /* without this, flex would compress width only (not height) once .hp-socials runs out of row space, stretching each circle into an oval */
-  width: 46px;
-  height: 46px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid var(--rule);
-  color: var(--sub);
-  transition: background .25s ease, color .25s ease, border-color .25s ease, transform .25s cubic-bezier(.34,1.56,.64,1);
-}
-.hp-social:hover, .hp-social:focus-visible {
-  background: var(--accent);
-  color: #fff;
-  border-color: var(--accent);
-  transform: translateY(-3px);
 }
 
 /* ── Hero links ("Design Dept", "IIT Hyderabad") ──
    A quiet hairline underline sits under the words at rest; on hover or
    keyboard focus the colour eases to the accent blue and a blue underline
-   draws across from the left. Nothing moves or changes size -- the text,
-   its baseline and its line wrap stay exactly where they are -- so there is
-   nothing to jitter. (An earlier version swapped each word for a clone that
-   rose into place; the staggered movement read as glitchy.) The markup
-   still has one span per word; they are just plain inline text now. */
+   draws across from the left. Nothing moves or changes size, so there is
+   nothing to jitter. The markup has one span per word; they are plain inline
+   text. */
 .hp-link {
   position: relative;
   display: inline-block;
   color: var(--ink);
-  font-weight: 600;
+  font-weight: 500;
   text-decoration: none;
-  padding-bottom: 3px;
+  padding-bottom: 2px;
   border-radius: 2px;
   background-image:
     linear-gradient(var(--accent), var(--accent)),
@@ -188,91 +120,65 @@
   background-size: 100% 2px, 100% 1.5px;
 }
 .hp-link:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
-.hp-link-mask {
-  display: inline;
-  white-space: nowrap; /* keeps "Design"/"Dept" from splitting across a wrap point on mobile */
-}
+.hp-link-mask { display: inline; white-space: nowrap; }
 .hp-link-word { display: inline; }
-.hp-link-word:not(:last-child) { margin-right: 0.32em; }
+.hp-link-word:not(:last-child) { margin-right: 0.3em; }
 .hp-link-word-real { display: inline; }
-@media (prefers-reduced-motion: reduce) {
-  .hp-link { transition: none; }
-}
+@media (prefers-reduced-motion: reduce) { .hp-link { transition: none; } }
 
-/* Negative top/bottom margin cancels the hero's own vertical padding so
-   this column spans the full height of the row, flush top and bottom;
-   .hp-hero already dropped its right-side padding so this sits flush
-   against the viewport edge too -- a true edge-to-edge bleed. */
-.hp-hero-photo-col {
-  flex-shrink: 0;
-  width: clamp(320px, 38vw, 560px);
-  margin: calc(-1 * var(--hero-pad-y)) 0;
+/* The intro: short lines in a quiet grey, with the words that matter picked
+   out in ink (the way a neat designer's portfolio introduces itself). */
+.hp-line {
+  margin-top: clamp(12px, 1.5vw, 18px);
+  font-family: var(--grotesk);
+  font-weight: 400;
+  font-size: clamp(1.1rem, 1.5vw, 1.35rem);
+  line-height: 1.4;
+  letter-spacing: 0.004em;
+  color: #5d5d5d; /* >= 6:1 on the off-white */
+  max-width: 34em;
 }
+.hp-line strong { font-weight: 500; color: var(--ink); }
+.hp-title + .hp-line { margin-top: clamp(16px, 2vw, 24px); }
+.hp-line--small { font-size: clamp(1rem, 1.2vw, 1.1rem); line-height: 1.5; letter-spacing: 0; }
+.hp-line-label { color: var(--ink); font-weight: 500; margin-right: 0.35em; }
 
-/* The portrait is a background-removed cut-out, so the panel behind it is
-   the backdrop: a soft blue-grey studio sweep, lighter at the top, with
-   the figure standing on the bottom edge. */
-.hp-hero-photo {
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  background: linear-gradient(180deg, #e6edf3 0%, #cddae5 100%);
+/* Profile links as plain text, like the rest of the intro. */
+.hp-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px clamp(16px, 2vw, 26px);
+  margin-top: clamp(20px, 2.6vw, 30px);
 }
-.hp-hero-photo img {
-  width: 100%; height: 100%;
-  object-fit: cover;
-  object-position: center bottom;
-  display: block;
+.hp-plain {
+  display: inline-block;
+  padding: 6px 0;
+  font-family: var(--grotesk);
+  font-size: 1.02rem;
+  font-weight: 500;
+  color: var(--ink);
+  text-decoration: none;
+  background: linear-gradient(var(--accent), var(--accent)) 0 100% / 0% 1.5px no-repeat;
+  transition: background-size .35s cubic-bezier(.22, 1, .36, 1), color .2s ease;
 }
+.hp-plain:hover, .hp-plain:focus-visible { color: var(--accent); background-size: 100% 1.5px; }
+.hp-plain:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 
-/* Works panel now lives in WorksTimeline.css, mounted via
-   src/components/WorksTimeline.jsx. */
+/* The inline links ("Design Dept", "IIT Hyderabad") sit in ink inside the grey line. */
+
 
 /* ══════════════════════════════════════════
    RESPONSIVE
 ══════════════════════════════════════════ */
 @media (max-width: 860px) {
-  /* The full-bleed photo treatment is a wide-viewport trick (negative
-     margins canceling the hero's own padding, stretched to the row's
-     height) -- below this it reverts to a compact portrait stacked under
-     the text, back in normal flow. .hp-hero's own min-height (set to
-     match the full-bleed layout) is usually taller than the text content
-     alone needs, though, and a flex column doesn't hand that leftover
-     space to anyone unless told to -- previously the photo just sat at
-     its own fixed aspect ratio and left that leftover space empty below
-     it, well short of the hero's actual bottom edge. flex:1 on the photo
-     column claims that leftover space instead, so the photo's bottom
-     edge always lands flush with the hero's, whatever height the text
-     above it happens to need. */
-  .hp-hero { flex-direction: column; align-items: flex-start; padding-right: var(--g); }
-  .hp-hero-text { width: 100%; align-self: auto; } /* column layout + align-items:flex-start would otherwise shrink this to its nowrap subtitle's intrinsic width, overflowing the viewport */
-  .hp-hero-photo-col {
-    width: clamp(140px, 40vw, 220px);
-    align-self: flex-start;
-    /* Bleeds through the hero's own bottom padding (same trick as the
-       desktop full-bleed column's margin, scoped to just the bottom
-       edge here) -- flex:1 alone only fills the content box, which left
-       the hero's padding-bottom sitting below the photo as a dead gap
-       before the section actually ended. */
-    margin: 0 0 calc(-1 * var(--hero-pad-y));
-    flex: 1;
-    min-height: 240px;
-  }
-  .hp-hero-photo {
-    height: 100%;
-    border-radius: var(--radius-lg);
-  }
+  /* Stacked: the photo first, full width, then the text. */
+  .hp-hero { grid-template-columns: minmax(0, 1fr); gap: clamp(36px, 8vw, 56px); padding-bottom: clamp(48px, 9vw, 72px); }
+  .hp-hero-text { padding-bottom: 0; }
 }
 
-@media (max-width: 540px) {
-  /* No letter-spacing override here (unlike the other pages' --fs-h1-sm
-     titles) -- .hp-title's own -0.01em is already em-relative, tuned for
-     the Literata trial, and scales fine at the smaller mobile size. */
-  .hp-sub { font-size: 1rem; }
-}
 
 @media (prefers-reduced-motion: reduce) {
   .hp { animation: none; }
   .hp-link::before, .hp-link-word-real, .hp-link-word::before,
-  .hp-social { transition: none; }
+  .hp-plain { transition: none; }
 }

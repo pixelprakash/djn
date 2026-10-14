@@ -10,9 +10,14 @@
   z-index: -1;
   display: flex;
   align-items: flex-end;
-  min-height: clamp(400px, 58vh, 640px);
+  min-height: clamp(340px, 50vh, 560px);
   padding: clamp(48px, 6vw, 96px) var(--g) calc(clamp(40px, 5vw, 72px) + var(--ph-sheet-r));
-  background: linear-gradient(180deg, #e8eef3 0%, #dce6ee 100%);
+  /* A pale wash of the signature gradient fading into the page, so the hero and
+     the content under it read as one clean surface. */
+  background:
+    radial-gradient(70% 90% at 88% 0%, rgba(250, 204, 192, .55), transparent 72%),
+    radial-gradient(65% 90% at 8% 0%, rgba(205, 203, 245, .55), transparent 72%),
+    linear-gradient(180deg, #f1eff8 0%, var(--bg) 100%);
   overflow: hidden;
 }
 
@@ -39,11 +44,11 @@
 .ph-sub {
   margin-top: clamp(22px, 2.6vw, 34px);
   max-width: 34em;
-  font-family: var(--body);
-  font-size: clamp(1.15rem, 1.6vw, 1.45rem);
+  font-family: var(--grotesk);
+  font-size: clamp(1.1rem, 1.5vw, 1.35rem);
   font-weight: 400;
   line-height: 1.5;
-  color: var(--sub);
+  color: #5d5d5d;
   text-wrap: pretty;
 }
 

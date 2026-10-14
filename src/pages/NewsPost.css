@@ -44,7 +44,7 @@
   border: 0;
   border-radius: var(--radius-lg);
   overflow: hidden;
-  background: #ece8e1;
+  background: #ebebeb;
   cursor: zoom-in;
 }
 .np-cover::before {

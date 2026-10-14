@@ -1,15 +1,14 @@
-import { Suspense, lazy } from 'react'
 import { Link } from 'react-router-dom'
 import { PROJECTS } from './projectData'
 import { SOCIALS } from '../data/socials'
-import SocialIcon from '../components/SocialIcon'
 import NewsSection from '../components/NewsSection'
-import Portrait from '../components/Portrait'
+import WorkIndex from '../components/WorkIndex'
+import hero640 from '../assets/djteaching-640.webp'
+import hero960 from '../assets/djteaching-960.webp'
+import hero1280 from '../assets/djteaching-1280.webp'
 import usePageTitle from '../hooks/usePageTitle'
 import { homeMeta } from '../seo/routes'
 import './About.css'
-
-const PH = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300'%3E%3Crect fill='%23d8d8d8' width='400' height='300'/%3E%3C/svg%3E"
 
 const INTERESTS = [
   'Photography',
@@ -42,87 +41,61 @@ function MotionLink({ href, label }) {
   )
 }
 
-// The pinned "Works" timeline sits far below the hero. Loading it as its own
-// chunk keeps its code and styles off the critical path, so the hero and news
-// paint first; the placeholder holds its place so nothing jumps when it arrives.
-const WorksTimeline = lazy(() => import('../components/WorksTimeline'))
-
 export default function About() {
   usePageTitle(homeMeta())
   return (
     <div className="hp">
       <header className="hp-hero">
-        <div className="hp-hero-text">
-          <h1 className="hp-title">Prof. Deepak John Mathew</h1>
-          <p className="hp-sub">
-            Professor &amp; Founding head of{' '}
-            <MotionLink href="https://design.iith.ac.in" label="Design Dept" />{' '}
-            at <MotionLink href="https://www.iith.ac.in" label="IIT Hyderabad" />
-          </p>
-          <p className="hp-bio">
-            A designer, researcher, and creative artist at heart — driven by curiosity,
-            mentorship, and a hands-on love of experimentation.
-          </p>
-
-          {/* Run-in sentence, not a chip row or a table — reads the way
-              research interests appear in an academic bio or contributor
-              note. Label and list are split onto their own lines (rather
-              than one run-on sentence) so the label can stay a quiet
-              category tag while the interests themselves — the actual
-              content — get real size and contrast to read easily. */}
-          <div className="hp-interests">
-            <p className="hp-interests-label">Areas of Interest</p>
-            <p className="hp-interests-list">{INTERESTS.join(', ')}.</p>
-          </div>
-
-          {/* Trial: full-bleed portrait (see .hp-hero-photo-col below) left
-              no room for the socials under the photo like before, so they
-              moved down here. Easy to move back if we revert the photo
-              treatment. */}
-          <div className="hp-socials">
-            {SOCIALS.map(s => (
-              <a
-                key={s.label}
-                href={s.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hp-social"
-                aria-label={s.label}
-              >
-                <SocialIcon name={s.icon} size={19} />
-              </a>
-            ))}
-          </div>
-        </div>
-        <div className="hp-hero-photo-col">
-          <Portrait
-            className="hp-hero-photo"
-            src="/profliepicnobg.webp"
-            alt="Portrait of Prof. Deepak John Mathew"
-            draggable="false"
-            // Almost certainly this page's LCP element — above the fold,
-            // large, and the first meaningfully-sized thing to paint.
-            // fetchPriority tells the browser to fetch it ahead of
-            // lower-priority requests instead of at default priority.
+        {/* The work comes first: a teaching session, large, with a soft gradient
+            plate offset behind it. (Previously a full-bleed portrait.) */}
+        <figure className="hp-art">
+          <img
+            className="hp-art-img"
+            src={hero960}
+            srcSet={`${hero640} 640w, ${hero960} 960w, ${hero1280} 1280w`}
+            sizes="(max-width: 860px) 92vw, 62vw"
+            width="1280"
+            height="923"
+            alt="Prof. Deepak John Mathew teaching a photography workshop, seated on the floor with students around a low table of camera lenses."
+            // The largest thing above the fold: fetched ahead of everything else.
             loading="eager"
             decoding="async"
             fetchPriority="high"
-            onError={e => { if (e.currentTarget.src !== PH) e.currentTarget.src = PH }}
           />
+        </figure>
+
+        <div className="hp-hero-text">
+          <h1 className="hp-title">Prof. Deepak John Mathew</h1>
+          <p className="hp-line">
+            Professor &amp; Founding head of{' '}
+            <MotionLink href="https://design.iith.ac.in" label="Design Dept" />{' '}
+            at <MotionLink href="https://www.iith.ac.in" label="IIT Hyderabad" />.
+          </p>
+          <p className="hp-line">
+            A <strong>designer</strong>, <strong>researcher</strong> and <strong>creative artist</strong> at
+            heart: driven by curiosity, mentorship and a hands-on love of experimentation.
+          </p>
+          <p className="hp-line hp-line--small">
+            <span className="hp-line-label">Interests</span> {INTERESTS.join(', ')}.
+          </p>
+
+          <nav className="hp-links" aria-label="Profiles">
+            {SOCIALS.map(s => (
+              <a key={s.label} href={s.href} target="_blank" rel="noopener noreferrer" className="hp-plain">
+                {s.label}
+              </a>
+            ))}
+          </nav>
         </div>
       </header>
+
+      {/* A typographic index of the projects: title, a soft stepped gradient, year. */}
+      <WorkIndex projects={PROJECTS} />
 
       {/* Admissions, openings, talks, recent work -- right under the hero so
           time-sensitive news is seen before the long pinned portfolio
           scroll, not after it. Posts come from Sanity ("News, update or announcement"). */}
       <NewsSection />
-
-      {/* Scroll-driven filmstrip through all 5 projects' real photos —
-          see src/components/WorksTimeline.jsx. RESEARCH (removed above)
-          was placeholder data; this pulls only from real PROJECTS. */}
-      <Suspense fallback={<div aria-hidden="true" style={{ minHeight: '100vh' }} />}>
-        <WorksTimeline projects={PROJECTS} />
-      </Suspense>
 
     </div>
   )

@@ -121,12 +121,12 @@ const isNewsItem = pathname => {
 function labelFor(pathname) {
   const [seg, slug] = pathname.split('/').filter(Boolean)
   switch (seg) {
-    case 'work':    return projectFor(pathname) ? projectFor(pathname).title : 'Work'
+    case 'work':    return projectFor(pathname) ? projectFor(pathname).title : 'Selected Work'
     case 'resume':  return 'Resume'
     case 'lab':     return 'DIC Lab'
-    case 'blogs':   return 'Blogs'
+    case 'blogs':   return 'Blogs & Notes'
     case 'news':    return 'News & Updates'
-    case 'contact': return 'Contact'
+    case 'contact': return 'Get in Touch'
     case 'cv':      return CV_TITLES[slug] || 'Resume'
     default:        return 'About'
   }
@@ -223,6 +223,7 @@ function PageTransition() {
     panel.current.style.display = project || article ? 'none' : 'block'
     shutterBox.current.style.display = project ? 'block' : 'none'
     label.current.closest('.pt-label').style.display = covers ? '' : 'none'
+    label.current.closest('.pt-label').classList.toggle('pt-label--wall', Boolean(project))
     const kickerText = meta ? meta.kicker.filter(Boolean).join('  \u00b7  ') : ''
     kicker.current.parentNode.style.display = kickerText ? 'block' : 'none'
     venue.current.parentNode.style.display = meta && meta.venue ? 'block' : 'none'
@@ -291,12 +292,16 @@ function PageTransition() {
         .to(page.current, { opacity: 1, y: 0, duration: 0.5, ease: 'power3.out' }, 0.26)
         .to(bar.current, { opacity: 0, duration: 0.25, ease: 'power1.out' }, 0.62)
     } else {
-      // ── Everything else: the curved ink curtain ──
-      tl.set(panel.current, { yPercent: 78 })
+      // ── Everything else: a gradient sheet rises, names the destination, leaves ──
+      // A flat sheet of the signature gradient climbs over the page; the
+      // destination's name sets itself bottom-left, where the next page's own
+      // title will be; the sheet carries on upward and off, so the name hands
+      // over to the real heading.
+      tl.set(panel.current, { yPercent: 100 })
 
-        // In: the panel climbs over the page while the page dims beneath it.
+        // In: the sheet climbs over the page while the page dims beneath it.
         .to(panel.current, { yPercent: 0, duration: 0.55, ease: 'power4.inOut' }, 0)
-        .to(page.current, { opacity: 0.45, duration: 0.55, ease: 'power2.in' }, 0)
+        .to(page.current, { opacity: 0.5, duration: 0.55, ease: 'power2.in' }, 0)
 
         // The destination's name rises out of a mask, its rule draws under it.
         .fromTo(label.current, { yPercent: 115 }, { yPercent: 0, duration: 0.5, ease: 'power3.out' }, 0.4)
@@ -304,10 +309,9 @@ function PageTransition() {
 
         .call(swap, null, 0.62)
 
-        // Out: the panel carries on upward and off; the name lifts away; the
-        // new page settles up into position behind it.
+        // Out: the name lifts away, the sheet leaves upward, the page settles in.
         .to([label.current, rule.current], { opacity: 0, duration: 0.28, ease: 'power2.in' }, 0.84)
-        .to(panel.current, { yPercent: -84, duration: 0.7, ease: 'power4.inOut' }, 0.84)
+        .to(panel.current, { yPercent: -100, duration: 0.7, ease: 'power4.inOut' }, 0.84)
         .to(page.current, { y: 0, duration: 0.85, ease: 'power3.out' }, 0.84)
         .set([label.current, rule.current], { opacity: 1 })
     }
@@ -341,13 +345,7 @@ function PageTransition() {
       </div>
 
       <div ref={curtain} className="pt" aria-hidden="true">
-        <div ref={panel} className="pt-sheet">
-          <svg className="pt-layer" viewBox="0 0 100 150" preserveAspectRatio="none">
-            <path className="pt-fill" d="M0,16 Q50,-4 100,16 L100,144 Q50,104 0,144 Z" />
-            <path className="pt-edge" d="M0,16 Q50,-4 100,16" />
-            <path className="pt-edge pt-edge--b" d="M0,144 Q50,104 100,144" />
-          </svg>
-        </div>
+        <div ref={panel} className="pt-sheet" />
         <div ref={shutterBox} className="pt-shutterbox">
           <ShutterBlades prefix="ps" startOpen reg={shutterRegistrar(shutterRefs.current)} />
         </div>

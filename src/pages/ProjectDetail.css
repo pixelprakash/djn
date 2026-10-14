@@ -31,7 +31,7 @@
   gap: 20px;
   /* Generous vertical padding = more breathing room */
   padding: 18px var(--gutter);
-  background: rgba(247,245,240,.96);
+  background: rgba(247,247,247,.94);
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
   border-bottom: 1px solid transparent;
@@ -281,7 +281,7 @@
 ═══════════════════════════════════════════════════ */
 .pd-more {
   padding: clamp(40px, 6vw, 88px) var(--gutter) calc(clamp(48px, 7vw, 96px) + var(--nav-safe));
-  background: #efece5;
+  background: #f0f0f0;
 }
 .pd-more-head { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin-bottom: clamp(20px, 3vw, 36px); }
 .pd-more-head h2 { font-family: var(--display); font-weight: 400; font-size: clamp(1.7rem, 3vw, 2.4rem); line-height: 1.1; letter-spacing: -0.01em; }
@@ -289,7 +289,7 @@
 .pd-more-head a:hover { text-decoration: underline; text-underline-offset: 3px; }
 .pd-more-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(14px, 2vw, 28px); }
 .pd-more-card { display: flex; flex-direction: column; gap: 6px; text-decoration: none; color: inherit; }
-.pd-more-img { position: relative; display: block; aspect-ratio: 3 / 2; border-radius: 0; overflow: hidden; background: #dcd7cc; }
+.pd-more-img { position: relative; display: block; aspect-ratio: 3 / 2; border-radius: 0; overflow: hidden; background: #e2e2e2; }
 .pd-more-img img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .6s cubic-bezier(.16,1,.3,1); }
 .pd-more-card:hover .pd-more-img img { transform: scale(1.05); }
 .pd-more-next { position: absolute; left: 10px; top: 10px; font-size: 0.95rem; font-weight: 600; line-height: 1; padding: 6px 10px; border-radius: 4px; background: var(--ink); color: #fff; }

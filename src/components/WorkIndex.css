@@ -1,0 +1,102 @@
+/* "Selected work" index (see WorkIndex.jsx). Every rule is under .wi. The two
+   that set a background are written `.wi .x` so they out-specify the home
+   page's blanket ".hp * { background: transparent }". */
+.wi {
+  padding: clamp(8px, 2vw, 24px) var(--g) clamp(56px, 7vw, 104px);
+  font-family: var(--grotesk);
+}
+.wi-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: clamp(20px, 3vw, 40px);
+}
+.wi-heading {
+  font-family: var(--display);
+  font-size: clamp(2.2rem, 4.8vw, 4.2rem);
+  font-weight: 400;
+  line-height: 1.04;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+.wi-all {
+  display: inline-block;
+  padding: 6px 0;
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--ink);
+  text-decoration: none;
+}
+.wi-all:hover { color: var(--accent); }
+.wi-all:focus-visible, .wi-row:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+
+.wi-cols {
+  display: grid;
+  grid-template-columns: clamp(34px, 4vw, 56px) minmax(0, 1fr) auto;
+  column-gap: clamp(10px, 1.6vw, 24px);
+  padding: 0 0 10px;
+  border-bottom: 1px solid rgba(26, 24, 20, .35);
+  font-size: 0.9rem;
+  font-weight: 500;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.wi-cols span:last-child { justify-self: end; }
+.wi-list { position: relative; }
+/* The gradient: one shape behind all the rows, clipped to the steps (inline). */
+.wi .wi-shape {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top right, var(--g-lavender) 30%, var(--g-peach) 48%, var(--g-cream) 72%, var(--g-salmon) 100%);
+  opacity: 0;
+  transition: opacity .4s ease;
+  pointer-events: none;
+}
+.wi .wi-shape--on { opacity: 1; }
+
+.wi-rows { position: relative; list-style: none; }
+.wi-item + .wi-item { border-top: 1px solid rgba(26, 24, 20, .08); }
+.wi-row {
+  display: grid;
+  grid-template-columns: clamp(34px, 4vw, 56px) auto minmax(0, 1fr) auto;
+  align-items: baseline;
+  column-gap: clamp(10px, 1.6vw, 24px);
+  padding: clamp(12px, 1.5vw, 20px) 0;
+  color: var(--ink);
+  text-decoration: none;
+}
+.wi-no { font-size: 0.95rem; font-weight: 500; color: var(--muted); font-variant-numeric: tabular-nums; }
+.wi-title {
+  min-width: 0;
+  font-size: clamp(1.5rem, 3.6vw, 3.2rem);
+  font-weight: 450;
+  line-height: 1.08;
+  letter-spacing: -0.014em;
+}
+.wi .wi-title-text { background: linear-gradient(currentColor, currentColor) 0 100% / 0% 1.5px no-repeat; transition: background-size .35s cubic-bezier(.22, 1, .36, 1); }
+.wi .wi-row:hover .wi-title-text, .wi .wi-row:focus-visible .wi-title-text { background-size: 100% 1.5px; }
+.wi-meta { display: none; }
+.wi-year {
+  justify-self: end;
+  font-size: clamp(1.5rem, 3.6vw, 3.2rem);
+  font-weight: 450;
+  line-height: 1.08;
+  letter-spacing: -0.014em;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Phones: no steps; the list sits on one pale gradient panel. */
+@media (max-width: 700px) {
+  .wi .wi-shape { clip-path: none; }
+  .wi-cols { grid-template-columns: 28px minmax(0, 1fr) auto; }
+  .wi-rows { padding: 4px clamp(14px, 4vw, 22px); }
+  .wi-row { grid-template-columns: 28px minmax(0, 1fr) auto; }
+  .wi-title { font-size: clamp(1.15rem, 5.4vw, 1.5rem); letter-spacing: -0.012em; }
+  .wi-year { font-size: clamp(1.1rem, 5vw, 1.4rem); letter-spacing: -0.012em; }
+  .wi-meta { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .wi .wi-shape, .wi .wi-title-text { transition: none; }
+}

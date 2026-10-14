@@ -13,7 +13,7 @@
 .nb-deadline--open { color: var(--ink); }
 /* Soon: warm and solid, but dark enough for text contrast (>= 4.5:1). */
 .nb-deadline--soon { background: #fbeadb; border-color: #c9631a; color: #7a3a07; }
-.nb-deadline--closed { background: #f1efeb; border-style: dashed; }
+.nb-deadline--closed { background: #f0f0f0; border-style: dashed; }
 
 .nb-cta {
   display: inline-block;

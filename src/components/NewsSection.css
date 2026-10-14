@@ -9,9 +9,9 @@
    when changing this. section.ns, not .ns, to out-specify About.css's
    ".hp *" transparent reset. */
 section.ns {
-  background: #e8eef3;
-  border-top: 1px solid rgba(var(--accent-rgb), .16);
-  border-bottom: 1px solid rgba(var(--accent-rgb), .16);
+  background: #f0effa; /* a breath of the gradient's lavender, over the off-white page */
+  border-top: 1px solid rgba(205, 203, 245, .55);
+  border-bottom: 1px solid rgba(205, 203, 245, .55);
   padding: clamp(32px, 4.5vw, 56px) 0 clamp(36px, 5vw, 60px);
 }
 
@@ -32,9 +32,9 @@ section.ns {
 .ns .ns-heading {
   font-family: var(--display);
   font-weight: 400;
-  font-size: clamp(1.5rem, 2.6vw, 2rem);
-  line-height: 1.15;
-  letter-spacing: -0.01em;
+  font-size: clamp(1.7rem, 3.2vw, 2.6rem);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
   color: var(--ink);
 }
 
@@ -91,7 +91,7 @@ section.ns {
   position: relative;
   display: block;
   overflow: hidden;
-  background: #ece8e1;
+  background: #ebebeb;
 }
 .ns .ns-lead-media::before,
 .ns .ns-row-thumb::before {

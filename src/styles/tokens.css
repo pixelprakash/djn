@@ -7,26 +7,41 @@
 ===================================================== */
 :root {
   /* Color */
-  --bg:      #f5f3ee;
-  --ink:     #1a1814;
-  --sub:     #4a4540;
-  --muted:   #534e48; /* darkened twice: #8a8478 was ~3.35:1 on --bg (below AA),
+  --bg:      #f7f7f7; /* neutral off-white (was warm cream #f5f3ee) */
+  --ink:     #141414;
+  --sub:     #474747;
+  --muted:   #555555; /* darkened twice: #8a8478 was ~3.35:1 on --bg (below AA),
                           #6b6660 cleared AA at ~5.1:1 but is used for real reading
                           content (dates, venues, form labels, addresses), where
                           that is still tiring. This is ~7.4:1 on --bg and ~7:1 on
                           the pale-blue News band. */
-  --rule:    #dbd6ce;
+  --rule:    #dddddd;
   --accent:     #1c5d8c; /* brand blue — primary accent sitewide */
   --accent-rgb: 28, 93, 140; /* same color, as r,g,b — for rgba() glows/borders that need partial opacity. Keeping this in sync with --accent is what makes a future rebrand a two-line change instead of a grep-and-replace. */
   --green:   #024F46;
   --white:   #ffffff;
 
-  /* Type — DM Sans is the only typeface used across the site */
-  --serif: 'DM Sans Variable', 'DM Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-  --body:  'DM Sans Variable', 'DM Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-  /* Headlines: Literata (serif). The fallback is sized close to it so text does
-     not jump when the font arrives. */
-  --display: 'Literata Variable', 'Literata', Georgia, 'Times New Roman', serif;
+  /* Signature gradient: soft lavender -> peach -> cream -> salmon, sampled from the
+     design reference. Used as a quiet plate behind the home hero photo and as the
+     filled step between a title and its year in the "Selected work" index. Keep it
+     pale and use it sparingly: it should feel like light on paper, not decoration. */
+  --g-lavender: #cdcbf5;
+  --g-peach:    #f4d5cb;
+  --g-cream:    #ece0c9;
+  --g-salmon:   #faccc0;
+  --gradient-soft: linear-gradient(118deg, var(--g-lavender) 0%, var(--g-peach) 34%, var(--g-cream) 66%, var(--g-salmon) 100%);
+
+  /* Type -- one family, the Inter superfamily. Inter Tight (the tighter cut) sets
+     headlines, big numerals and the index; Inter (the text cut) sets everything
+     read at length. The fallbacks are sized close so text doesn't jump when the
+     fonts arrive. --serif/--display/--body/--grotesk are kept as names so every
+     page picks the right one without edits. */
+  --font-text:    'Inter Variable', 'Inter', 'Helvetica Neue', Helvetica, Arial, system-ui, sans-serif;
+  --font-display: 'Inter Tight Variable', 'Inter Tight', 'Helvetica Neue', Helvetica, Arial, system-ui, sans-serif;
+  --serif:   var(--font-text);
+  --body:    var(--font-text);
+  --display: var(--font-display);
+  --grotesk: var(--font-display);
 
   /* Fluid type scale shared by every page's hero header */
   --fs-h1:       clamp(36px, 5vw, 72px);      /* page title, e.g. "Deepak John Mathew" / "Selected Work" */

@@ -257,3 +257,35 @@ Conventions every page and component follows -- keep them when adding to the sit
 - Share image: `public/og-image.jpg` (1200x630).
 
 **How to measure:** `npx lighthouse <url> --form-factor=mobile --only-categories=performance,seo` (needs Chrome).
+
+
+## Home page redesign (Oct 2026): work first
+
+The professor asked for the portfolio to lead with his work, not a portrait. The home page now opens with a
+large photograph (`src/assets/djteaching-*.webp`, from his own photo) with an offset gradient plate behind it,
+a quiet text column (grey intro lines with ink highlights, plain text links), then **Selected work**: a typographic
+index of the projects with a stepped gradient filling the space between each title and its year (`WorkIndex`).
+
+- **Palette:** off-white `--bg #f7f7f7`; the signature gradient `--gradient-soft` (lavender `--g-lavender`, peach
+  `--g-peach`, cream `--g-cream`, salmon `--g-salmon`), sampled from the design reference. Use it pale and sparingly.
+- **Type:** `--grotesk` (Inter Tight) for the hero text and the index; Literata for headlines with one italic word in
+  `--accent` ("Selected *work*", "News & *Updates*"). Body stays DM Sans.
+- **Corners:** cards and panels stay square (see tokens.css).
+- **Rules of thumb:** image-led, few elements per block, muted grey text with the key words in ink, tiny uppercase
+  column labels, no decorative geometric shapes.
+
+
+## Whole-site redesign (Oct 2026, branch `redesign`)
+
+The home page language now covers every page. Summary of what changed from the old (cream, serif, dark) site:
+
+- **Type:** one family, Inter. Inter Tight (`--display`, `--grotesk`) sets every headline, the index and big numerals;
+  Inter (`--body`, `--serif`) sets text. DM Sans and Literata are gone. Headlines are plain ink, one colour.
+- **Colour:** neutral off-white `--bg #f7f7f7`, ink `#141414`, neutral greys; the pastel signature gradient
+  (`--gradient-soft`) is the only decoration.
+- **Page heroes (`PageHero`):** a soft pastel wash fading into the page, a large grotesque title bottom-left, a grey subtitle.
+- **Footer:** light, a 3px gradient edge, text links, no grid animation.
+- **Transitions:** pages use a flat gradient sheet that rises, sets the destination's title bottom-left (where the
+  next page's hero title sits), and leaves upward; projects use the camera shutter with pale gradient blades and a
+  centred wall label; blog articles use the quiet crossfade; news update pages swap instantly.
+- **Corners / shadows:** square cards, soft layered shadows (see tokens.css).

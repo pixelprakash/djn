@@ -2,7 +2,7 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
 // https://vite.dev/config/
-// Preload the latin subsets of the two body/headline fonts so text paints in the
+// Preload the latin subsets of the two fonts (Inter for text, Inter Tight for headlines) so text paints in the
 // right typeface straight away (their hashed names are only known at build).
 const fontPreload = () => ({
   name: 'font-preload',
@@ -10,7 +10,7 @@ const fontPreload = () => ({
     order: 'post',
     handler(html, ctx) {
       if (!ctx.bundle) return html
-      const want = [/dm-sans-latin-wght-normal/, /literata-latin-wght-normal/]
+      const want = [/inter-latin-wght-normal/, /inter-tight-latin-wght-normal/]
       const tags = Object.keys(ctx.bundle)
         .filter(f => f.endsWith('.woff2') && want.some(r => r.test(f)))
         .map(f => ({

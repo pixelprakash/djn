@@ -27,7 +27,7 @@
 }
 /* A single image (usually a poster) is shown whole, never cropped, on a
    blurred, enlarged copy of itself. */
-.pc .pc-grid--1 .pc-cell { background: #ece8e1; }
+.pc .pc-grid--1 .pc-cell { background: #ebebeb; }
 .pc .pc-grid--1 .pc-cell::before {
   content: '';
   position: absolute;
