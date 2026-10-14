@@ -143,3 +143,19 @@
   .hs .hs-btn, .hs .hs-slide::after, .hs .hs-cue, .hs .hs-cue-arrow, .hs .hs-title-arrow { transition: none; }
   .hs .hs-slide.is-active:hover .hs-cue-arrow, .hs .hs-frame:hover + .hs-caption .hs-title-arrow { transform: none; }
 }
+
+/* ── Wide layout (home Option 2): the pictures take the full width. The title sits
+   on the left under the picture and the controls on the right, on one row. ── */
+.hs--wide { display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: clamp(24px, 4vw, 64px); align-items: end; }
+.hs--wide .hs-frame { grid-column: 1 / -1; }
+.hs--wide .hs-stage { aspect-ratio: auto; height: clamp(300px, calc(100vh - 340px), 640px); }
+.hs--wide .hs-caption { grid-column: 1; grid-row: 2; }
+.hs--wide .hs-controls { grid-column: 2; grid-row: 2; margin-top: calc(clamp(18px, 2.6vw, 44px) + clamp(24px, 2.4vw, 32px)); padding-top: 0; border-top: 0; flex-wrap: nowrap; }
+.hs--wide .hs-segs { flex: 0 0 auto; width: clamp(180px, 16vw, 260px); }
+.hs--wide .hs-title { font-size: clamp(1.6rem, 3vw, 2.8rem); }
+@media (max-width: 860px) {
+  .hs--wide { display: block; }
+  .hs--wide .hs-stage { height: auto; aspect-ratio: 16 / 10; }
+  .hs--wide .hs-controls { margin-top: clamp(24px, 2.6vw, 40px); padding-top: clamp(16px, 1.6vw, 24px); border-top: 1px solid rgba(20, 20, 20, .3); flex-wrap: wrap; }
+  .hs--wide .hs-segs { flex: 1 1 240px; width: auto; max-width: 440px; }
+}

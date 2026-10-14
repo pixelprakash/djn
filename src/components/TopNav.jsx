@@ -224,7 +224,9 @@ export default function TopNav() {
         {/* Logo */}
         <NavLink to="/about" className="tn-logo" aria-label="Deepak John Mathew, home" onClick={() => setMobileOpen(false)}>
           <span className="tn-logo-mark">DJM</span>
+          {/* The full name beside the mark is switched off for now ("DJM" alone is the logo).
           <span className="tn-logo-name">Deepak John Mathew</span>
+          */}
         </NavLink>
 
         {/* Desktop nav */}

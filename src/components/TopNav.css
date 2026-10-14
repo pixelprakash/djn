@@ -38,10 +38,10 @@
 .tn-logo {
   font-family: var(--body);
   font-size: 1.75rem;
-  font-weight: 400;
+  font-weight: 600; /* the logo is the anchor: heavier than the links beside it, now that it stands alone */
   color: var(--ink);
   text-decoration: none;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.04em;
   flex-shrink: 0;
   margin-right: 48px;
   display: flex;
@@ -50,8 +50,7 @@
 }
 .tn-logo:hover { opacity: .65; }
 
-/* Full name beside the monogram, where there's room: "DJM" alone means
-   nothing to someone arriving cold. */
+/* The full name beside the monogram (hidden for now; see TopNav.jsx). */
 .tn-logo-name {
   display: none;
   margin-left: 14px;

@@ -1,7 +1,7 @@
 .hls {
   position: fixed;
   right: 20px;
-  bottom: 18px;
+  top: 78px;
   z-index: 9000; /* above the page, below dialogs (99999) and the intro */
   display: flex;
   align-items: center;
@@ -35,7 +35,7 @@
 .hls-btn:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
 .hls-hint { opacity: .65; }
 @media (max-width: 560px) {
-  .hls { right: 12px; bottom: 12px; }
+  .hls { top: auto; right: 12px; bottom: 12px; }
   .hls-label, .hls-hint { display: none; }
 }
 @media (prefers-reduced-motion: reduce) { .hls-btn { transition: none; } }

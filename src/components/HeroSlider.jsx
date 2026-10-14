@@ -18,7 +18,11 @@ import './HeroSlider.css'
      never while it rotates by itself. */
 const SLIDE_MS = 6000
 
-export default function HeroSlider({ projects }) {
+// WordPress keeps the original upload next to the resized copies ("name-1024x681.jpg" ->
+// "name.jpg", 1200-1600 px wide). The hero is large, so it uses the original.
+const original = url => url.replace(/-\d{2,5}x\d{2,5}(\.\w+)$/, '$1')
+
+export default function HeroSlider({ projects, wide = false }) {
   const n = projects.length
   const [i, setI] = useState(0)
   const [userPaused, setUserPaused] = useState(() => typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches)
@@ -70,7 +74,7 @@ export default function HeroSlider({ projects }) {
 
   return (
     <div
-      className="hs hp-art"
+      className={`hs hp-art${wide ? ' hs--wide' : ''}`}
       ref={rootRef}
       role="group"
       aria-roledescription="carousel"
@@ -107,7 +111,7 @@ export default function HeroSlider({ projects }) {
             onMouseEnter={() => preloadForPath(`/work/${q.slug}`)}
           >
             <img
-              src={q.cover}
+              src={original(q.cover)}
               alt=""
               width="1280"
               height="720"

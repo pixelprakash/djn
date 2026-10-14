@@ -46,11 +46,10 @@ function MotionLink({ href, label }) {
   )
 }
 
-/* The intro text, shared by both layouts. */
-function Intro() {
+/* The intro's lines, without the heading: used by Option 1's hero and by Option 2's About band. */
+function AboutLines() {
   return (
-    <div className="hp-hero-text">
-      <h1 className="hp-title">Prof. Deepak John Mathew</h1>
+    <>
       <p className="hp-line">
         Professor &amp; Founding head of{' '}
         <MotionLink href="https://design.iith.ac.in" label="Design Dept" />{' '}
@@ -71,6 +70,16 @@ function Intro() {
           </a>
         ))}
       </nav>
+    </>
+  )
+}
+
+/* Option 1's intro: heading plus the lines. */
+function Intro() {
+  return (
+    <div className="hp-hero-text">
+      <h1 className="hp-title">Prof. Deepak John Mathew</h1>
+      <AboutLines />
     </div>
   )
 }
@@ -87,13 +96,23 @@ export default function About() {
               selected works as a slideshow hero, then the news. */}
           <LatestNotice />
 
-          <header className="hp-hero hp-hero--slider">
-            {/* The selected works, one by one, as a slideshow. */}
-            <HeroSlider projects={PROJECTS} />
-            <Intro />
+          {/* First screen: one quiet line of identity, then the work -- nothing else. */}
+          <header className="hp-hero hp-hero--stage">
+            <div className="hp-id">
+              <h1 className="hp-id-name">Prof. Deepak John Mathew</h1>
+              <p className="hp-id-role">Professor of Design, IIT Hyderabad</p>
+            </div>
+            <HeroSlider projects={PROJECTS} wide />
           </header>
 
           <NewsSection />
+
+          {/* The personal information, for those who look for it. */}
+          <section className="hp-about" aria-labelledby="hp-about-h">
+            <h2 className="hp-about-h" id="hp-about-h">About</h2>
+            <div className="hp-about-body"><AboutLines /></div>
+          </section>
+
           <AtWork withPhoto />
         </>
       ) : (
