@@ -1,11 +1,10 @@
-/* One-time arrival (see IntroLoader.jsx): a camera viewfinder.
-   --il-ink is a touch lighter at the centre than the page ink, so the
-   screen has depth without a gradient looking like a gradient. */
+/* One-time arrival (see IntroLoader.jsx): a camera viewfinder, drawn in ink on
+   a slowly drifting pastel gradient (the closed shutter is the gradient). */
 .il {
-  --il-cream: rgba(245, 243, 238, 1);
-  --il-dim:   rgba(245, 243, 238, .66);
-  --il-faint: rgba(245, 243, 238, .12);
-  --il-blue:  #7db4dc; /* brand blue, lifted to read on ink */
+  --il-ink:   #141414;
+  --il-dim:   rgba(20, 20, 20, .62);
+  --il-faint: rgba(20, 20, 20, .14);
+  --il-blue:  var(--accent); /* brand blue, for the autofocus box and the meter marker */
   --il-pad:   clamp(16px, 2.4vw, 34px);
   --il-arm:   clamp(22px, 3vw, 40px);
 
@@ -16,35 +15,37 @@
   font-family: var(--body);
 }
 
-/* Shutter blades -- the ink surface. Fills with the page ink so the
-   closed shutter is indistinguishable from a flat ink screen. */
+/* Shutter blades -- the screen itself. Each is filled with the signature
+   gradient (defined in ShutterBlades), so the closed shutter reads as one
+   flat gradient screen; as the blades part, their seams draw in. */
 .il-shutter {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
 }
-.il-blade { fill: var(--ink); }
+.il-blade { fill: url(#il-fill); }
 .il-edge {
-  stroke: rgba(245, 243, 238, .34);
+  stroke: rgba(20, 20, 20, .34);
   vector-effect: non-scaling-stroke;
   stroke-width: 1px;
 }
 
-/* Soft centre light, so the flat ink has depth. Fades with the readouts. */
+/* A soft pool of white light behind the name, for legibility and depth.
+   Fades with the readouts. */
 .il-glow {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background: radial-gradient(120% 95% at 50% 44%, rgba(255, 255, 255, .045) 0%, rgba(255, 255, 255, 0) 68%);
+  background: radial-gradient(62% 52% at 50% 46%, rgba(255, 255, 255, .55) 0%, rgba(255, 255, 255, 0) 72%);
 }
 
-/* Static film grain: keeps flat ink from reading as a colour swatch. */
+/* Static film grain: keeps the flat gradient from reading as a colour swatch. */
 .il-grain {
   position: absolute;
   inset: 0;
-  opacity: .06;
-  mix-blend-mode: overlay;
+  opacity: .05;
+  mix-blend-mode: multiply;
   pointer-events: none;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
@@ -74,10 +75,10 @@
   height: var(--il-arm);
   opacity: 0;
 }
-.il-corner--tl { top: 0;    left: 0;  border-top: 2px solid var(--il-cream);    border-left: 2px solid var(--il-cream); }
-.il-corner--tr { top: 0;    right: 0; border-top: 2px solid var(--il-cream);    border-right: 2px solid var(--il-cream); }
-.il-corner--bl { bottom: 0; left: 0;  border-bottom: 2px solid var(--il-cream); border-left: 2px solid var(--il-cream); }
-.il-corner--br { bottom: 0; right: 0; border-bottom: 2px solid var(--il-cream); border-right: 2px solid var(--il-cream); }
+.il-corner--tl { top: 0;    left: 0;  border-top: 2px solid var(--il-ink);    border-left: 2px solid var(--il-ink); }
+.il-corner--tr { top: 0;    right: 0; border-top: 2px solid var(--il-ink);    border-right: 2px solid var(--il-ink); }
+.il-corner--bl { bottom: 0; left: 0;  border-bottom: 2px solid var(--il-ink); border-left: 2px solid var(--il-ink); }
+.il-corner--br { bottom: 0; right: 0; border-bottom: 2px solid var(--il-ink); border-right: 2px solid var(--il-ink); }
 
 /* ── Readouts ── */
 .il-hud {
@@ -124,11 +125,12 @@
   display: flex;
   align-items: baseline;
   gap: 4px;
+  font-family: var(--display);
   font-size: clamp(2.4rem, 5.4vw, 4.4rem);
-  font-weight: 300;
+  font-weight: 400;
   line-height: 1;
   letter-spacing: -0.03em;
-  color: var(--il-cream);
+  color: var(--il-ink);
   font-variant-numeric: tabular-nums;
 }
 .il-count i {
@@ -159,7 +161,7 @@
   height: 7px;
   background: var(--il-dim);
 }
-.il-ticks span.is-major { height: 14px; background: var(--il-cream); }
+.il-ticks span.is-major { height: 14px; background: var(--il-ink); }
 .il-marker {
   position: absolute;
   top: -11px;
@@ -193,7 +195,7 @@
 .il-af i:nth-child(2) { top: 0;    right: 0; border-width: 2px 2px 0 0; }
 .il-af i:nth-child(3) { bottom: 0; left: 0;  border-width: 0 0 2px 2px; }
 .il-af i:nth-child(4) { bottom: 0; right: 0; border-width: 0 2px 2px 0; }
-.il-af.is-locked i { border-color: var(--il-cream); }
+.il-af.is-locked i { border-color: var(--il-ink); }
 
 /* Masks: padding sits on the element that owns the font size, so the em
    resolves against the type it protects (descenders, italic overhang). */
@@ -204,12 +206,11 @@
 }
 .il-name {
   font-family: var(--display);
-  font-style: italic;
-  font-weight: 400;
+  font-weight: 500;
   font-size: clamp(2.3rem, 7.2vw, 6.4rem);
-  line-height: 1.12;
-  letter-spacing: -0.015em;
-  color: var(--il-cream);
+  line-height: 1.1;
+  letter-spacing: -0.045em;
+  color: var(--il-ink);
 }
 .il-name .il-mask { padding: 0.06em 0.12em 0.24em; margin: 0 -0.04em; }
 .il-word { display: inline-block; }
@@ -223,13 +224,14 @@
 .il-sub .il-mask { padding: 0.12em 0.2em 0.28em; }
 .il-line {
   display: inline-block;
+  font-family: var(--display);
   font-size: clamp(0.95rem, 1.5vw, 1.2rem);
   font-weight: 500;
-  letter-spacing: .06em;
+  letter-spacing: .01em;
   color: var(--il-dim);
   text-wrap: balance;
 }
-.il-sub .il-mask:first-child .il-line { color: rgba(245, 243, 238, .9); }
+.il-sub .il-mask:first-child .il-line { color: var(--il-ink); }
 
 /* Reduced motion skips this component in React; this is the second line
    of defence if CSS is cached ahead of a JS update. */
@@ -265,16 +267,16 @@
   font-family: var(--body);
   font-size: 1rem;
   font-weight: 500;
-  letter-spacing: .04em;
-  color: rgba(245, 243, 238, .92);
-  background: rgba(245, 243, 238, .08);
-  border: 1.5px solid rgba(245, 243, 238, .5);
+  letter-spacing: .01em;
+  color: var(--il-ink, #141414);
+  background: rgba(255, 255, 255, .55);
+  border: 1.5px solid rgba(20, 20, 20, .4);
   border-radius: 100px;
   cursor: pointer;
   transition: background .2s, color .2s, border-color .2s;
 }
-.il-skip:hover { background: rgba(245, 243, 238, .92); color: var(--ink); border-color: transparent; }
-.il-skip:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+.il-skip:hover { background: #141414; color: #f7f7f7; border-color: transparent; }
+.il-skip:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 /* Short (landscape phone) screens: lower, to clear the autofocus square that
    closes in around the name. */
 @media (max-height: 480px) { .il-skip { bottom: 58px; } }

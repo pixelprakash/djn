@@ -149,4 +149,4 @@ html[data-pt] .page-loader { visibility: hidden; }
 
 /* Held over the page for the instant before the intro's script arrives, so the
    page never flashes before the intro covers it. Same colour as the intro. */
-.il-boot { position: fixed; inset: 0; z-index: 100000; background: var(--ink); }
+.il-boot { position: fixed; inset: 0; z-index: 100000; background: var(--gradient-soft); }

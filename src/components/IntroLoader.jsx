@@ -104,6 +104,9 @@ function createSound() {
 /* The site's one-time arrival, played once per real page load (route
    changes have their own transition in App.jsx).
 
+   It is drawn in ink on a slowly drifting pastel gradient (the site's
+   signature), in the site's grotesque.
+
    The idea is a camera's viewfinder, because that's the shared language
    of his two trades: corner brackets frame the screen, a rule-of-thirds
    grid draws in, an autofocus box hunts and locks onto his name, and an
@@ -116,7 +119,7 @@ function createSound() {
    dead request can't trap anyone) before reading 100 and opening. On a
    fast connection that wait is zero.
 
-   The finale is a six-blade shutter. The blades *are* the ink surface the
+   The finale is a six-blade shutter. The blades *are* the gradient surface the
    viewfinder sits on; when the readouts clear they part, their overlapping
    edges drawing in as they move, and the page appears through the opening.
 
@@ -184,6 +187,15 @@ export default function IntroLoader() {
           Promise.all([loaded, document.fonts ? document.fonts.ready : null]),
           new Promise(res => setTimeout(res, 4500)),
         ])
+
+        // The gradient is alive while it loads: its axis drifts slowly, so the
+        // screen shifts from lavender-led to salmon-led over the intro.
+        const fillGrad = document.getElementById('il-fill')
+        if (fillGrad) {
+          gsap.fromTo(fillGrad,
+            { attr: { x1: -90, y1: 90, x2: 90, y2: -90 } },
+            { attr: { x1: -20, y1: 120, x2: 160, y2: -60 }, duration: 3.4, ease: 'sine.inOut' })
+        }
 
         // Position every blade for shutter openness o (0 closed, 1 open).
         const setShutter = o => applyShutter(shutterRefs.current, o)

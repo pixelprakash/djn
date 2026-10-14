@@ -57,6 +57,40 @@
 .wi .wi-shape--on { opacity: 1; }
 
 .wi-rows { position: relative; list-style: none; }
+.wi-row { transition: opacity .25s ease; }
+/* While one row is active the others step back. */
+.wi-list--hover .wi-row:not(:hover):not(:focus-visible) { opacity: .38; }
+
+/* The preview: a cover that sits in the gradient column and follows the pointer
+   up and down (see WorkIndex.jsx). */
+.wi .wi-preview {
+  position: absolute;
+  left: 0; top: 0;
+  z-index: 3;
+  width: clamp(200px, 20vw, 300px);
+  aspect-ratio: 3 / 2;
+  background: #ebebeb;
+  box-shadow: var(--shadow-float);
+  pointer-events: none;
+  opacity: 0;
+  will-change: transform;
+  transition: opacity .22s ease;
+}
+.wi .wi-preview--on { opacity: 1; }
+.wi-preview img {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+  opacity: 0;
+  transition: opacity .25s ease;
+}
+.wi-preview img.is-active { opacity: 1; }
+/* Touch screens: no hover, so no preview. */
+@media (hover: none), (pointer: coarse) {
+  .wi .wi-preview { display: none; }
+  .wi-list--hover .wi-row:not(:hover):not(:focus-visible) { opacity: 1; }
+}
 .wi-item + .wi-item { border-top: 1px solid rgba(26, 24, 20, .08); }
 .wi-row {
   display: grid;
@@ -98,5 +132,5 @@
   .wi-meta { display: none; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .wi .wi-shape, .wi .wi-title-text { transition: none; }
+  .wi .wi-shape, .wi .wi-title-text, .wi-row, .wi .wi-preview, .wi-preview img { transition: none; }
 }
