@@ -2,6 +2,17 @@
    out-specifies the home page's ".hp * { background: transparent }". The
    gradient plate behind the picture comes from .hp-art (About.css). */
 .hs { margin: 0; }
+/* The page's hero plate (.hp-art::before) would sit behind the whole slider,
+   under the text and controls. Here it belongs to the picture only (.hs-frame). */
+.hs.hp-art::before { content: none; }
+.hs .hs-frame { position: relative; isolation: isolate; }
+.hs .hs-frame::before {
+  content: '';
+  position: absolute;
+  inset: clamp(18px, 2.6vw, 44px) calc(-1 * clamp(18px, 2.6vw, 44px)) calc(-1 * clamp(18px, 2.6vw, 44px)) clamp(18px, 2.6vw, 44px);
+  background: linear-gradient(96deg, var(--g-lavender) 0%, var(--g-peach) 38%, var(--g-cream) 68%, var(--g-salmon) 100%);
+  z-index: 0;
+}
 .hs .hs-stage {
   position: relative;
   z-index: 1;
@@ -29,50 +40,48 @@
 .hs .hs-slide.is-active img { transform: scale(1.05); }
 .hs .hs-slide:focus-visible { outline: 3px solid var(--accent); outline-offset: -3px; }
 
-/* Caption: sits under the picture, clear of the plate that hangs below it. */
+/* Caption: sits under the picture, clear of the plate that hangs below it (an
+   8px-based rhythm: plate overhang + 32px). */
 .hs .hs-caption {
   position: relative;
   z-index: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  margin-top: calc(clamp(18px, 2.6vw, 44px) + clamp(10px, 1.4vw, 18px));
+  margin-top: calc(clamp(18px, 2.6vw, 44px) + clamp(24px, 2.4vw, 32px));
 }
-.hs .hs-kicker { font-family: var(--body); font-size: 0.9rem; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.hs .hs-cap-text { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.hs .hs-kicker { font-family: var(--body); font-size: 0.9rem; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); line-height: 1.4; }
 .hs .hs-title {
   align-self: flex-start;
   font-family: var(--display);
-  font-size: clamp(1.4rem, 2.2vw, 2rem);
+  font-size: clamp(1.5rem, 2.6vw, 2.4rem);
   font-weight: 500;
-  line-height: 1.15;
-  letter-spacing: -0.025em;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
   color: var(--ink);
   text-decoration: none;
 }
 .hs .hs-title:hover { color: var(--accent); }
-.hs .hs-year { font-weight: 400; color: var(--muted); margin: 0 4px; font-variant-numeric: tabular-nums; }
 .hs .hs-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
 /* Controls: numbered segments (each fills while its slide runs) and the buttons. */
-.hs .hs-controls { position: relative; z-index: 1; display: flex; align-items: center; justify-content: space-between; gap: 16px 24px; flex-wrap: wrap; margin-top: clamp(14px, 1.8vw, 22px); }
-.hs .hs-segs { list-style: none; display: flex; gap: clamp(8px, 1.2vw, 16px); flex: 1 1 240px; max-width: 420px; }
+.hs .hs-controls { position: relative; z-index: 1; display: flex; align-items: center; justify-content: space-between; gap: 16px 32px; flex-wrap: wrap; margin-top: clamp(24px, 2.6vw, 40px); padding-top: clamp(16px, 1.6vw, 24px); border-top: 1px solid rgba(20, 20, 20, .3); }
+.hs .hs-segs { list-style: none; display: flex; gap: clamp(12px, 1.6vw, 24px); flex: 1 1 240px; max-width: 440px; }
 .hs .hs-segs li { flex: 1 1 0; min-width: 0; }
-.hs .hs-seg { display: flex; flex-direction: column; gap: 6px; width: 100%; padding: 6px 0; background: none; border: 0; cursor: pointer; text-align: left; }
+.hs .hs-seg { display: flex; flex-direction: column; justify-content: center; gap: 8px; width: 100%; min-height: 44px; padding: 6px 0; background: none; border: 0; cursor: pointer; text-align: left; }
 .hs .hs-seg-no { font-family: var(--body); font-size: 0.9rem; font-weight: 500; font-variant-numeric: tabular-nums; color: var(--muted); }
 .hs .hs-seg.is-active .hs-seg-no, .hs .hs-seg:hover .hs-seg-no { color: var(--ink); }
-.hs .hs-seg-bar { display: block; height: 2px; background: rgba(20, 20, 20, .18); overflow: hidden; }
-.hs .hs-seg-fill { display: block; height: 100%; background: var(--ink); transform: scaleX(0); transform-origin: left; }
+.hs .hs-seg-bar { display: block; height: 3px; background: rgba(20, 20, 20, .14); overflow: hidden; }
+.hs .hs-seg-fill { display: block; height: 100%; background: linear-gradient(90deg, var(--ink), var(--accent)); transform: scaleX(0); transform-origin: left; }
 .hs .hs-seg:not(.is-active) .hs-seg-fill { transform: scaleX(0); }
 .hs .hs-seg:focus-visible, .hs .hs-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 
-.hs .hs-btns { display: flex; gap: 6px; }
+.hs .hs-btns { display: flex; gap: 8px; }
 .hs .hs-btn {
-  min-width: 40px; min-height: 40px;
-  padding: 0 14px;
+  min-width: 44px; min-height: 44px;
+  padding: 0 16px;
   font-family: var(--body); font-size: 1rem; font-weight: 500;
   color: var(--ink);
   background: none;
-  border: 1px solid rgba(20, 20, 20, .35);
+  border: 1px solid rgba(20, 20, 20, .5);
   border-radius: 0;
   cursor: pointer;
   transition: background-color .2s, color .2s, border-color .2s;

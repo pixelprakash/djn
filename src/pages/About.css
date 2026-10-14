@@ -182,3 +182,7 @@
   .hp-link::before, .hp-link-word-real, .hp-link-word::before,
   .hp-plain { transition: none; }
 }
+
+/* With the slideshow, the intro lines up with the top edge of the picture. */
+.hp-hero--slider { align-items: start; }
+.hp-hero--slider .hp-hero-text { padding-top: clamp(4px, 1vw, 16px); padding-bottom: 0; }

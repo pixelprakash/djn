@@ -84,6 +84,7 @@ export default function HeroSlider({ projects }) {
         if (e.key === 'ArrowLeft') { e.preventDefault(); go(i - 1) }
       }}
     >
+      <div className="hs-frame">
       <div
         className="hs-stage"
         onTouchStart={e => { touchX.current = e.touches[0].clientX }}
@@ -117,13 +118,16 @@ export default function HeroSlider({ projects }) {
           </Link>
         ))}
       </div>
+      </div>
 
       <div className="hs-caption" aria-live={running ? 'off' : 'polite'} aria-atomic="true">
-        <span className="hs-kicker">Selected work &middot; {p.category}</span>
-        <Link className="hs-title" to={`/work/${p.slug}`} tabIndex={-1} aria-hidden="true">
-          {p.title} <span className="hs-year">{p.year}</span> <span aria-hidden="true">&rarr;</span>
-        </Link>
-        <span className="hs-sr">{p.title}, {p.year}</span>
+        <div className="hs-cap-text">
+          <span className="hs-kicker">Selected work &middot; {p.category} &middot; {p.year}</span>
+          <Link className="hs-title" to={`/work/${p.slug}`} tabIndex={-1} aria-hidden="true">
+            {p.title} <span aria-hidden="true">&rarr;</span>
+          </Link>
+          <span className="hs-sr">{p.title}, {p.year}</span>
+        </div>
       </div>
 
       <div className="hs-controls">

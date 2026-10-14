@@ -87,7 +87,7 @@ export default function About() {
               selected works as a slideshow hero, then the news. */}
           <LatestNotice />
 
-          <header className="hp-hero">
+          <header className="hp-hero hp-hero--slider">
             {/* The selected works, one by one, as a slideshow. */}
             <HeroSlider projects={PROJECTS} />
             <Intro />
