@@ -115,6 +115,9 @@ export default function HeroSlider({ projects }) {
               fetchPriority={k === 0 ? 'high' : undefined}
               decoding="async"
             />
+            {/* The cue: appears on hover / focus (always on touch screens). The link
+                already has its own label, so this is decorative. */}
+            <span className="hs-cue" aria-hidden="true">View project <span className="hs-cue-arrow">&rarr;</span></span>
           </Link>
         ))}
       </div>
@@ -124,7 +127,7 @@ export default function HeroSlider({ projects }) {
         <div className="hs-cap-text">
           <span className="hs-kicker">Selected work &middot; {p.category} &middot; {p.year}</span>
           <Link className="hs-title" to={`/work/${p.slug}`} tabIndex={-1} aria-hidden="true">
-            {p.title} <span aria-hidden="true">&rarr;</span>
+            {p.title} <span className="hs-title-arrow" aria-hidden="true">&rarr;</span>
           </Link>
           <span className="hs-sr">{p.title}, {p.year}</span>
         </div>

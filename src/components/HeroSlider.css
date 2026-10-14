@@ -40,6 +40,52 @@
 .hs .hs-slide.is-active img { transform: scale(1.05); }
 .hs .hs-slide:focus-visible { outline: 3px solid var(--accent); outline-offset: -3px; }
 
+/* "This opens the project": on hover or focus the picture darkens a little and a
+   "View project" label appears on it; the title under it turns blue and its arrow
+   steps forward. On touch screens (no hover) the label is always shown. */
+.hs .hs-slide { cursor: pointer; }
+.hs .hs-slide::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(20, 20, 20, .38), rgba(20, 20, 20, .08) 55%, rgba(20, 20, 20, 0));
+  opacity: 0;
+  transition: opacity .3s ease;
+  pointer-events: none;
+}
+.hs .hs-cue {
+  position: absolute;
+  z-index: 1;
+  left: clamp(16px, 2vw, 28px);
+  bottom: clamp(16px, 2vw, 28px);
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 0 20px;
+  font-family: var(--body);
+  font-size: 1rem;
+  font-weight: 500;
+  color: #141414;
+  background: #f7f7f7;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity .25s ease, transform .3s cubic-bezier(.22, 1, .36, 1);
+  pointer-events: none;
+}
+.hs .hs-cue-arrow { transition: transform .3s cubic-bezier(.22, 1, .36, 1); }
+.hs .hs-slide.is-active:hover::after,
+.hs .hs-slide.is-active:focus-visible::after { opacity: 1; }
+.hs .hs-slide.is-active:hover .hs-cue,
+.hs .hs-slide.is-active:focus-visible .hs-cue { opacity: 1; transform: none; }
+.hs .hs-slide.is-active:hover .hs-cue-arrow { transform: translateX(4px); }
+.hs .hs-title-arrow { display: inline-block; transition: transform .3s cubic-bezier(.22, 1, .36, 1); }
+.hs .hs-frame:hover + .hs-caption .hs-title { color: var(--accent); }
+.hs .hs-frame:hover + .hs-caption .hs-title-arrow { transform: translateX(6px); }
+@media (hover: none) {
+  .hs .hs-slide.is-active .hs-cue { opacity: 1; transform: none; }
+}
+
 /* Caption: sits under the picture, clear of the plate that hangs below it (an
    8px-based rhythm: plate overhang + 32px). */
 .hs .hs-caption {
@@ -94,5 +140,6 @@
 @media (prefers-reduced-motion: reduce) {
   .hs .hs-slide, .hs .hs-slide.is-active { transition: none; }
   .hs .hs-slide img, .hs .hs-slide.is-active img { transition: none; transform: scale(1.05); }
-  .hs .hs-btn { transition: none; }
+  .hs .hs-btn, .hs .hs-slide::after, .hs .hs-cue, .hs .hs-cue-arrow, .hs .hs-title-arrow { transition: none; }
+  .hs .hs-slide.is-active:hover .hs-cue-arrow, .hs .hs-frame:hover + .hs-caption .hs-title-arrow { transform: none; }
 }
