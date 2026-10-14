@@ -1,5 +1,6 @@
 import { NavLink } from 'react-router-dom'
 import { SOCIALS } from '../data/socials'
+import FooterPrism from './FooterPrism'
 import './Footer.css'
 
 const LINKS = [
@@ -21,6 +22,9 @@ export default function Footer() {
   return (
     <footer className="ft">
       <span className="ft-edge" aria-hidden="true" />
+
+      {/* The closing scene: light through a prism (it reacts to the pointer). */}
+      <FooterPrism />
 
       <div className="ft-inner">
         <div className="ft-brand">
