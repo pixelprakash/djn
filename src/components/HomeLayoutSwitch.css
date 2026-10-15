@@ -1,3 +1,4 @@
+/* Layout switcher: a round button that opens into a pill (see HomeLayoutSwitch.jsx). */
 .hls {
   position: fixed;
   right: 20px;
@@ -6,15 +7,60 @@
   display: flex;
   align-items: center;
   gap: 4px;
-  padding: 5px;
+  padding: 4px;
   background: rgba(20, 20, 20, .92);
   -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
-  box-shadow: 0 8px 30px rgba(0, 0, 0, .25);
+  box-shadow: 0 6px 22px rgba(0, 0, 0, .22);
   border-radius: 100px;
   font-family: var(--body);
+  transition: box-shadow .25s ease;
 }
-.hls-label { padding: 0 10px 0 14px; font-size: 0.85rem; letter-spacing: .08em; text-transform: uppercase; color: rgba(255, 255, 255, .7); }
+
+/* The round button: 40px, shows the current option as a small badge. */
+.hls-fab {
+  position: relative;
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  color: #fff;
+  background: transparent;
+  border: 0;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background-color .2s;
+}
+.hls-fab:hover { background: rgba(255, 255, 255, .14); }
+.hls-fab:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+.hls-num {
+  position: absolute;
+  right: -5px; bottom: -5px;
+  display: grid; place-items: center;
+  min-width: 18px; height: 18px;
+  box-shadow: 0 0 0 2px rgba(20, 20, 20, 1);
+  padding: 0 3px;
+  font-size: 0.72rem; font-weight: 600; line-height: 1;
+  color: #141414;
+  background: #f7f7f7;
+  border-radius: 100px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* The options unfold to the left of the button. */
+.hls-panel {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transform-origin: right center;
+  animation: hls-open .28s cubic-bezier(.22, 1, .36, 1) both;
+}
+@keyframes hls-open {
+  from { opacity: 0; transform: translateX(14px) scaleX(.6); }
+  to   { opacity: 1; transform: none; }
+}
 .hls-btn {
   min-height: 36px;
   padding: 8px 16px;
@@ -36,8 +82,8 @@
 .hls-hint { opacity: .65; }
 @media (max-width: 560px) {
   .hls { top: auto; right: 12px; bottom: 12px; }
-  .hls-label, .hls-hint { display: none; }
+  .hls-hint { display: none; }
 }
 /* On a dark page the dark pill needs an edge to read as a control. */
 :root[data-theme="dark"] .hls { border: 1px solid rgba(255, 255, 255, .22); }
-@media (prefers-reduced-motion: reduce) { .hls-btn { transition: none; } }
+@media (prefers-reduced-motion: reduce) { .hls-btn, .hls-fab { transition: none; } .hls-panel { animation: none; } }
