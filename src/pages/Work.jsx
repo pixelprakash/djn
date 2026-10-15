@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import { PROJECTS } from './projectData'
 import { SPONSORED, SOLO_SHOWS, EXHIBITIONS } from './exhibitionData'
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Reveal from '../components/Reveal'
 import PageHero from '../components/PageHero'
 import usePageTitle from '../hooks/usePageTitle'
@@ -52,6 +52,18 @@ export default function Work() {
   const pageRef = useRef(null)
   useStackedLayers(pageRef)
   const sheetTop = useRef(null)
+  // True once the tab bar has scrolled up to its pinned spot under the top bar, so it
+  // can separate itself from the lists passing beneath (a soft shadow).
+  const [stuck, setStuck] = useState(false)
+  useEffect(() => {
+    const root = document.getElementById('root')
+    const el = sheetTop.current
+    if (!root || !el || typeof IntersectionObserver === 'undefined') return
+    const navH = window.matchMedia('(max-width: 640px)').matches ? 57 : 65
+    const io = new IntersectionObserver(([e]) => setStuck(!e.isIntersecting && e.boundingClientRect.bottom < navH + 2), { root, rootMargin: `-${navH}px 0px 0px 0px`, threshold: 0 })
+    io.observe(el)
+    return () => io.disconnect()
+  }, [])
 
   const cats = ['All', ...new Set(PROJECTS.map(p => p.category))]
   const shownProjects = cat === 'All' ? PROJECTS : PROJECTS.filter(p => p.category === cat)
@@ -98,7 +110,7 @@ export default function Work() {
       <div className="wp-sheet-top" ref={sheetTop} aria-hidden="true" />
 
       {/* -- TABS -- */}
-      <div className="tab-nav" role="tablist" aria-label="Work sections" onKeyDown={onTabKey}>
+      <div className={`tab-nav${stuck ? ' tab-nav--stuck' : ''}`} role="tablist" aria-label="Work sections" onKeyDown={onTabKey}>
         {TABS.map(([id, label]) => (
           <button
             key={id}

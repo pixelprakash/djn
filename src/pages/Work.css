@@ -19,18 +19,21 @@
 ========================================== */
 .tab-nav {
   display: flex;
-  /* Labels start on the page's content edge (the same x as the chips and
-     cards below), with the space between them in the gap, so the underline
-     is exactly as wide as its label. */
-  gap: clamp(28px, 4.5vw, 64px);
-  padding: 0 var(--g);
+  /* Each tab has 14px of its own side padding (the tint of the active tab fills
+     it), so the bar's padding and the gap are reduced by the same amount and the
+     label text still starts on the page's content edge, in line with the chips and
+     cards below. */
+  gap: clamp(0px, calc(4.5vw - 28px), 36px);
+  padding: 0 calc(var(--g) - 14px);
   border-bottom: 1px solid var(--rule);
   margin-top: 0;
-  /* Pinned under the top bar (65px; 57px on phones) while the lists scroll.
-     The page background comes from PageHero's `.ph ~ *` rule, so lists
-     passing underneath never show through. */
+  /* Pinned under the top bar (65px; 57px on phones) while the lists scroll. It tucks
+     2px up under the bar (which sits above it) so no sliver of the list can show
+     between the two, whatever the browser zoom rounds to. The page background comes
+     from PageHero's `.ph ~ *` rule, so lists passing underneath never show through. */
   position: sticky;
-  top: 65px;
+  top: 63px;
+  padding-top: 2px;
   z-index: 5;
   /* Scroll horizontally on small screens so no tab label is ever clipped */
   overflow-x: auto;
@@ -39,9 +42,12 @@
   -webkit-overflow-scrolling: touch;
   white-space: nowrap;
   flex-shrink: 0;
+  transition: box-shadow .25s ease;
 }
 .tab-nav::-webkit-scrollbar { display: none; }
-@media (max-width: 640px) { .tab-nav { top: 57px; } }
+/* Once pinned, a soft shadow lifts the bar off the lists scrolling under it. */
+.tab-nav--stuck { box-shadow: 0 10px 24px -14px rgba(var(--shadow-rgb), .28); }
+@media (max-width: 640px) { .tab-nav { top: 55px; } }
 
 /* Height of the page's rounded top edge over the hero; see Work.jsx. */
 .wp-sheet-top { height: 28px; }
@@ -53,27 +59,40 @@
   color: var(--muted);
   background: none;
   border: none;
-  padding: clamp(14px, 2.5vw, 24px) 0;
+  padding: clamp(14px, 2.5vw, 24px) 14px;
   cursor: pointer;
   position: relative;
   transition: color .2s;
   white-space: nowrap;
   flex-shrink: 0;
 }
+/* The active tab is unmistakable from anywhere on the page: ink text, a pale accent
+   tint behind the whole tab, and a thick accent bar along its bottom edge. */
+.tab-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: color-mix(in srgb, var(--accent) 9%, transparent);
+  opacity: 0;
+  transition: opacity .2s;
+  pointer-events: none;
+}
 .tab-btn::after {
   content: '';
   position: absolute;
   bottom: -1px; left: 0; right: 0;
-  height: 2.5px;
+  height: 4px;
   background: var(--accent);
   transform: scaleX(0);
   transform-origin: left;
   transition: transform .28s ease;
 }
 .tab-btn:hover { color: var(--ink); }
-.tab-btn:hover::after { transform: scaleX(1); }
-.tab-btn.active { color: var(--ink); font-weight: 500; }
+.tab-btn:hover::after { transform: scaleX(.35); }
+.tab-btn.active { color: var(--ink); font-weight: 600; }
+.tab-btn.active::before { opacity: 1; }
 .tab-btn.active::after { transform: scaleX(1); }
+.tab-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
 
 /* ==========================================
    TAB CONTENT WRAPPER
@@ -352,7 +371,7 @@
 @media (max-width: 640px) {
   /* All 3 tabs visible at once -- equal width, no scroll needed */
   .tab-nav {
-    padding: 0;
+    padding: 2px 0 0; /* the 2px that tucks under the top bar */
     gap: 0;
     overflow-x: visible;
     display: grid;
