@@ -5,7 +5,7 @@ import useReducedMotion from "./hooks/useReducedMotion"
 import TopNav     from "./components/TopNav"
 import CustomCursor from "./components/CustomCursor"
 import Footer from "./components/Footer"
-import { routeImports, preloadAllRoutes } from "./routePreload"
+import { routeImports, preloadAllRoutes, preloadForPath } from "./routePreload"
 // About is the default landing route ("/" redirects here), so it's imported
 // eagerly — lazy-loading it would add a chunk-fetch round trip to the most
 // common page load instead of saving one.
@@ -158,7 +158,8 @@ function PageTransition() {
   const busy = useRef(false)
   const playRef = useRef(() => {})
   const curtain = useRef(null)
-  const panel = useRef(null)       // the curved ink sheet (every page but projects)
+  const panel = useRef(null)       // the gradient sheet (every page but projects and articles)
+  const trail = useRef(null)       // a paler sheet that follows it, for depth
   const shutterBox = useRef(null)  // the camera shutter (project pages)
   const bar = useRef(null)         // the thin progress line (blog articles)
   const shutterRefs = useRef(makeShutterRefs())
@@ -238,13 +239,28 @@ function PageTransition() {
       onComplete: () => {
         busy.current = false
         delete document.documentElement.dataset.pt
-        gsap.set(page.current, { clearProps: 'transform,opacity,overflow' })
+        gsap.set(page.current, { clearProps: 'transform,transformOrigin,opacity,overflow' })
         gsap.set(curtain.current, { autoAlpha: 0, pointerEvents: 'none' })
         // Something else was asked for while this ran.
         if (latest.current.pathname !== shownRef.current.pathname) playRef.current()
         else if (latest.current !== shownRef.current) commit(latest.current)
       },
     })
+
+    // The new page's own entrance animations would play unseen under the cover.
+    // So its heading, subtitle and picture are held out of sight at the swap and
+    // brought up into place one after another when the cover lifts.
+    const hold = sel => {
+      const els = [...page.current.querySelectorAll(sel)]
+      els.forEach(el => { el.style.animation = 'none' })
+      gsap.set(els, { autoAlpha: 0, y: 44 })
+      tl.data = els
+    }
+    const release = () => {
+      const els = tl.data || []
+      tl.data = null
+      if (els.length) gsap.to(els, { autoAlpha: 1, y: 0, duration: 0.85, ease: 'power3.out', stagger: 0.08, clearProps: 'opacity,visibility,transform' })
+    }
 
     // Fully covered: swap the page underneath, unseen, and park it a
     // little low so it can rise into place as the cover leaves.
@@ -270,12 +286,13 @@ function PageTransition() {
         .fromTo(rule.current, { scaleX: 0 }, { scaleX: 1, duration: 0.45, ease: 'power3.out' }, 0.62)
         .fromTo(venue.current, { yPercent: 115 }, { yPercent: 0, duration: 0.45, ease: 'power3.out' }, 0.7)
 
-        .call(swap, null, 0.62)
+        .call(() => { swap(); hold('.pd-hero-tag, .pd-hero-title, .pd-hero-venue, .pd-hero-cta') }, null, 0.62)
 
         // Label clears, the blades part, the project rises into view.
         .to(textEls, { opacity: 0, duration: 0.25, ease: 'power2.in' }, 1.2)
         .to(sh, { o: 1, duration: 0.8, ease: 'power3.inOut', onUpdate: drive }, 1.28)
         .to(page.current, { y: 0, duration: 0.85, ease: 'power3.out' }, 1.28)
+        .add(release, 1.42)
         .set(textEls, { opacity: 1 })
     } else if (article) {
       // ── Article: crossfade, with a thin accent line sweeping the top ──
@@ -292,27 +309,50 @@ function PageTransition() {
         .to(page.current, { opacity: 1, y: 0, duration: 0.5, ease: 'power3.out' }, 0.26)
         .to(bar.current, { opacity: 0, duration: 0.25, ease: 'power1.out' }, 0.62)
     } else {
-      // ── Everything else: a gradient sheet rises, names the destination, leaves ──
-      // A flat sheet of the signature gradient climbs over the page; the
+      // ── Everything else: two gradient sheets rise, name the destination, and part ──
+      // A paler sheet leads and the main one follows a beat behind it, so the cover
+      // has depth. The page underneath eases back (dims, shrinks a touch). The
       // destination's name sets itself bottom-left, where the next page's own
-      // title will be; the sheet carries on upward and off, so the name hands
-      // over to the real heading.
-      tl.set(panel.current, { yPercent: 100 })
+      // heading will be. While the sheets are still covering, the new page is
+      // swapped in and its heading, subtitle and picture are held out of sight;
+      // as the sheets leave upward they come up into place one after another,
+      // so the name hands over to the real heading instead of the page simply
+      // being there when the cover lifts.
+      const ENTER = '.ph-title, .ph-sub, .hp-id, .hs-frame, .hp-title, .cvp-back, .cvp-title, .bp-title, .np-back'
+      // Fetch the new page's code while the old page leaves; if it isn't here when
+      // the swap is due (slow connection) the sheets simply hold until it is.
+      const ready = Promise.resolve(preloadForPath(latest.current.pathname)).catch(() => {})
+      gsap.set(page.current, { transformOrigin: '50% 0' })
+      tl.set([trail.current, panel.current], { yPercent: 100 })
 
-        // In: the sheet climbs over the page while the page dims beneath it.
-        .to(panel.current, { yPercent: 0, duration: 0.55, ease: 'power4.inOut' }, 0)
-        .to(page.current, { opacity: 0.5, duration: 0.55, ease: 'power2.in' }, 0)
+        // In: the leading sheet, the main sheet 70 ms behind; the page steps back.
+        .to(trail.current, { yPercent: 0, duration: 0.5, ease: 'power4.inOut' }, 0)
+        .to(panel.current, { yPercent: 0, duration: 0.55, ease: 'power4.inOut' }, 0.07)
+        .to(page.current, { opacity: 0.45, scale: 0.985, duration: 0.55, ease: 'power2.in' }, 0)
 
         // The destination's name rises out of a mask, its rule draws under it.
         .fromTo(label.current, { yPercent: 115 }, { yPercent: 0, duration: 0.5, ease: 'power3.out' }, 0.4)
         .fromTo(rule.current, { scaleX: 0 }, { scaleX: 1, duration: 0.45, ease: 'power3.out' }, 0.48)
 
-        .call(swap, null, 0.62)
+        .call(() => {
+          tl.pause()
+          Promise.race([ready, new Promise(r => setTimeout(r, 2500))]).then(() => {
+            commit(latest.current)
+            gsap.set(page.current, { opacity: 1, scale: 1, y: 56, overflow: 'clip' })
+            // Hold the arrivals back until the cover is lifting (the page's own CSS entrance
+            // would otherwise play unseen, underneath the sheets).
+            hold(ENTER)
+            tl.resume()
+          })
+        }, null, 0.62)
 
-        // Out: the name lifts away, the sheet leaves upward, the page settles in.
+        // Out: the name lifts away, the main sheet leaves, then the pale one; the
+        // page settles into place and the arrivals come up in turn behind them.
         .to([label.current, rule.current], { opacity: 0, duration: 0.28, ease: 'power2.in' }, 0.84)
         .to(panel.current, { yPercent: -100, duration: 0.7, ease: 'power4.inOut' }, 0.84)
+        .to(trail.current, { yPercent: -100, duration: 0.7, ease: 'power4.inOut' }, 0.92)
         .to(page.current, { y: 0, duration: 0.85, ease: 'power3.out' }, 0.84)
+        .add(release, 0.98)
         .set([label.current, rule.current], { opacity: 1 })
     }
   }
@@ -336,7 +376,7 @@ function PageTransition() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location, reduceMotion])
 
-  useEffect(() => () => { if (gsap) gsap.killTweensOf([panel.current, bar.current, kicker.current, label.current, rule.current, venue.current, page.current]) }, [])
+  useEffect(() => () => { if (gsap) gsap.killTweensOf([panel.current, trail.current, bar.current, kicker.current, label.current, rule.current, venue.current, page.current]) }, [])
 
   return (
     <>
@@ -345,6 +385,7 @@ function PageTransition() {
       </div>
 
       <div ref={curtain} className="pt" aria-hidden="true">
+        <div ref={trail} className="pt-sheet pt-trail" />
         <div ref={panel} className="pt-sheet" />
         <div ref={shutterBox} className="pt-shutterbox">
           <ShutterBlades prefix="ps" startOpen reg={shutterRegistrar(shutterRefs.current)} />

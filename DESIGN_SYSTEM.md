@@ -289,3 +289,11 @@ The home page language now covers every page. Summary of what changed from the o
   next page's hero title sits), and leaves upward; projects use the camera shutter with pale gradient blades and a
   centred wall label; blog articles use the quiet crossfade; news update pages swap instantly.
 - **Corners / shadows:** square cards, soft layered shadows (see tokens.css).
+
+
+## Page transitions (Oct 2026 revision)
+
+- **Pages (default):** two gradient sheets rise (a paler one leads, the main one follows 70 ms later, top edge softly arced), the old page steps back (dims, scales to .985), the destination's name sets itself bottom-left where the next hero title sits, then the sheets leave upward one after the other.
+- **Staged arrivals:** the new page's own entrance animations would play unseen under the cover, so at the swap its heading, subtitle and picture are held (`animation: none`, hidden) and brought up in turn (`stagger .08`) as the cover lifts. Selectors are the `ENTER` list in `App.jsx` (pages) and the `.pd-hero-*` list (projects).
+- **Projects:** camera shutter with pale-gradient blades, wall label, arrivals as the blades part. **Blog articles:** quiet crossfade + accent line. **News update pages:** instant swap. Reduced motion: instant swap.
+- **Robustness:** the swap waits (up to 2.5 s) for the new page's code, so a slow connection holds the cover instead of flashing a loading screen; a second click mid-transition retargets cleanly.

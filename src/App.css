@@ -51,13 +51,18 @@
    leading edge. GSAP slides it up from below the screen, then off the top. */
 .pt-sheet {
   position: absolute;
-  inset: 0;
+  left: 0; right: 0;
+  /* Taller than the screen, with the top edge arced: a soft, flexing leading edge
+     instead of a hard line. At rest it still covers the whole viewport. */
+  top: -7vh;
+  height: 114vh;
   background: var(--gradient-soft);
-  border-top: 1px solid rgba(20, 20, 20, .32);
-  border-bottom: 1px solid rgba(20, 20, 20, .32);
-  box-shadow: 0 -30px 80px rgba(20, 20, 20, .07);
+  border-radius: 50% 50% 0 0 / 5vh 5vh 0 0;
+  box-shadow: 0 -24px 70px rgba(20, 20, 20, .08);
   will-change: transform;
 }
+/* The leading sheet: paler and a little lighter, so the two read as layers. */
+.pt-trail { background: linear-gradient(118deg, #e6e5f9 0%, #f8e6df 40%, #f1e9d8 68%, #f9e0d8 100%); box-shadow: none; }
 
 /* Project transition: the camera shutter (see utils/shutter.js, shared with
    the intro). The blades are pale gradient here (the intro's are ink); their
