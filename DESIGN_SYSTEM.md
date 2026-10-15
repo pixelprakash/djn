@@ -311,3 +311,16 @@ underline, progress fills and the hover state of ink buttons (darker step `#3730
 `.hp--work` sets one rhythm: every section ends with the same gap `--S` (about 104-184 px, 80-120 px on phones) and the
 next starts flush, so the white space between any two blocks is identical. The slideshow stage height is
 `100vh - 430px` so its title and controls still fit in the first screen from 720 px tall screens upward.
+
+
+## Home type scale (Oct 2026): one clear order
+
+The page's largest text is the name (the h1), then the project title, then the section headings, so the eye starts in the right place:
+
+| Level | Element | Size (desktop / phone) |
+|---|---|---|
+| 1 | Name (h1) | 48 px / 28 px, weight 600 |
+| 2 | Project title (slideshow) | 40 px / 25.6 px |
+| 2 | Section headings (News & Updates, About, At work, Selected work) | 40 px / 25.6 px, weight 400 |
+
+Section headings are the same size as the project title and lighter than the name, so they never outrank the person or the work. Both home layouts use it. A check in `scratchpad/pp/hier.mjs` (name > title >= headings at five screen sizes) passes.

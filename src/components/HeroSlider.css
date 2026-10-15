@@ -152,7 +152,7 @@
 .hs--wide .hs-caption { grid-column: 1; grid-row: 2; }
 .hs--wide .hs-controls { grid-column: 2; grid-row: 2; margin-top: calc(clamp(18px, 2.6vw, 44px) + clamp(24px, 2.4vw, 32px)); padding-top: 0; border-top: 0; flex-wrap: nowrap; }
 .hs--wide .hs-segs { flex: 0 0 auto; width: clamp(180px, 16vw, 260px); }
-.hs--wide .hs-title { font-size: clamp(1.6rem, 3vw, 2.8rem); }
+.hs--wide .hs-title { font-size: clamp(1.6rem, 2.8vw, 2.5rem); }
 @media (max-width: 860px) {
   .hs--wide { display: block; }
   .hs--wide .hs-stage { height: auto; aspect-ratio: 16 / 10; }
