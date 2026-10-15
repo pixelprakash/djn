@@ -15,8 +15,6 @@ import './FooterPrism.css'
      then the spectrum opens out of the far side. After that it keeps moving
      quietly: pulses of light travel along the beam and out along each colour, the
      glow breathes, and the fan sways a few degrees.
-   - Dust motes drift through the scene and light up in the colour of whatever
-     part of the beam or spectrum they cross.
    - It only runs while on screen. Visitors who prefer reduced motion get the
      finished picture, still.
    - It is purely decorative (hidden from assistive tech); the sentence and the
@@ -89,10 +87,6 @@ export default function FooterPrism() {
       w: 0, h: 0, s: 1, ox: 0, oy: 0, dpr: 1,
       born: 0,                                 // when the scene first came on screen (starts the arrival)
       t0: performance.now(), visible: false, raf: 0,
-      motes: Array.from({ length: 70 }, () => ({
-        x: Math.random() * VW, y: Math.random() * VH, vx: (Math.random() - 0.3) * 0.12, vy: (Math.random() - 0.5) * 0.08,
-        r: 0.5 + Math.random() * 1.1, p: Math.random() * 6.28,
-      })),
     }
 
     const size = () => {
@@ -328,34 +322,6 @@ export default function FooterPrism() {
       const gx = A.x + (C.x - A.x) * gl, gy = A.y + (C.y - A.y) * gl
       bloom(ctx, gx, gy, 14, 0.35)
 
-      // dust motes lit by the light they cross
-      ctx.shadowBlur = 0
-      st.motes.forEach(m => {
-        if (!calm) {
-          m.x += m.vx + Math.sin(t * 0.4 + m.p) * 0.05; m.y += m.vy + Math.cos(t * 0.35 + m.p) * 0.04
-          if (m.x < -10) m.x = VW + 10; if (m.x > VW + 10) m.x = -10
-          if (m.y < -10) m.y = VH + 10; if (m.y > VH + 10) m.y = -10
-        }
-        let a = 0.05, col = [255, 255, 255]
-        // in the incoming beam?
-        const sx = m.x - tr.S.x, sy2 = m.y - tr.S.y
-        const along = sx * tr.d.x + sy2 * tr.d.y
-        const across = Math.abs(sx * -tr.d.y + sy2 * tr.d.x)
-        if (along > 0 && along < Math.hypot(tr.E.x - tr.S.x, tr.E.y - tr.S.y) && across < 22) a = 0.5 * (1 - across / 22)
-        // in the spectrum?
-        if (ex.length > 1) {
-          const first = ex[0], last = ex[ex.length - 1]
-          const ang = Math.atan2(m.y - my, m.x - mx)
-          const lo = Math.min(first.theta, last.theta), hi = Math.max(first.theta, last.theta)
-          if (m.x > mx && ang > lo && ang < hi) {
-            const u = (ang - first.theta) / (last.theta - first.theta)
-            const e = ex[Math.max(0, Math.min(ex.length - 1, Math.round(u * (ex.length - 1))))]
-            col = RAYS[e.i].rgb; a = 0.6
-          }
-        }
-        if (a > 0.05) { ctx.fillStyle = rgba(col, Math.min(1, a * I)); ctx.beginPath(); ctx.arc(m.x, m.y, m.r * 1.2, 0, 6.2832); ctx.fill() }
-        else { ctx.fillStyle = 'rgba(255,255,255,0.05)'; ctx.beginPath(); ctx.arc(m.x, m.y, m.r, 0, 6.2832); ctx.fill() }
-      })
     }
 
     // ---- loop ----
