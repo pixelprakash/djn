@@ -107,3 +107,6 @@
   .fp .fp-link, .fp .fp-link span { transition: none; }
   .fp .fp-link:hover span { transform: none; }
 }
+
+/* On a dark page the dark scene is separated from the page by a hairline. */
+:root[data-theme="dark"] .fp { box-shadow: 0 -1px 0 var(--rule); }

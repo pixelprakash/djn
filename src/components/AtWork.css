@@ -21,7 +21,7 @@
   font-family: var(--grotesk);
   font-size: clamp(1.1rem, 1.5vw, 1.35rem);
   line-height: 1.45;
-  color: #5d5d5d;
+  color: var(--text-soft);
 }
 
 /* The clip sits on the signature gradient, offset like the hero photograph's plate. */
@@ -41,7 +41,7 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  background: #ebebeb;
+  background: var(--surface-2);
 }
 
 /* Always-visible Pause / Play control. */

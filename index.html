@@ -8,8 +8,22 @@
     <meta name="description" content="Deepak John Mathew is Professor and Founding Head of Design at IIT Hyderabad, specializing in digital heritage, AR/VR, photography, and design innovation." />
     <meta name="robots" content="index, follow" />
     <meta name="author" content="Deepak John Mathew" />
-    <meta name="theme-color" content="#f5f3ee" />
+    <meta name="theme-color" content="#f7f7f7" />
     <meta name="color-scheme" content="light" />
+    <script>
+      /* Choose the colour theme before the first paint, so a visitor who picked the
+         dark theme never sees a flash of light. Light is the default for everyone
+         (the device's own dark setting is deliberately NOT followed); only a choice
+         made with the switch in the navbar, which is saved, turns dark on. */
+      (function () {
+        try {
+          var t = localStorage.getItem('djm-theme') === 'dark' ? 'dark' : 'light';
+          document.documentElement.setAttribute('data-theme', t);
+          var m = document.querySelector('meta[name="theme-color"]');
+          if (m) m.setAttribute('content', t === 'dark' ? '#0f0f11' : '#f7f7f7');
+        } catch (e) {}
+      })();
+    </script>
     <link rel="canonical" href="https://djn.vercel.app/about" />
 
     <meta property="og:type" content="website" />

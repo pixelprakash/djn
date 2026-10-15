@@ -19,10 +19,10 @@ export default function ShutterBlades({ prefix, reg, startOpen = false }) {
       <defs>
         {/* The signature gradient, for callers that want pastel blades. */}
         <linearGradient id={`${prefix}-fill`} gradientUnits="userSpaceOnUse" x1="-90" y1="90" x2="90" y2="-90">
-          <stop offset="0" stopColor="#cdcbf5" />
-          <stop offset=".34" stopColor="#f4d5cb" />
-          <stop offset=".66" stopColor="#ece0c9" />
-          <stop offset="1" stopColor="#faccc0" />
+          <stop offset="0" style={{ stopColor: 'var(--g-lavender)' }} />
+          <stop offset=".34" style={{ stopColor: 'var(--g-peach)' }} />
+          <stop offset=".66" style={{ stopColor: 'var(--g-cream)' }} />
+          <stop offset="1" style={{ stopColor: 'var(--g-salmon)' }} />
         </linearGradient>
         <linearGradient id={`${prefix}-sheen`} x1="0" x2="1" y1="0" y2="0">
           <stop offset="0" stopColor="#f5f3ee" stopOpacity=".1" />

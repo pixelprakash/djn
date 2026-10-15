@@ -23,17 +23,17 @@
   inset: 0;
   z-index: -1;
   pointer-events: none;
-  background: rgba(247,247,247,0);
+  background: rgba(var(--bg-rgb),0);
   transition: background .3s ease;
 }
 .tn--scrolled::before {
-  background: rgba(247,247,247,0.94);
+  background: rgba(var(--bg-rgb),0.94);
   backdrop-filter: blur(20px) saturate(160%);
   -webkit-backdrop-filter: blur(20px) saturate(160%);
 }
 .tn--scrolled {
-  box-shadow: 0 1px 0 rgba(26,24,20,0.06), 0 2px 6px rgba(26,24,20,0.03), 0 10px 30px rgba(26,24,20,0.05);
-  border-bottom: 1px solid rgba(26,24,20,0.07);
+  box-shadow: 0 1px 0 rgba(var(--shadow-rgb),0.06), 0 2px 6px rgba(var(--shadow-rgb),0.03), 0 10px 30px rgba(var(--shadow-rgb),0.05);
+  border-bottom: 1px solid rgba(var(--ink-rgb),0.07);
 }
 
 .tn-inner {
@@ -113,7 +113,7 @@
   opacity: .76;
   position: relative;
 }
-.tn-link:hover { background: rgba(26,24,20,.05); opacity: 1; }
+.tn-link:hover { background: rgba(var(--ink-rgb),.05); opacity: 1; }
 .tn-link--active { opacity: 1; }
 
 /* The gliding underline (see the slider effect in TopNav.jsx). Blue on
@@ -131,7 +131,7 @@
 }
 .tn-slider--on { opacity: 1; }
 .tn-slider--instant { transition: opacity .2s ease, background-color .25s ease; }
-.tn-slider--hot { background: rgba(26, 24, 20, .35); }
+.tn-slider--hot { background: rgba(var(--ink-rgb), .35); }
 
 .tn-chevron {
   opacity: .4;
@@ -177,11 +177,11 @@
 }
 
 .tn-drop-inner {
-  background: #ffffff;
-  border: 1px solid rgba(26,24,20,.08);
+  background: var(--surface);
+  border: 1px solid rgba(var(--ink-rgb),.08);
   border-radius: 0;
   padding: 6px;
-  box-shadow: 0 2px 4px rgba(26,24,20,.03), 0 10px 22px rgba(26,24,20,.05), 0 24px 56px rgba(26,24,20,.09);
+  box-shadow: 0 2px 4px rgba(var(--shadow-rgb),.03), 0 10px 22px rgba(var(--shadow-rgb),.05), 0 24px 56px rgba(var(--shadow-rgb),.09);
   display: flex;
   flex-direction: column;
   gap: 1px;
@@ -194,7 +194,7 @@
 .tn-drop-group + .tn-drop-group {
   margin-top: 6px;
   padding-top: 6px;
-  border-top: 1px solid rgba(26,24,20,.06);
+  border-top: 1px solid rgba(var(--ink-rgb),.06);
 }
 .tn-drop-heading {
   display: block;
@@ -211,9 +211,9 @@
   position: absolute;
   top: -5px; left: 20px;
   width: 10px; height: 10px;
-  background: #fff;
-  border-left: 1px solid rgba(26,24,20,.08);
-  border-top: 1px solid rgba(26,24,20,.08);
+  background: var(--surface);
+  border-left: 1px solid rgba(var(--ink-rgb),.08);
+  border-top: 1px solid rgba(var(--ink-rgb),.08);
   rotate: 45deg;
 }
 
@@ -248,8 +248,18 @@
 /* Contact CTA — pinned to the right; margin-left:auto pushes it (and the
    burger after it) to the end of the row whether or not .tn-links is
    visible, since .tn-links itself is flex:1 when shown. */
+.tn {
+  /* The theme switch and the Contact button are the same height and have the same
+     corners: 40px (44px on touch screens and narrow windows, the comfortable tap size). */
+  --tn-btn-h: 40px;
+  --tn-btn-r: 4px;
+}
+@media (pointer: coarse), (max-width: 860px) { .tn { --tn-btn-h: 44px; } }
+.tn-theme { margin-left: auto; }
 .tn-cta {
-  margin-left: auto;
+  margin-left: 12px;
+  box-sizing: border-box;
+  height: var(--tn-btn-h);
   flex-shrink: 0;
   display: inline-flex;
   align-items: center;
@@ -262,14 +272,14 @@
      lift. It matches the heavy ink rules and the footer, and takes the brand
      blue on hover and on its own page. */
   background: var(--ink);
-  padding: 10px 24px;
-  border-radius: 4px;
+  padding: 0 24px;
+  border-radius: var(--tn-btn-r);
   text-decoration: none;
   white-space: nowrap;
   transition: background-color .2s ease;
 }
 .tn-cta:hover { background: var(--accent); }
-.tn-cta:active { background: #3730a3; }
+.tn-cta:active { background: var(--accent-deep); }
 .tn-cta:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 .tn-cta--active { background: var(--accent); }
 
@@ -288,7 +298,7 @@
   transition: background .2s;
   margin-left: 4px;
 }
-.tn-burger:hover { background: rgba(26,24,20,.06); }
+.tn-burger:hover { background: rgba(var(--ink-rgb),.06); }
 .tn-burger span {
   display: block; height: 1.5px;
   background: var(--ink); border-radius: 2px;
@@ -332,7 +342,7 @@
   color: var(--ink);
   text-decoration: none;
   padding: 14px 0;
-  border-bottom: 1px solid rgba(26,24,20,.07);
+  border-bottom: 1px solid rgba(var(--ink-rgb),.07);
   display: flex; align-items: center; justify-content: space-between;
   background: none; border-left: none; border-right: none; border-top: none;
   cursor: pointer; width: 100%; text-align: left;
@@ -373,7 +383,7 @@
   font-size: 1rem; font-weight: 400;
   color: var(--sub); text-decoration: none;
   padding: 11px 16px;
-  border-bottom: 1px solid rgba(26,24,20,.05);
+  border-bottom: 1px solid rgba(var(--ink-rgb),.05);
   transition: color .14s, padding-left .14s;
   display: block;
 }
@@ -414,7 +424,7 @@
   .tn-inner { height: 56px; }
   .tn-logo { font-size: 1.5rem; margin-right: 0; }
   .tn-offset { height: 57px; }
-  .tn-cta { padding: 8px 18px; }
+  .tn-cta { padding: 0 18px; }
   .tn-mobile { top: 56px; }
 }
 

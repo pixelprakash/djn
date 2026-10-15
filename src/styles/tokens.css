@@ -21,6 +21,29 @@
   --green:   #024F46;
   --white:   #ffffff;
 
+  /* Semantic colours used by every component, so a theme is one block of values.
+     (--white stays for the few places that really mean white.)
+       surface    a card / panel / input sitting on the page
+       surface-2  an empty image frame or a quiet fill
+       text-soft  secondary reading text (a step below --sub)
+       on-ink     text on an ink-coloured button;  on-accent  text on an accent fill
+       accent-deep the pressed / hover step of an accent fill
+       *-rgb      the same colours as r,g,b for rgba() lines, washes and shadows */
+  --surface:     #ffffff;
+  --surface-2:   #ebebeb;
+  --text-soft:   #5d5d5d;
+  --on-ink:      #ffffff;
+  --on-accent:   #ffffff;
+  --accent-deep: #3730a3;
+  --danger:      #a1281f;
+  --ink-rgb:     20, 20, 20;
+  --bg-rgb:      247, 247, 247;
+  --shadow-rgb:  26, 24, 20;
+  --wash-a:      rgba(250, 204, 192, .55); /* the page-top washes (heroes, blog band) */
+  --wash-b:      rgba(205, 203, 245, .55);
+  --wash-base:   #f1eff8;
+  color-scheme: light;
+
   /* Signature gradient: soft lavender -> peach -> cream -> salmon, sampled from the
      design reference. Used as a quiet plate behind the home hero photo and as the
      filled step between a title and its year in the "Selected work" index. Keep it
@@ -62,10 +85,10 @@
      before it and stays low in opacity, so a card lifts off the page softly with
      no hard edge or dark core. rest = a card sitting on the page, hover = the
      same card lifted, float = a large hero image or panel standing off the page. */
-  --shadow-rest:  0 1px 1px rgba(26,24,20,.02), 0 2px 4px rgba(26,24,20,.03), 0 8px 20px rgba(26,24,20,.05);
-  --shadow-hover: 0 2px 3px rgba(26,24,20,.02), 0 8px 16px rgba(26,24,20,.04), 0 22px 48px rgba(26,24,20,.09);
-  --shadow-float: 0 2px 4px rgba(26,24,20,.02), 0 10px 24px rgba(26,24,20,.05), 0 30px 70px rgba(26,24,20,.10);
-  --shadow-float-hover: 0 4px 8px rgba(26,24,20,.03), 0 16px 36px rgba(26,24,20,.07), 0 40px 90px rgba(26,24,20,.13);
+  --shadow-rest:  0 1px 1px rgba(var(--shadow-rgb),.02), 0 2px 4px rgba(var(--shadow-rgb),.03), 0 8px 20px rgba(var(--shadow-rgb),.05);
+  --shadow-hover: 0 2px 3px rgba(var(--shadow-rgb),.02), 0 8px 16px rgba(var(--shadow-rgb),.04), 0 22px 48px rgba(var(--shadow-rgb),.09);
+  --shadow-float: 0 2px 4px rgba(var(--shadow-rgb),.02), 0 10px 24px rgba(var(--shadow-rgb),.05), 0 30px 70px rgba(var(--shadow-rgb),.10);
+  --shadow-float-hover: 0 4px 8px rgba(var(--shadow-rgb),.03), 0 16px 36px rgba(var(--shadow-rgb),.07), 0 40px 90px rgba(var(--shadow-rgb),.13);
 
   /* Cards and panels have square corners (a deliberate, plain look): these two
      are 0 on purpose. Pills, chips and round icon buttons keep their own radii. */
@@ -83,3 +106,57 @@
      text a given page's header actually has. */
   --hero-h: clamp(380px, 46vh, 460px);
 }
+
+/* =====================================================
+   DARK THEME -- :root[data-theme="dark"] (set by the switch in the navbar, which
+   remembers the choice; the first visit follows the device's own setting).
+   Same structure as the light theme with the values turned over: a near-black
+   page, softly lit surfaces, light ink, a lighter indigo accent (8:1 on the page),
+   and the signature gradient deepened so it glows instead of glaring.
+===================================================== */
+:root[data-theme="dark"] {
+  --bg:      #0f0f11;
+  --ink:     #f2f2f3;
+  --sub:     #c9c9ce;
+  --muted:   #a8a8af;
+  --rule:    #2a2a2e;
+  --accent:     #a29cff;
+  --accent-rgb: 162, 156, 255;
+  --green:   #3fb8a6;
+  --white:   #ffffff;
+
+  --surface:     #18181b;
+  --surface-2:   #232327;
+  --text-soft:   #b6b6bc;
+  --on-ink:      #0f0f11;
+  --on-accent:   #0f0f11;
+  --accent-deep: #c4c0ff;
+  --danger:      #ff8a80;
+  --ink-rgb:     242, 242, 243;
+  --bg-rgb:      15, 15, 17;
+  --shadow-rgb:  0, 0, 0;
+  --wash-a:      rgba(120, 70, 62, .42);
+  --wash-b:      rgba(82, 72, 190, .42);
+  --wash-base:   #15141d;
+
+  --g-lavender: #3a3873;
+  --g-peach:    #5b3f3b;
+  --g-cream:    #4a4437;
+  --g-salmon:   #6e4039;
+
+  --shadow-rest:  0 1px 1px rgba(0,0,0,.2), 0 2px 4px rgba(0,0,0,.25), 0 8px 20px rgba(0,0,0,.35);
+  --shadow-hover: 0 2px 3px rgba(0,0,0,.25), 0 8px 16px rgba(0,0,0,.3), 0 22px 48px rgba(0,0,0,.5);
+  --shadow-float: 0 2px 4px rgba(0,0,0,.25), 0 10px 24px rgba(0,0,0,.35), 0 30px 70px rgba(0,0,0,.55);
+  --shadow-float-hover: 0 4px 8px rgba(0,0,0,.3), 0 16px 36px rgba(0,0,0,.45), 0 40px 90px rgba(0,0,0,.6);
+  color-scheme: dark;
+}
+
+/* Theme change (see hooks/useTheme.js): the browser takes a picture of the old theme,
+   switches, and the new theme is revealed by a circle growing from the switch. The
+   whole page changes in one move, so nothing flickers or lags behind. */
+/* No element fades by itself during the change (see useTheme.js). */
+html.theme-switching *, html.theme-switching *::before, html.theme-switching *::after { transition: none !important; }
+::view-transition-old(root), ::view-transition-new(root) { animation: none; mix-blend-mode: normal; }
+::view-transition-old(root) { z-index: 1; }
+::view-transition-new(root) { z-index: 2; }
+@media (prefers-reduced-motion: reduce) { ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation: none !important; } }

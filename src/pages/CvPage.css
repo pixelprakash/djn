@@ -99,7 +99,7 @@
 .cvp-jump-link:hover,
 .cvp-jump-link:focus-visible {
   background: var(--ink);
-  color: var(--white);
+  color: var(--on-ink);
   border-color: var(--ink);
 }
 
@@ -156,7 +156,7 @@
 /* A hairline-faint zebra tint -- just enough to help the eye track a
    row across a wide column on long pages (Selected Exhibitions,
    Conferences & Journals), gone the instant hover takes over. */
-.cvp-item:nth-child(even) { background: rgba(26, 24, 20, .022); }
+.cvp-item:nth-child(even) { background: rgba(var(--ink-rgb), .022); }
 .cvp-item:hover {
   padding-left: calc(clamp(10px, 1.4vw, 14px) + 6px);
   background: rgba(var(--accent-rgb), .045);

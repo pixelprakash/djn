@@ -108,7 +108,7 @@
   backdrop-filter: blur(6px);
   transition: background .2s, color .2s, transform .25s cubic-bezier(.34,1.56,.64,1);
 }
-.ss-x:hover { background: var(--accent); color: #fff; transform: rotate(90deg) scale(1.1); }
+.ss-x:hover { background: var(--accent); color: var(--on-accent); transform: rotate(90deg) scale(1.1); }
 
 .ss-stage {
   flex: 1;
@@ -144,7 +144,7 @@
   backdrop-filter: blur(8px);
   transition: background .2s, color .2s, transform .2s cubic-bezier(.34,1.56,.64,1);
 }
-.ss-btn:hover { background: var(--accent); color: #fff; transform: scale(1.12); }
+.ss-btn:hover { background: var(--accent); color: var(--on-accent); transform: scale(1.12); }
 .ss-btn:active { transform: scale(.93); }
 
 .ss-btn--prev,

@@ -18,7 +18,7 @@
   z-index: 1;
   aspect-ratio: 16 / 9;
   overflow: hidden;
-  background: #ebebeb;
+  background: var(--surface-2);
 }
 .hs .hs-slide {
   position: absolute;
@@ -109,13 +109,13 @@
 .hs .hs-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
 /* Controls: numbered segments (each fills while its slide runs) and the buttons. */
-.hs .hs-controls { position: relative; z-index: 1; display: flex; align-items: center; justify-content: space-between; gap: 16px 32px; flex-wrap: wrap; margin-top: clamp(24px, 2.6vw, 40px); padding-top: clamp(16px, 1.6vw, 24px); border-top: 1px solid rgba(20, 20, 20, .3); }
+.hs .hs-controls { position: relative; z-index: 1; display: flex; align-items: center; justify-content: space-between; gap: 16px 32px; flex-wrap: wrap; margin-top: clamp(24px, 2.6vw, 40px); padding-top: clamp(16px, 1.6vw, 24px); border-top: 1px solid rgba(var(--ink-rgb), .3); }
 .hs .hs-segs { list-style: none; display: flex; gap: clamp(12px, 1.6vw, 24px); flex: 1 1 240px; max-width: 440px; }
 .hs .hs-segs li { flex: 1 1 0; min-width: 0; }
 .hs .hs-seg { display: flex; flex-direction: column; justify-content: center; gap: 8px; width: 100%; min-height: 44px; padding: 6px 0; background: none; border: 0; cursor: pointer; text-align: left; }
 .hs .hs-seg-no { font-family: var(--body); font-size: 0.9rem; font-weight: 500; font-variant-numeric: tabular-nums; color: var(--muted); }
 .hs .hs-seg.is-active .hs-seg-no, .hs .hs-seg:hover .hs-seg-no { color: var(--ink); }
-.hs .hs-seg-bar { display: block; height: 3px; background: rgba(20, 20, 20, .14); overflow: hidden; }
+.hs .hs-seg-bar { display: block; height: 3px; background: rgba(var(--ink-rgb), .14); overflow: hidden; }
 .hs .hs-seg-fill { display: block; height: 100%; background: linear-gradient(90deg, var(--ink), var(--accent)); transform: scaleX(0); transform-origin: left; }
 .hs .hs-seg:not(.is-active) .hs-seg-fill { transform: scaleX(0); }
 .hs .hs-seg:focus-visible, .hs .hs-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
@@ -127,7 +127,7 @@
   font-family: var(--body); font-size: 1rem; font-weight: 500;
   color: var(--ink);
   background: none;
-  border: 1px solid rgba(20, 20, 20, .5);
+  border: 1px solid rgba(var(--ink-rgb), .5);
   border-radius: 0;
   cursor: pointer;
   transition: background-color .2s, color .2s, border-color .2s;
@@ -156,7 +156,7 @@
 @media (max-width: 860px) {
   .hs--wide { display: block; }
   .hs--wide .hs-stage { height: auto; aspect-ratio: 16 / 10; }
-  .hs--wide .hs-controls { margin-top: clamp(24px, 2.6vw, 40px); padding-top: clamp(16px, 1.6vw, 24px); border-top: 1px solid rgba(20, 20, 20, .3); flex-wrap: wrap; }
+  .hs--wide .hs-controls { margin-top: clamp(24px, 2.6vw, 40px); padding-top: clamp(16px, 1.6vw, 24px); border-top: 1px solid rgba(var(--ink-rgb), .3); flex-wrap: wrap; }
   .hs--wide .hs-segs { flex: 1 1 240px; width: auto; max-width: 440px; }
 }
 

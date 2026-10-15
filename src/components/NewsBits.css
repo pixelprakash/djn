@@ -8,13 +8,13 @@
   line-height: 1;
   padding: 6px 9px;
   border-radius: 0;
-  border: 1px solid rgba(20, 20, 20, .3);
+  border: 1px solid rgba(var(--ink-rgb), .3);
   color: var(--ink);
   white-space: nowrap;
 }
 /* Soon: a warm peach fill from the gradient, with dark text for contrast. */
-.nb-deadline--soon { background: var(--g-peach); border-color: transparent; color: #141414; }
-.nb-deadline--closed { color: var(--muted); border-style: dashed; border-color: rgba(20, 20, 20, .22); }
+.nb-deadline--soon { background: var(--g-peach); border-color: transparent; color: var(--ink); }
+.nb-deadline--closed { color: var(--muted); border-style: dashed; border-color: rgba(var(--ink-rgb), .22); }
 
 .nb-cta {
   display: inline-block;

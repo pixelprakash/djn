@@ -38,4 +38,6 @@
   .hls { top: auto; right: 12px; bottom: 12px; }
   .hls-label, .hls-hint { display: none; }
 }
+/* On a dark page the dark pill needs an edge to read as a control. */
+:root[data-theme="dark"] .hls { border: 1px solid rgba(255, 255, 255, .22); }
 @media (prefers-reduced-motion: reduce) { .hls-btn { transition: none; } }

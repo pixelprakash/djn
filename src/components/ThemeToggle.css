@@ -1,0 +1,23 @@
+/* The theme switch (see ThemeToggle.jsx): a quiet 44px square button in the bar. */
+.tt {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  box-sizing: border-box;
+  width: var(--tn-btn-h, 44px);
+  height: var(--tn-btn-h, 44px);
+  padding: 0;
+  color: var(--ink);
+  background: transparent;
+  border: 1px solid rgba(var(--ink-rgb), .28);
+  border-radius: var(--tn-btn-r, 4px);
+  cursor: pointer;
+  transition: background-color .2s, color .2s, border-color .2s;
+}
+.tt:hover { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.tt:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.tt-icon { display: inline-flex; }
+/* With words (the mobile menu): a full-width row. */
+.tt--label { width: 100%; justify-content: flex-start; padding: 0 16px; font-family: var(--body); font-size: 1.05rem; font-weight: 500; }
+@media (prefers-reduced-motion: reduce) { .tt { transition: none; } }

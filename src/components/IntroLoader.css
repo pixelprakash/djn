@@ -1,9 +1,9 @@
 /* One-time arrival (see IntroLoader.jsx): a camera viewfinder, drawn in ink on
    a slowly drifting pastel gradient (the closed shutter is the gradient). */
 .il {
-  --il-ink:   #141414;
-  --il-dim:   rgba(20, 20, 20, .62);
-  --il-faint: rgba(20, 20, 20, .14);
+  --il-ink:   var(--ink);
+  --il-dim:   rgba(var(--ink-rgb), .62);
+  --il-faint: rgba(var(--ink-rgb), .14);
   --il-blue:  var(--accent); /* brand blue, for the autofocus box and the meter marker */
   --il-pad:   clamp(16px, 2.4vw, 34px);
   --il-arm:   clamp(22px, 3vw, 40px);
@@ -26,7 +26,7 @@
 }
 .il-blade { fill: url(#il-fill); }
 .il-edge {
-  stroke: rgba(20, 20, 20, .34);
+  stroke: rgba(var(--ink-rgb), .34);
   vector-effect: non-scaling-stroke;
   stroke-width: 1px;
 }
@@ -37,7 +37,7 @@
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background: radial-gradient(62% 52% at 50% 46%, rgba(255, 255, 255, .55) 0%, rgba(255, 255, 255, 0) 72%);
+  background: radial-gradient(62% 52% at 50% 46%, rgba(var(--bg-rgb), .5) 0%, rgba(var(--bg-rgb), 0) 72%);
 }
 
 /* Static film grain: keeps the flat gradient from reading as a colour swatch. */
@@ -268,14 +268,14 @@
   font-size: 1rem;
   font-weight: 500;
   letter-spacing: .01em;
-  color: var(--il-ink, #141414);
-  background: rgba(255, 255, 255, .55);
-  border: 1.5px solid rgba(20, 20, 20, .4);
+  color: var(--il-ink);
+  background: rgba(var(--bg-rgb), .6);
+  border: 1.5px solid rgba(var(--ink-rgb), .4);
   border-radius: 100px;
   cursor: pointer;
   transition: background .2s, color .2s, border-color .2s;
 }
-.il-skip:hover { background: #141414; color: #f7f7f7; border-color: transparent; }
+.il-skip:hover { background: var(--ink); color: var(--bg); border-color: transparent; }
 .il-skip:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 /* Short (landscape phone) screens: lower, to clear the autofocus square that
    closes in around the name. */

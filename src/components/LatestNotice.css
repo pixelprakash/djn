@@ -1,19 +1,19 @@
 /* One-line "latest" bar (see LatestNotice.jsx). Pale gradient, square, ink text. */
-.ln { background: linear-gradient(96deg, #e9e8fb 0%, #f9e6df 50%, #f6e7e1 100%); border-bottom: 1px solid rgba(20, 20, 20, .1); }
+.ln { background: linear-gradient(96deg, color-mix(in srgb, var(--g-lavender) 38%, var(--bg)) 0%, color-mix(in srgb, var(--g-peach) 38%, var(--bg)) 50%, color-mix(in srgb, var(--g-salmon) 30%, var(--bg)) 100%); border-bottom: 1px solid rgba(var(--ink-rgb), .1); }
 .ln .ln-link {
   display: flex;
   align-items: baseline;
   gap: 8px 16px;
   flex-wrap: wrap;
   padding: 11px var(--g);
-  color: #141414;
+  color: var(--ink);
   text-decoration: none;
   font-family: var(--body);
   font-size: 1rem;
 }
 .ln .ln-tag { font-size: 0.9rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; }
 .ln .ln-title { font-weight: 500; }
-.ln .ln-when { color: #444; }
+.ln .ln-when { color: var(--sub); }
 .ln .ln-go { margin-left: auto; transition: transform .25s cubic-bezier(.22, 1, .36, 1); }
 .ln .ln-link:hover .ln-title { text-decoration: underline; text-underline-offset: 3px; }
 .ln .ln-link:hover .ln-go { transform: translateX(5px); }

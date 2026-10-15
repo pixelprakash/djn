@@ -44,7 +44,7 @@
   border: 0;
   border-radius: 0;
   overflow: hidden;
-  background: #ebebeb;
+  background: var(--surface-2);
   cursor: zoom-in;
 }
 .np-cover::before {
@@ -81,7 +81,7 @@
   flex-direction: column;
   gap: 16px;
   padding-top: 14px;
-  border-top: 1px solid rgba(20, 20, 20, .5);
+  border-top: 1px solid rgba(var(--ink-rgb), .5);
 }
 .np-aside-title { margin: 0; font-family: var(--body); font-weight: 500; font-size: 0.9rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
 .np-facts { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 0 18px; align-items: baseline; }
@@ -101,7 +101,7 @@
   color: var(--ink);
   text-decoration: none;
   background: none;
-  border: 1px solid rgba(20, 20, 20, .35);
+  border: 1px solid rgba(var(--ink-rgb), .35);
   border-radius: 0;
   cursor: pointer;
   transition: background-color .2s, color .2s, border-color .2s;

@@ -30,9 +30,9 @@
   align-items: flex-start;
   padding: clamp(36px, 5vw, 64px) var(--g) clamp(40px, 5vw, 64px);
   background:
-    radial-gradient(70% 90% at 88% 0%, rgba(250, 204, 192, .5), transparent 72%),
-    radial-gradient(65% 90% at 8% 0%, rgba(205, 203, 245, .5), transparent 72%),
-    linear-gradient(180deg, #f1eff8 0%, var(--bg) 100%);
+    radial-gradient(70% 90% at 88% 0%, var(--wash-a), transparent 72%),
+    radial-gradient(65% 90% at 8% 0%, var(--wash-b), transparent 72%),
+    linear-gradient(180deg, var(--wash-base) 0%, var(--bg) 100%);
   border-bottom: 1px solid var(--rule);
 }
 /* With a cover, the band is padded further so the photo can overlap it. */
@@ -225,8 +225,8 @@
   min-width: 0;
 }
 .bp-card {
-  background: #fff;
-  border: 1px solid rgba(26,24,20,.08);
+  background: var(--surface);
+  border: 1px solid rgba(var(--ink-rgb),.08);
   border-radius: var(--radius-lg);
   padding: clamp(20px, 2.2vw, 28px);
   box-shadow: var(--shadow-rest);
@@ -277,7 +277,7 @@
   font-family: var(--body);
   font-size: 1rem;
   font-weight: 600;
-  color: #fff;
+  color: var(--on-accent);
   background: var(--accent);
   border: 1.5px solid var(--accent);
   border-radius: 100px;
@@ -286,7 +286,7 @@
   cursor: pointer;
   transition: background .2s, color .2s, border-color .2s, transform .25s cubic-bezier(.34,1.56,.64,1);
 }
-.bp-btn:hover { background: #3730a3; border-color: #3730a3; transform: translateY(-2px); }
+.bp-btn:hover { background: var(--accent-deep); border-color: var(--accent-deep); transform: translateY(-2px); }
 .bp-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 .bp-btn--ghost {
   color: var(--accent);
@@ -294,7 +294,7 @@
   border-color: rgba(var(--accent-rgb),.3);
   font-weight: 500;
 }
-.bp-btn--ghost:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
+.bp-btn--ghost:hover { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
 
 /* ==========================================
    PREV / NEXT
@@ -325,7 +325,7 @@
   width: 100%;
   transition: background .25s;
 }
-.bp-pn-link:hover { background: rgba(26,24,20,.025); }
+.bp-pn-link:hover { background: rgba(var(--ink-rgb),.025); }
 .bp-pn-cell-right .bp-pn-link { align-items: flex-end; }
 
 .bp-pn-dir {

@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom'
 import { Link, NavLink, useLocation } from 'react-router-dom'
 import { preloadForPath } from '../routePreload'
 import useNewsBadge from '../hooks/useNewsBadge'
+import ThemeToggle from './ThemeToggle'
 import { WORK_CV } from '../routeMeta'
 import './TopNav.css'
 
@@ -318,6 +319,9 @@ export default function TopNav() {
             aria-hidden="true"
           />
         </nav>
+
+        {/* Light / dark switch: right-aligned, just before Contact */}
+        <ThemeToggle className="tn-theme" />
 
         {/* Contact CTA — always visible, right-aligned */}
         <NavLink

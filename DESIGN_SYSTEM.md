@@ -324,3 +324,11 @@ The page's largest text is the name (the h1), then the project title, then the s
 | 2 | Section headings (News & Updates, About, At work, Selected work) | 40 px / 25.6 px, weight 400 |
 
 Section headings are the same size as the project title and lighter than the name, so they never outrank the person or the work. Both home layouts use it. A check in `scratchpad/pp/hier.mjs` (name > title >= headings at five screen sizes) passes.
+
+## Dark theme (Oct 2026)
+
+- **Default is light**, for everyone. Dark applies only when a visitor picks it with the switch in the navbar (beside Contact, same height and radius). The device's own dark-mode setting is deliberately not followed. The choice is saved in `localStorage` under `djm-theme`; a small script in `index.html` sets `<html data-theme>` before first paint, so there is no flash.
+- **Everything is tokens.** Components use `--bg --ink --sub --muted --rule --accent --surface --surface-2 --text-soft --on-ink --on-accent --accent-deep --danger` and the `--*-rgb` triplets (for `rgba(var(--ink-rgb), .3)` lines and shadows). `:root[data-theme="dark"]` in `src/styles/tokens.css` overrides the values. Never write a literal `#fff`/`#000` for a surface or text. Literal colours are only for things dark by design (text on photographs, the white buttons over images).
+- Pastel layers (gradient plate, page-top washes) use `--g-*` and `--wash-*`, deepened in dark. Derive tints with `color-mix()` from tokens.
+- **Changeover:** `hooks/useTheme.js` uses the View Transitions API: a circle grows from the switch (650 ms) revealing the new theme as one picture. While it runs, `html.theme-switching` turns off every element's own CSS transition, otherwise ~30 links, chips and buttons start `.2s` colour fades underneath the reveal and the result shimmers. Reduced motion or no API support: instant swap.
+- Don't put `backdrop-filter` on an ancestor of a `position: fixed` overlay (it becomes the containing block). The navbar blur lives on `.tn::before` for this reason.
