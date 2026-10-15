@@ -286,7 +286,7 @@
   cursor: pointer;
   transition: background .2s, color .2s, border-color .2s, transform .25s cubic-bezier(.34,1.56,.64,1);
 }
-.bp-btn:hover { background: #164a70; border-color: #164a70; transform: translateY(-2px); }
+.bp-btn:hover { background: #3730a3; border-color: #3730a3; transform: translateY(-2px); }
 .bp-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 .bp-btn--ghost {
   color: var(--accent);

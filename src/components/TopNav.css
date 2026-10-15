@@ -253,7 +253,7 @@
   transition: background-color .2s ease;
 }
 .tn-cta:hover { background: var(--accent); }
-.tn-cta:active { background: #164a70; }
+.tn-cta:active { background: #3730a3; }
 .tn-cta:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 .tn-cta--active { background: var(--accent); }
 

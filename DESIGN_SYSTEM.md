@@ -297,3 +297,17 @@ The home page language now covers every page. Summary of what changed from the o
 - **Staged arrivals:** the new page's own entrance animations would play unseen under the cover, so at the swap its heading, subtitle and picture are held (`animation: none`, hidden) and brought up in turn (`stagger .08`) as the cover lifts. Selectors are the `ENTER` list in `App.jsx` (pages) and the `.pd-hero-*` list (projects).
 - **Projects:** camera shutter with pale-gradient blades, wall label, arrivals as the blades part. **Blog articles:** quiet crossfade + accent line. **News update pages:** instant swap. Reduced motion: instant swap.
 - **Robustness:** the swap waits (up to 2.5 s) for the new page's code, so a slow connection holds the cover instead of flashing a loading screen; a second click mid-transition retargets cleanly.
+
+
+## Accent colour (Oct 2026)
+
+The old brand blue (`#1c5d8c`) is gone. The one accent is now a deep indigo, `--accent: #4338ca` (`--accent-rgb: 67, 56, 202`),
+taken from the lavender end of the signature gradient. It is used for link/title hovers, focus rings, the active nav
+underline, progress fills and the hover state of ink buttons (darker step `#3730a3`). Contrast: 7.4:1 on `--bg`,
+5.7:1 on the peach. Everything else stays ink on off-white. To change it, edit the two tokens in `tokens.css`.
+
+## Home Option 2 spacing
+
+`.hp--work` sets one rhythm: every section ends with the same gap `--S` (about 104-184 px, 80-120 px on phones) and the
+next starts flush, so the white space between any two blocks is identical. The slideshow stage height is
+`100vh - 430px` so its title and controls still fit in the first screen from 720 px tall screens upward.

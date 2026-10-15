@@ -16,8 +16,8 @@
                           that is still tiring. This is ~7.4:1 on --bg and ~7:1 on
                           the pale-blue News band. */
   --rule:    #dddddd;
-  --accent:     #1c5d8c; /* brand blue — primary accent sitewide */
-  --accent-rgb: 28, 93, 140; /* same color, as r,g,b — for rgba() glows/borders that need partial opacity. Keeping this in sync with --accent is what makes a future rebrand a two-line change instead of a grep-and-replace. */
+  --accent:     #4338ca; /* deep indigo: the single accent (hovers, focus rings, progress, active states). Picked from the lavender end of the signature gradient; 7.4:1 on --bg, 5.7:1 on the peach. */
+  --accent-rgb: 67, 56, 202; /* same color, as r,g,b — for rgba() glows/borders that need partial opacity. Keeping this in sync with --accent is what makes a future rebrand a two-line change instead of a grep-and-replace. */
   --green:   #024F46;
   --white:   #ffffff;
 

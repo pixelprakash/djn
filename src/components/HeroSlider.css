@@ -159,3 +159,12 @@
   .hs--wide .hs-controls { margin-top: clamp(24px, 2.6vw, 40px); padding-top: clamp(16px, 1.6vw, 24px); border-top: 1px solid rgba(20, 20, 20, .3); flex-wrap: wrap; }
   .hs--wide .hs-segs { flex: 1 1 240px; width: auto; max-width: 440px; }
 }
+
+/* Room around the slideshow's caption and controls on the work-first home page. */
+.hp--work .hs--wide { row-gap: 0; }
+.hp--work .hs .hs-caption { margin-top: calc(clamp(18px, 2.6vw, 44px) + clamp(32px, 3.2vw, 48px)); }
+.hp--work .hs .hs-cap-text { gap: 12px; }
+.hp--work .hs--wide .hs-controls { margin-top: calc(clamp(18px, 2.6vw, 44px) + clamp(32px, 3.2vw, 48px)); }
+@media (max-width: 860px) { .hp--work .hs--wide .hs-controls { margin-top: clamp(32px, 4vw, 48px); } }
+.hp--work .hs--wide .hs-stage { height: clamp(300px, calc(100vh - 430px), 640px); } /* leaves room for the caption and controls inside the first screen */
+@media (max-width: 860px) { .hp--work .hs--wide .hs-stage { height: auto; } }

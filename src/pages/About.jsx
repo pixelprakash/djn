@@ -89,7 +89,7 @@ export default function About() {
   const [layout, setLayout] = useHomeLayout()
 
   return (
-    <div className="hp">
+    <div className={`hp${layout === 2 ? ' hp--work' : ''}`}>
       {layout === 2 ? (
         <>
           {/* OPTION 2 -- work first. A slim notice for anything open or new, the

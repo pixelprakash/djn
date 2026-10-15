@@ -203,3 +203,24 @@
 .hp-about-h { font-family: var(--display); font-size: clamp(2.2rem, 4.8vw, 4.2rem); font-weight: 400; line-height: 1.04; letter-spacing: -0.02em; color: var(--ink); }
 .hp-about-body .hp-line:first-child { margin-top: 0; }
 @media (max-width: 860px) { .hp-about { grid-template-columns: minmax(0, 1fr); } }
+
+/* ── Option 2 (.hp--work): generous, even white space ──
+   One rhythm: each section ends with the same large gap (S) and the next starts
+   flush, so the space between any two blocks is the same; headings get room
+   above their content; the slideshow gets room around its caption and controls. */
+.hp--work { --S: clamp(104px, 12vw, 184px); }
+.hp--work .hp-hero--stage { padding: clamp(28px, 3.4vw, 52px) var(--g) var(--S); }
+.hp--work .hp-id { margin-bottom: clamp(28px, 3.4vw, 52px); gap: 6px 24px; }
+.hp--work section.ns { padding: 0 var(--g) var(--S); }
+.hp--work .ns .ns-head { padding-bottom: clamp(36px, 4.4vw, 64px); }
+.hp--work .ns .ns-layout { gap: clamp(44px, 6vw, 112px); }
+.hp--work .hp-about { padding: 0 var(--g) var(--S); gap: clamp(36px, 6vw, 112px); }
+.hp--work .hp-about-body .hp-line { margin-top: clamp(18px, 2vw, 28px); }
+.hp--work .hp-about-body .hp-line:first-child { margin-top: 0; }
+.hp--work .hp-about-body .hp-links { margin-top: clamp(28px, 3vw, 44px); }
+.hp--work .aw { padding: 0 var(--g) var(--S); gap: clamp(40px, 6vw, 112px); }
+.hp--work .aw .aw-caption { margin-top: clamp(18px, 2.4vw, 32px); }
+@media (max-width: 860px) {
+  .hp--work { --S: clamp(80px, 18vw, 120px); }
+  .hp--work .ns .ns-layout, .hp--work .hp-about { gap: clamp(32px, 8vw, 56px); }
+}
