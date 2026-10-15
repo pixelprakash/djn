@@ -11,57 +11,13 @@
   position: absolute;
   inset: 0;
   z-index: 0;
-  touch-action: pan-y; /* a finger can point the light; vertical swipes still scroll the page */
+  pointer-events: none;
 }
 .fp .fp-stage { background: radial-gradient(70% 90% at 55% 50%, rgba(255, 255, 255, .035), rgba(255, 255, 255, 0) 70%); }
 .fp .fp-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
 /* The glow layer: drawn small, scaled up and blurred by the GPU, added to the dark. */
 .fp .fp-soft { position: absolute; inset: 0; width: 100%; height: 100%; display: block; filter: blur(9px); mix-blend-mode: screen; transform: scale(1.06); }
 
-/* A short caption that says what the scene is and what to do. It stays (quieter once
-   the visitor has played with it). */
-.fp .fp-hint {
-  position: absolute;
-  right: var(--g);
-  bottom: clamp(20px, 2.4vw, 32px);
-  max-width: 19em;
-  text-align: right;
-  font-family: var(--body);
-  font-size: 0.95rem;
-  line-height: 1.45;
-  color: rgba(255, 255, 255, .78);
-  text-shadow: 0 1px 10px rgba(11, 11, 12, .9), 0 0 2px rgba(11, 11, 12, .8); /* stays legible when the spectrum passes behind it */
-  pointer-events: none;
-  transition: opacity .6s ease;
-}
-.fp .fp-hint b {
-  display: block;
-  margin-bottom: 4px;
-  font-size: 0.85rem;
-  font-weight: 500;
-  letter-spacing: .1em;
-  text-transform: uppercase;
-  color: #fff;
-}
-.fp .fp-hint-touch { display: none; }
-.fp .fp-stage.is-used .fp-hint { opacity: .6; }
-@media (hover: none) { .fp .fp-hint-fine { display: none; } .fp .fp-hint-touch { display: inline; } }
-@media (max-width: 700px) { .fp .fp-hint { left: var(--g); right: auto; bottom: 14px; text-align: left; max-width: none; } }
-
-/* The aim ring: marks the point the spectrum is aimed at, riding on the eased pointer. */
-.fp .fp-aim {
-  position: absolute;
-  left: 0; top: 0;
-  width: 0; height: 0;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity .35s ease;
-  will-change: transform;
-}
-.fp .fp-aim::before, .fp .fp-aim::after { content: ''; position: absolute; border-radius: 50%; }
-.fp .fp-aim::before { left: -16px; top: -16px; width: 32px; height: 32px; border: 1.5px solid rgba(255, 255, 255, .7); box-shadow: 0 0 18px rgba(255, 255, 255, .25); }
-.fp .fp-aim::after { left: -2px; top: -2px; width: 4px; height: 4px; background: #fff; }
-.fp .fp-aim.is-on { opacity: 1; }
 /* Film grain over everything, so the light reads as exposed, not digital. */
 .fp .fp-grain {
   position: absolute;
@@ -73,7 +29,7 @@
 }
 
 /* A soft dark fade behind the words: the light can reach the left of the scene
-   (the spectrum follows the pointer anywhere) without washing out the headline. */
+   (the spectrum can fan wide) without washing out the headline. */
 .fp .fp-stage::after {
   content: '';
   position: absolute;
@@ -94,9 +50,7 @@
   gap: 20px;
   min-height: clamp(340px, 38vw, 520px);
   padding: clamp(40px, 5vw, 72px) var(--g);
-  pointer-events: none; /* the light underneath stays interactive... */
 }
-.fp .fp-link { pointer-events: auto; } /* ...except the link itself */
 .fp .fp-line {
   max-width: 11em;
   font-family: var(--display);
@@ -126,11 +80,10 @@
 .fp .fp-link:hover span { transform: translateX(4px); }
 
 @media (max-width: 700px) {
-  .fp .fp-text { min-height: 520px; padding-bottom: 104px; } /* room under the link for the caption */
+  .fp .fp-text { min-height: 460px; }
   .fp .fp-line { max-width: 9em; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .fp .fp-hint, .fp .fp-aim { transition: none; }
   .fp .fp-link, .fp .fp-link span { transition: none; }
   .fp .fp-link:hover span { transform: none; }
 }

@@ -8,25 +8,21 @@ import './FooterPrism.css'
 
    - 44 wavelengths (violet to red) are each traced through the glass with
      Snell's law, using a refractive index that is higher for short wavelengths
-     (exaggerated a little so it reads). Where a ray leaves the prism sets where
-     its colour lands, so the spectrum fans, narrows, swings and even vanishes
-     (total internal reflection) as the prism turns -- as a real one does.
-   - One gesture: the spectrum points at your cursor. Move the pointer and the
-     whole prism turns so the colours fan toward it (the light source swings with
-     it, so there is always a spectrum). A small ring marks what it is aiming at.
-     The aim is solved from the prism's own geometry, not from last frame's picture,
-     and the turn is eased with a speed limit, so it glides instead of jerking. On a touch screen, tap or drag a finger
-     and it points there; scrolling up and down still scrolls the page. Click or
-     tap also gives a flash of exposure. Left alone it drifts slowly by itself, and
-     after a touch it settles back to drifting.
+     (exaggerated a little so it reads), so the colours fan out the way a real
+     prism fans them.
+   - The prism stands still, centred in the scene; nothing answers to the pointer.
+     The light is what moves. On arrival the white beam grows in toward the glass,
+     then the spectrum opens out of the far side. After that it keeps moving
+     quietly: pulses of light travel along the beam and out along each colour, the
+     glow breathes, and the fan sways a few degrees.
    - Dust motes drift through the scene and light up in the colour of whatever
      part of the beam or spectrum they cross.
-   - It only runs while on screen. Visitors who prefer reduced motion get a still
-     image that still answers to the pointer, but nothing moves on its own.
+   - It only runs while on screen. Visitors who prefer reduced motion get the
+     finished picture, still.
    - It is purely decorative (hidden from assistive tech); the sentence and the
      link under it are the real content. */
 const VW = 1000, VH = 400                // the drawing space; the canvas covers it ("slice")
-const CX = 560, CY = 200, SIDE = 210     // the prism, in the middle of the frame
+const CX = 500, CY = 224, SIDE = 210     // the prism, dead centre of the frame (1000 x 400)
 const R = SIDE / Math.sqrt(3)            // circumradius
 const NRAYS = 44
 const FAR = 1700
@@ -77,7 +73,6 @@ export default function FooterPrism() {
   const stageRef = useRef(null)
   const mainRef = useRef(null)
   const softRef = useRef(null)
-  const aim = useRef(null)
 
   useEffect(() => {
     const stage = stageRef.current
@@ -92,14 +87,8 @@ export default function FooterPrism() {
     // ---- state ----
     const st = {
       w: 0, h: 0, s: 1, ox: 0, oy: 0, dpr: 1,
-      aimY: 0.86,                              // the angle the light meets the glass (radians)
-      rot: 0, rotTarget: 0,                    // prism angle
-      pointer: false, touch: false, lastInput: -1e9,   // where the pointer is (drawing units)
-      off: { x: 60, y: 20 },                   // where the colours leave the glass, relative to the prism's centre (prism unturned)
-      tx: 0, ty: 0, sx: 0, sy: 0,              // pointer target and its eased position (drawing units)
-      target: 0, last: 0,                      // prism angle we are turning toward; time of the last frame
-      nominal: 0.3,                            // direction the spectrum leaves at when the prism is not turned
-      flash: 0, t0: performance.now(), visible: false, raf: 0,
+      born: 0,                                 // when the scene first came on screen (starts the arrival)
+      t0: performance.now(), visible: false, raf: 0,
       motes: Array.from({ length: 70 }, () => ({
         x: Math.random() * VW, y: Math.random() * VH, vx: (Math.random() - 0.3) * 0.12, vy: (Math.random() - 0.5) * 0.08,
         r: 0.5 + Math.random() * 1.1, p: Math.random() * 6.28,
@@ -114,9 +103,9 @@ export default function FooterPrism() {
       soft.width = Math.max(2, Math.round(st.w / 4)); soft.height = Math.max(2, Math.round(st.h / 4))
       st.s = Math.max(st.w / VW, st.h / VH)
       st.ox = (st.w - VW * st.s) / 2; st.oy = (st.h - VH * st.s) / 2
-      // Narrow screens show only a slice of the drawing: put the prism on the left
-      // third, so the spectrum has the rest of the width to fan across.
-      if (st.w < 760) { st.ox = st.w * 0.3 - CX * st.s; st.oy = st.h * 0.3 - CY * st.s } // and in the upper part, above the sentence
+      // Narrow screens show only a slice of the drawing: keep the prism centred
+      // across, in the upper part, above the sentence.
+      if (st.w < 760) { st.ox = st.w * 0.42 - CX * st.s; st.oy = st.h * 0.3 - CY * st.s }
     }
 
     // ---- the optics ----
@@ -178,53 +167,22 @@ export default function FooterPrism() {
     // ---- drawing ----
     const rgba = (c, a) => `rgba(${c[0]},${c[1]},${c[2]},${a})`
 
+    const ease = x => 1 - Math.pow(1 - Math.min(1, Math.max(0, x)), 3)
     const render = now => {
       const t = (now - st.t0) / 1000
-      // The pointer is "active" while it is over the footer (mouse) or for a few
-      // seconds after a touch; otherwise the rig drifts slowly by itself.
-      const active = st.pointer && (!st.touch || now - st.lastInput < 4500)
-      const dt = calm ? 1 : Math.min(0.05, Math.max(0.001, (now - (st.last || now - 16)) / 1000))
-      st.last = now
-      let rotTarget = 0.1 * Math.sin(t * 0.31)
-      let theta = 0.86 + 0.09 * Math.sin(t * 0.5)
-      if (active) {
-        // The pointer itself is eased, so a jump (entering the footer, a tap) is a glide.
-        const kp = calm ? 1 : 1 - Math.exp(-dt * 14)
-        st.sx += (st.tx - st.sx) * kp; st.sy += (st.ty - st.sy) * kp
-        // Turn the prism so the spectrum leaves toward the pointer. The colours leave from
-        // `off` (turned with the prism) and travel at `nominal + rot`; solve for the turn
-        // that points that line at the pointer. Close to the prism the answer is unstable,
-        // so inside a small zone the prism just holds its angle.
-        if (Math.hypot(st.sx - CX, st.sy - CY) > 90) {
-          let r = st.target
-          for (let i = 0; i < 4; i++) {
-            const c = Math.cos(r), sn = Math.sin(r)
-            const ex = CX + st.off.x * c - st.off.y * sn, ey = CY + st.off.x * sn + st.off.y * c
-            const d = Math.atan2(st.sy - ey, st.sx - ex) - st.nominal
-            r = Math.atan2(Math.sin(d), Math.cos(d))
-          }
-          st.target = Math.max(-2.7, Math.min(2.7, r))
-        }
-        rotTarget = st.target
-        theta = 0.86
-      } else st.target = st.rot
-      // Ease toward the target (independent of frame rate) with a speed limit, so even
-      // a sweep across the whole range is a smooth turn.
-      const k = calm ? 1 : 1 - Math.exp(-dt * 6)
-      st.aimY += (theta - st.aimY) * k
-      const step = (rotTarget - st.rot) * k
-      const cap = calm ? 9 : 4.5 * dt
-      st.rot += Math.max(-cap, Math.min(cap, step))
-      st.flash *= calm ? 0 : Math.pow(0.93, dt * 60)
-      if (aim.current) {
-        const ax = st.ox + st.sx * st.s, ay = st.oy + st.sy * st.s
-        aim.current.style.transform = `translate3d(${ax.toFixed(1)}px, ${ay.toFixed(1)}px, 0)`
-        aim.current.classList.toggle('is-on', active)
-      }
-
-      const g = geometry(st.rot)
-      const tr = trace(g, st.aimY)
-      const I = 1 + st.flash * 1.2
+      // The arrival: the beam grows in toward the glass (about a second), then the
+      // spectrum opens out of it. Reduced motion shows the finished picture.
+      const intro = calm ? 9 : st.born ? (now - st.born) / 1000 : 0
+      const beamP = ease(intro / 1.1)
+      const specP = ease((intro - 0.75) / 1.7)
+      // The prism never turns; the light entering it sways a few degrees, so the fan
+      // slowly widens and narrows, and the glow breathes.
+      const theta = 0.86 + (calm ? 0 : 0.045 * Math.sin(t * 0.42))
+      const g = geometry(0)
+      const tr = trace(g, theta)
+      const I = calm ? 1 : 1 + 0.07 * Math.sin(t * 0.9)
+      const hitP = ease((intro - 0.8) / 0.5)   // the glow where the beam meets the glass
+      const H = { x: tr.S.x + (tr.E.x - tr.S.x) * beamP, y: tr.S.y + (tr.E.y - tr.S.y) * beamP } // the beam's leading edge
 
       // main canvas: the dark, with a faint vignette
       ctx.setTransform(st.dpr, 0, 0, st.dpr, 0, 0)
@@ -240,7 +198,7 @@ export default function FooterPrism() {
 
       // volumetric haze along the incoming beam
       {
-        const { S, E } = tr
+        const S = tr.S, E = H
         const gr = sctx.createLinearGradient(S.x, S.y, E.x, E.y)
         gr.addColorStop(0, 'rgba(255,255,255,0)'); gr.addColorStop(0.88, `rgba(255,255,255,${0.30 * I})`); gr.addColorStop(1, `rgba(255,255,255,${0.55 * I})`)
         const nx = -tr.d.y, ny = tr.d.x
@@ -270,7 +228,7 @@ export default function FooterPrism() {
         c2.lineTo(P.x + Math.cos(a2) * far * scale, P.y + Math.sin(a2) * far * scale)
         c2.closePath(); c2.fill()
       }
-      ex.forEach((e, i) => wedge(sctx, e, ex[i + 1] || ex[i - 1], 1.6, 0.34, 1))
+      ex.forEach((e, i) => wedge(sctx, e, ex[i + 1] || ex[i - 1], 1.6, 0.34 * specP, specP))
 
       // an anamorphic streak and bloom where the light leaves the glass
       let mx = tr.E.x, my = tr.E.y
@@ -280,30 +238,63 @@ export default function FooterPrism() {
         gr.addColorStop(0, `rgba(255,255,255,${Math.min(1, a * I)})`); gr.addColorStop(0.35, `rgba(255,255,255,${a * 0.28 * I})`); gr.addColorStop(1, 'rgba(255,255,255,0)')
         c2.fillStyle = gr; c2.beginPath(); c2.arc(x, y, r, 0, 6.2832); c2.fill()
       }
-      bloom(sctx, tr.E.x, tr.E.y, 70, 0.8)
-      if (ex.length) bloom(sctx, mx, my, 95, 0.85)
+      bloom(sctx, tr.E.x, tr.E.y, 70, 0.8 * hitP)
+      if (ex.length) bloom(sctx, mx, my, 95, 0.85 * specP)
 
       // crisp pass, in drawing units (the soft layer is blurred and blended by CSS)
       ctx.globalCompositeOperation = 'lighter'
       ctx.setTransform(st.dpr * st.s, 0, 0, st.dpr * st.s, st.dpr * st.ox, st.dpr * st.oy)
-      ex.forEach((e, i) => wedge(ctx, e, ex[i + 1] || ex[i - 1], 0.55, 0.28, 1))
+      ex.forEach((e, i) => wedge(ctx, e, ex[i + 1] || ex[i - 1], 0.55, 0.28 * specP, specP))
 
       // the beam core, a faint reflected ray, and the beam inside the glass
       ctx.lineCap = 'round'
       ctx.shadowColor = 'rgba(255,255,255,0.9)'; ctx.shadowBlur = 16 * st.s
-      const bg = ctx.createLinearGradient(tr.S.x, tr.S.y, tr.E.x, tr.E.y)
+      const bg = ctx.createLinearGradient(tr.S.x, tr.S.y, H.x, H.y)
       bg.addColorStop(0, 'rgba(255,255,255,0)'); bg.addColorStop(0.7, `rgba(255,255,255,${0.7 * Math.min(1, I)})`); bg.addColorStop(1, `rgba(255,255,255,${Math.min(1, 1 * I)})`)
       ctx.strokeStyle = bg; ctx.lineWidth = 2.4
-      ctx.beginPath(); ctx.moveTo(tr.S.x, tr.S.y); ctx.lineTo(tr.E.x, tr.E.y); ctx.stroke()
+      ctx.beginPath(); ctx.moveTo(tr.S.x, tr.S.y); ctx.lineTo(H.x, H.y); ctx.stroke()
       ctx.shadowBlur = 0
+
+      // light in motion: short bright pulses travel along the beam toward the glass, and
+      // out along the colours away from it
+      if (!calm) {
+        ctx.lineCap = 'round'
+        for (let k = 0; k < 4; k++) {
+          const u = (t * 0.3 + k / 4) % 1
+          if (u > beamP) continue
+          const px = tr.S.x + (tr.E.x - tr.S.x) * u, py = tr.S.y + (tr.E.y - tr.S.y) * u
+          const len = 70
+          const pg = ctx.createLinearGradient(px - tr.d.x * len, py - tr.d.y * len, px, py)
+          const al = Math.pow(Math.sin(Math.PI * u), 1.4)
+          pg.addColorStop(0, 'rgba(255,255,255,0)'); pg.addColorStop(1, `rgba(255,255,255,${0.85 * al})`)
+          ctx.strokeStyle = pg; ctx.lineWidth = 3.4
+          ctx.beginPath(); ctx.moveTo(px - tr.d.x * len, py - tr.d.y * len); ctx.lineTo(px, py); ctx.stroke()
+        }
+        if (specP > 0.05) {
+          ex.forEach((e, i) => {
+            if (i % 2) return
+            const dx = Math.cos(e.theta), dy = Math.sin(e.theta)
+            for (let j = 0; j < 2; j++) {
+              const u = (t * 0.2 + e.i * 0.137 + j * 0.5) % 1
+              const dist = u * 820 * specP, len = 46
+              const x1 = e.P.x + dx * dist, y1 = e.P.y + dy * dist
+              const al = Math.sin(Math.PI * u) * 0.5 * e.a * specP
+              const pg = ctx.createLinearGradient(x1 - dx * len, y1 - dy * len, x1, y1)
+              pg.addColorStop(0, rgba(RAYS[e.i].rgb, 0)); pg.addColorStop(1, rgba(RAYS[e.i].rgb, al))
+              ctx.strokeStyle = pg; ctx.lineWidth = 2.2
+              ctx.beginPath(); ctx.moveTo(x1 - dx * len, y1 - dy * len); ctx.lineTo(x1, y1); ctx.stroke()
+            }
+          })
+        }
+      }
       if (tr.entering && tr.refl) {
         const rg = ctx.createLinearGradient(tr.E.x, tr.E.y, tr.E.x + tr.refl.x * 420, tr.E.y + tr.refl.y * 420)
-        rg.addColorStop(0, `rgba(255,255,255,${0.22 * I})`); rg.addColorStop(1, 'rgba(255,255,255,0)')
+        rg.addColorStop(0, `rgba(255,255,255,${0.22 * I * hitP})`); rg.addColorStop(1, 'rgba(255,255,255,0)')
         ctx.strokeStyle = rg; ctx.lineWidth = 1.4
         ctx.beginPath(); ctx.moveTo(tr.E.x, tr.E.y); ctx.lineTo(tr.E.x + tr.refl.x * 420, tr.E.y + tr.refl.y * 420); ctx.stroke()
       }
       if (tr.inner) {
-        ctx.strokeStyle = `rgba(255,248,235,${0.55 * Math.min(1.4, I)})`; ctx.lineWidth = 3
+        ctx.strokeStyle = `rgba(255,248,235,${0.55 * Math.min(1.4, I) * hitP})`; ctx.lineWidth = 3
         ctx.shadowColor = 'rgba(255,240,220,.8)'; ctx.shadowBlur = 10 * st.s
         ctx.beginPath(); ctx.moveTo(tr.inner.from.x, tr.inner.from.y); ctx.lineTo(tr.inner.to.x, tr.inner.to.y); ctx.stroke()
         ctx.shadowBlur = 0
@@ -312,7 +303,7 @@ export default function FooterPrism() {
       // the anamorphic streak at the exit
       if (ex.length) {
         const sg = ctx.createLinearGradient(mx - 330, my, mx + 330, my)
-        sg.addColorStop(0, 'rgba(180,200,255,0)'); sg.addColorStop(0.5, `rgba(235,240,255,${0.34 * I})`); sg.addColorStop(1, 'rgba(255,190,170,0)')
+        sg.addColorStop(0, 'rgba(180,200,255,0)'); sg.addColorStop(0.5, `rgba(235,240,255,${0.34 * I * specP})`); sg.addColorStop(1, 'rgba(255,190,170,0)')
         ctx.fillStyle = sg; ctx.fillRect(mx - 330, my - 1.3, 660, 2.6)
       }
 
@@ -367,48 +358,20 @@ export default function FooterPrism() {
       })
     }
 
-    // ---- loop and input ----
+    // ---- loop ----
     const frame = now => { render(now); st.raf = requestAnimationFrame(frame) }
     const start = () => { if (!st.raf && st.visible && !calm) st.raf = requestAnimationFrame(frame) }
     const stop = () => { cancelAnimationFrame(st.raf); st.raf = 0 }
-    const still = () => { if (calm) render(performance.now()) } // reduced motion: draw on input only
-
-    const mark = () => { st.lastInput = performance.now(); stage.classList.add('is-used') }
-    const aimAt = e => {
-      const r = stage.getBoundingClientRect()
-      st.tx = (e.clientX - r.left - st.ox) / st.s
-      st.ty = (e.clientY - r.top - st.oy) / st.s
-      if (!st.pointer) { st.sx = st.tx; st.sy = st.ty }
-      st.pointer = true; st.touch = e.pointerType === 'touch'; mark()
-      still()
-    }
-    const down = e => { aimAt(e); st.flash = 1 }
-    const leave = () => { st.pointer = false }
-
-    // The direction the spectrum leaves in when the prism is not turned (measured once).
-    {
-      const rest = trace(geometry(0), 0.86).exits
-      if (rest.length) {
-        st.nominal = rest.reduce((a, e) => a + e.theta, 0) / rest.length
-        st.off = { x: rest.reduce((a, e) => a + e.P.x, 0) / rest.length - CX, y: rest.reduce((a, e) => a + e.P.y, 0) / rest.length - CY }
-      }
-    }
 
     size(); render(performance.now())
     const ro = new ResizeObserver(() => { size(); render(performance.now()) })
     ro.observe(stage)
-    const zone = stage.parentElement // the whole footer scene: pointer events over its text count too
-    const io = new IntersectionObserver(([e]) => { st.visible = e.isIntersecting; if (st.visible) start(); else stop() }, { threshold: 0.05 })
+    const io = new IntersectionObserver(([e]) => {
+      st.visible = e.isIntersecting
+      if (st.visible) { if (!st.born) st.born = performance.now(); start() } else stop()
+    }, { threshold: 0.15 })
     io.observe(stage)
-    zone.addEventListener('pointerdown', down)
-    zone.addEventListener('pointermove', aimAt)
-    zone.addEventListener('pointerleave', leave)
-    zone.addEventListener('pointercancel', leave)
-    return () => {
-      stop(); ro.disconnect(); io.disconnect()
-      zone.removeEventListener('pointerdown', down); zone.removeEventListener('pointermove', aimAt)
-      zone.removeEventListener('pointerleave', leave); zone.removeEventListener('pointercancel', leave)
-    }
+    return () => { stop(); ro.disconnect(); io.disconnect() }
   }, [])
 
   return (
@@ -417,11 +380,6 @@ export default function FooterPrism() {
         <canvas className="fp-soft" ref={softRef} />
         <canvas className="fp-canvas" ref={mainRef} />
         <span className="fp-grain" />
-        <span className="fp-aim" ref={aim} />
-        <span className="fp-hint">
-          <span className="fp-hint-fine"><b>Move your cursor</b>The spectrum aims where you point: white light, split into the colours it is made of.</span>
-          <span className="fp-hint-touch"><b>Tap or drag</b>The spectrum aims where you touch: white light, split into the colours it is made of.</span>
-        </span>
       </div>
 
       <div className="fp-text">
