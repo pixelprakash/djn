@@ -46,15 +46,23 @@ function MotionLink({ href, label }) {
   )
 }
 
-/* The intro's lines, without the heading: used by Option 1's hero and by Option 2's About band. */
-function AboutLines() {
+/* "Professor & Founding head of Design Dept at IIT Hyderabad." with its two links. */
+function RoleText() {
   return (
     <>
-      <p className="hp-line">
-        Professor &amp; Founding head of{' '}
-        <MotionLink href="https://design.iith.ac.in" label="Design Dept" />{' '}
-        at <MotionLink href="https://www.iith.ac.in" label="IIT Hyderabad" />.
-      </p>
+      Professor &amp; Founding head of{' '}
+      <MotionLink href="https://design.iith.ac.in" label="Design Dept" />{' '}
+      at <MotionLink href="https://www.iith.ac.in" label="IIT Hyderabad" />.
+    </>
+  )
+}
+
+/* The intro's lines, without the heading: used by Option 1's hero and by Option 2's
+   About band (which leaves the role line out: Option 2 shows it in the hero). */
+function AboutLines({ withRole = true }) {
+  return (
+    <>
+      {withRole && <p className="hp-line"><RoleText /></p>}
       <p className="hp-line">
         A <strong>designer</strong>, <strong>researcher</strong> and <strong>creative artist</strong> at
         heart: driven by curiosity, mentorship and a hands-on love of experimentation.
@@ -100,7 +108,7 @@ export default function About() {
           <header className="hp-hero hp-hero--stage">
             <div className="hp-id">
               <h1 className="hp-id-name">Prof. Deepak John Mathew</h1>
-              <p className="hp-id-role">Professor of Design, IIT Hyderabad</p>
+              <p className="hp-id-role"><RoleText /></p>
             </div>
             <HeroSlider projects={PROJECTS} wide />
           </header>
@@ -110,7 +118,7 @@ export default function About() {
           {/* The personal information, for those who look for it. */}
           <section className="hp-about" aria-labelledby="hp-about-h">
             <h2 className="hp-about-h" id="hp-about-h">About</h2>
-            <div className="hp-about-body"><AboutLines /></div>
+            <div className="hp-about-body"><AboutLines withRole={false} /></div>
           </section>
 
           <AtWork withPhoto />

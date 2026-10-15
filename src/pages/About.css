@@ -224,3 +224,7 @@
   .hp--work { --S: clamp(80px, 18vw, 120px); }
   .hp--work .ns .ns-layout, .hp--work .hp-about { gap: clamp(32px, 8vw, 56px); }
 }
+
+/* The role sentence in the Option 2 hero: grey text, its two links in ink. */
+.hp-id-role .hp-link { font-weight: 500; }
+.hp-id-role { line-height: 1.4; }
