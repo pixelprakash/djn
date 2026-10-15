@@ -13,7 +13,9 @@ import './FooterPrism.css'
      (total internal reflection) as the prism turns -- as a real one does.
    - One gesture: the spectrum points at your cursor. Move the pointer and the
      whole prism turns so the colours fan toward it (the light source swings with
-     it, so there is always a spectrum). On a touch screen, tap or drag a finger
+     it, so there is always a spectrum). A small ring marks what it is aiming at.
+     The aim is solved from the prism's own geometry, not from last frame's picture,
+     and the turn is eased with a speed limit, so it glides instead of jerking. On a touch screen, tap or drag a finger
      and it points there; scrolling up and down still scrolls the page. Click or
      tap also gives a flash of exposure. Left alone it drifts slowly by itself, and
      after a touch it settles back to drifting.
@@ -24,7 +26,7 @@ import './FooterPrism.css'
    - It is purely decorative (hidden from assistive tech); the sentence and the
      link under it are the real content. */
 const VW = 1000, VH = 400                // the drawing space; the canvas covers it ("slice")
-const CX = 560, CY = 150, SIDE = 210     // the prism (high in the frame, clear of the sentence)
+const CX = 560, CY = 200, SIDE = 210     // the prism, in the middle of the frame
 const R = SIDE / Math.sqrt(3)            // circumradius
 const NRAYS = 44
 const FAR = 1700
@@ -75,6 +77,7 @@ export default function FooterPrism() {
   const stageRef = useRef(null)
   const mainRef = useRef(null)
   const softRef = useRef(null)
+  const aim = useRef(null)
 
   useEffect(() => {
     const stage = stageRef.current
@@ -91,8 +94,10 @@ export default function FooterPrism() {
       w: 0, h: 0, s: 1, ox: 0, oy: 0, dpr: 1,
       aimY: 0.86,                              // the angle the light meets the glass (radians)
       rot: 0, rotTarget: 0,                    // prism angle
-      px: 0, py: 0, pointer: false, touch: false, lastInput: -1e9,   // where the pointer is (drawing units)
-      exit: { x: CX + 60, y: CY + 20 },        // where the colours leave the glass (last frame)
+      pointer: false, touch: false, lastInput: -1e9,   // where the pointer is (drawing units)
+      off: { x: 60, y: 20 },                   // where the colours leave the glass, relative to the prism's centre (prism unturned)
+      tx: 0, ty: 0, sx: 0, sy: 0,              // pointer target and its eased position (drawing units)
+      target: 0, last: 0,                      // prism angle we are turning toward; time of the last frame
       nominal: 0.3,                            // direction the spectrum leaves at when the prism is not turned
       flash: 0, t0: performance.now(), visible: false, raf: 0,
       motes: Array.from({ length: 70 }, () => ({
@@ -111,7 +116,7 @@ export default function FooterPrism() {
       st.ox = (st.w - VW * st.s) / 2; st.oy = (st.h - VH * st.s) / 2
       // Narrow screens show only a slice of the drawing: put the prism on the left
       // third, so the spectrum has the rest of the width to fan across.
-      if (st.w < 760) st.ox = st.w * 0.3 - CX * st.s
+      if (st.w < 760) { st.ox = st.w * 0.3 - CX * st.s; st.oy = st.h * 0.3 - CY * st.s } // and in the upper part, above the sentence
     }
 
     // ---- the optics ----
@@ -178,19 +183,44 @@ export default function FooterPrism() {
       // The pointer is "active" while it is over the footer (mouse) or for a few
       // seconds after a touch; otherwise the rig drifts slowly by itself.
       const active = st.pointer && (!st.touch || now - st.lastInput < 4500)
+      const dt = calm ? 1 : Math.min(0.05, Math.max(0.001, (now - (st.last || now - 16)) / 1000))
+      st.last = now
       let rotTarget = 0.1 * Math.sin(t * 0.31)
       let theta = 0.86 + 0.09 * Math.sin(t * 0.5)
       if (active) {
-        // Turn the prism so the spectrum leaves toward the pointer. The source swings
-        // round with the prism, so turning by an angle turns the spectrum by the same.
-        const want = Math.atan2(st.py - st.exit.y, st.px - st.exit.x)
-        rotTarget = Math.max(-2.7, Math.min(2.7, Math.atan2(Math.sin(want - st.nominal), Math.cos(want - st.nominal))))
+        // The pointer itself is eased, so a jump (entering the footer, a tap) is a glide.
+        const kp = calm ? 1 : 1 - Math.exp(-dt * 14)
+        st.sx += (st.tx - st.sx) * kp; st.sy += (st.ty - st.sy) * kp
+        // Turn the prism so the spectrum leaves toward the pointer. The colours leave from
+        // `off` (turned with the prism) and travel at `nominal + rot`; solve for the turn
+        // that points that line at the pointer. Close to the prism the answer is unstable,
+        // so inside a small zone the prism just holds its angle.
+        if (Math.hypot(st.sx - CX, st.sy - CY) > 90) {
+          let r = st.target
+          for (let i = 0; i < 4; i++) {
+            const c = Math.cos(r), sn = Math.sin(r)
+            const ex = CX + st.off.x * c - st.off.y * sn, ey = CY + st.off.x * sn + st.off.y * c
+            const d = Math.atan2(st.sy - ey, st.sx - ex) - st.nominal
+            r = Math.atan2(Math.sin(d), Math.cos(d))
+          }
+          st.target = Math.max(-2.7, Math.min(2.7, r))
+        }
+        rotTarget = st.target
         theta = 0.86
-      }
-      const k = calm ? 1 : 0.09
+      } else st.target = st.rot
+      // Ease toward the target (independent of frame rate) with a speed limit, so even
+      // a sweep across the whole range is a smooth turn.
+      const k = calm ? 1 : 1 - Math.exp(-dt * 6)
       st.aimY += (theta - st.aimY) * k
-      st.rot += (rotTarget - st.rot) * k
-      st.flash *= calm ? 0 : 0.93
+      const step = (rotTarget - st.rot) * k
+      const cap = calm ? 9 : 4.5 * dt
+      st.rot += Math.max(-cap, Math.min(cap, step))
+      st.flash *= calm ? 0 : Math.pow(0.93, dt * 60)
+      if (aim.current) {
+        const ax = st.ox + st.sx * st.s, ay = st.oy + st.sy * st.s
+        aim.current.style.transform = `translate3d(${ax.toFixed(1)}px, ${ay.toFixed(1)}px, 0)`
+        aim.current.classList.toggle('is-on', active)
+      }
 
       const g = geometry(st.rot)
       const tr = trace(g, st.aimY)
@@ -244,7 +274,7 @@ export default function FooterPrism() {
 
       // an anamorphic streak and bloom where the light leaves the glass
       let mx = tr.E.x, my = tr.E.y
-      if (ex.length) { mx = ex.reduce((s, e) => s + e.P.x, 0) / ex.length; my = ex.reduce((s, e) => s + e.P.y, 0) / ex.length; st.exit.x = mx; st.exit.y = my }
+      if (ex.length) { mx = ex.reduce((s, e) => s + e.P.x, 0) / ex.length; my = ex.reduce((s, e) => s + e.P.y, 0) / ex.length }
       const bloom = (c2, x, y, r, a) => {
         const gr = c2.createRadialGradient(x, y, 0, x, y, r)
         gr.addColorStop(0, `rgba(255,255,255,${Math.min(1, a * I)})`); gr.addColorStop(0.35, `rgba(255,255,255,${a * 0.28 * I})`); gr.addColorStop(1, 'rgba(255,255,255,0)')
@@ -346,8 +376,9 @@ export default function FooterPrism() {
     const mark = () => { st.lastInput = performance.now(); stage.classList.add('is-used') }
     const aimAt = e => {
       const r = stage.getBoundingClientRect()
-      st.px = (e.clientX - r.left - st.ox) / st.s
-      st.py = (e.clientY - r.top - st.oy) / st.s
+      st.tx = (e.clientX - r.left - st.ox) / st.s
+      st.ty = (e.clientY - r.top - st.oy) / st.s
+      if (!st.pointer) { st.sx = st.tx; st.sy = st.ty }
       st.pointer = true; st.touch = e.pointerType === 'touch'; mark()
       still()
     }
@@ -357,7 +388,10 @@ export default function FooterPrism() {
     // The direction the spectrum leaves in when the prism is not turned (measured once).
     {
       const rest = trace(geometry(0), 0.86).exits
-      if (rest.length) st.nominal = rest.reduce((a, e) => a + e.theta, 0) / rest.length
+      if (rest.length) {
+        st.nominal = rest.reduce((a, e) => a + e.theta, 0) / rest.length
+        st.off = { x: rest.reduce((a, e) => a + e.P.x, 0) / rest.length - CX, y: rest.reduce((a, e) => a + e.P.y, 0) / rest.length - CY }
+      }
     }
 
     size(); render(performance.now())
@@ -383,9 +417,10 @@ export default function FooterPrism() {
         <canvas className="fp-soft" ref={softRef} />
         <canvas className="fp-canvas" ref={mainRef} />
         <span className="fp-grain" />
+        <span className="fp-aim" ref={aim} />
         <span className="fp-hint">
-          <span className="fp-hint-fine">Move your cursor &middot; the light follows</span>
-          <span className="fp-hint-touch">Tap to point the light</span>
+          <span className="fp-hint-fine"><b>Move your cursor</b>The spectrum aims where you point: white light, split into the colours it is made of.</span>
+          <span className="fp-hint-touch"><b>Tap or drag</b>The spectrum aims where you touch: white light, split into the colours it is made of.</span>
         </span>
       </div>
 
