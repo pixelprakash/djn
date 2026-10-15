@@ -12,10 +12,26 @@
   border-bottom: 1px solid var(--rule);
 }
 
-.tn--scrolled {
+/* The frosted-glass background lives on a layer BEHIND the bar (::before), not on
+   the bar itself. A backdrop-filter (like a transform or filter) on an element
+   makes it the containing block for its position:fixed descendants -- so with the
+   blur on .tn, the full-screen mobile menu (fixed, inside .tn) was measured
+   against the 64px bar once you had scrolled, and collapsed to zero height. */
+.tn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: rgba(247,247,247,0);
+  transition: background .3s ease;
+}
+.tn--scrolled::before {
   background: rgba(247,247,247,0.94);
   backdrop-filter: blur(20px) saturate(160%);
   -webkit-backdrop-filter: blur(20px) saturate(160%);
+}
+.tn--scrolled {
   box-shadow: 0 1px 0 rgba(26,24,20,0.06), 0 2px 6px rgba(26,24,20,0.03), 0 10px 30px rgba(26,24,20,0.05);
   border-bottom: 1px solid rgba(26,24,20,0.07);
 }

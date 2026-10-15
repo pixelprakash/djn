@@ -11,9 +11,12 @@ import './FooterPrism.css'
      (exaggerated a little so it reads). Where a ray leaves the prism sets where
      its colour lands, so the spectrum fans, narrows, swings and even vanishes
      (total internal reflection) as the prism turns -- as a real one does.
-   - Move the pointer: the light source follows its height. Drag: turn the prism.
-     Click or tap: a flash of exposure. Left alone, it drifts slowly by itself
-     and any turn you gave it eases back.
+   - One gesture: the spectrum points at your cursor. Move the pointer and the
+     whole prism turns so the colours fan toward it (the light source swings with
+     it, so there is always a spectrum). On a touch screen, tap or drag a finger
+     and it points there; scrolling up and down still scrolls the page. Click or
+     tap also gives a flash of exposure. Left alone it drifts slowly by itself, and
+     after a touch it settles back to drifting.
    - Dust motes drift through the scene and light up in the colour of whatever
      part of the beam or spectrum they cross.
    - It only runs while on screen. Visitors who prefer reduced motion get a still
@@ -82,14 +85,15 @@ export default function FooterPrism() {
     if (!soft) return
     const sctx = soft.getContext('2d')
     const calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    const fine = window.matchMedia('(hover: hover) and (pointer: fine)').matches
 
     // ---- state ----
     const st = {
       w: 0, h: 0, s: 1, ox: 0, oy: 0, dpr: 1,
-      aimY: 0.86, aimTarget: 0.86,            // the angle the light meets the glass (radians)
-      rot: 0, rotTarget: 0, userRot: 0,        // prism angle
-      pointer: false, dragging: false, lastX: 0, lastInput: -1e9,
+      aimY: 0.86,                              // the angle the light meets the glass (radians)
+      rot: 0, rotTarget: 0,                    // prism angle
+      px: 0, py: 0, pointer: false, touch: false, lastInput: -1e9,   // where the pointer is (drawing units)
+      exit: { x: CX + 60, y: CY + 20 },        // where the colours leave the glass (last frame)
+      nominal: 0.3,                            // direction the spectrum leaves at when the prism is not turned
       flash: 0, t0: performance.now(), visible: false, raf: 0,
       motes: Array.from({ length: 70 }, () => ({
         x: Math.random() * VW, y: Math.random() * VH, vx: (Math.random() - 0.3) * 0.12, vy: (Math.random() - 0.5) * 0.08,
@@ -171,16 +175,21 @@ export default function FooterPrism() {
 
     const render = now => {
       const t = (now - st.t0) / 1000
-      // idle drift, until someone touches it
-      const idle = !st.pointer
-      const driftY = 0.86 + 0.09 * Math.sin(t * 0.5)
-      st.aimTarget = idle ? driftY : st.aimTarget
-      const rotBase = 0.1 * Math.sin(t * 0.31)
-      if (!st.dragging && now - st.lastInput > 5000) st.userRot *= 0.985
-      st.rotTarget = rotBase + st.userRot
-      const k = calm ? 1 : 0.08
-      st.aimY += (st.aimTarget - st.aimY) * k
-      st.rot += (st.rotTarget - st.rot) * k
+      // The pointer is "active" while it is over the footer (mouse) or for a few
+      // seconds after a touch; otherwise the rig drifts slowly by itself.
+      const active = st.pointer && (!st.touch || now - st.lastInput < 4500)
+      let rotTarget = 0.1 * Math.sin(t * 0.31)
+      let theta = 0.86 + 0.09 * Math.sin(t * 0.5)
+      if (active) {
+        // Turn the prism so the spectrum leaves toward the pointer. The source swings
+        // round with the prism, so turning by an angle turns the spectrum by the same.
+        const want = Math.atan2(st.py - st.exit.y, st.px - st.exit.x)
+        rotTarget = Math.max(-2.7, Math.min(2.7, Math.atan2(Math.sin(want - st.nominal), Math.cos(want - st.nominal))))
+        theta = 0.86
+      }
+      const k = calm ? 1 : 0.09
+      st.aimY += (theta - st.aimY) * k
+      st.rot += (rotTarget - st.rot) * k
       st.flash *= calm ? 0 : 0.93
 
       const g = geometry(st.rot)
@@ -235,7 +244,7 @@ export default function FooterPrism() {
 
       // an anamorphic streak and bloom where the light leaves the glass
       let mx = tr.E.x, my = tr.E.y
-      if (ex.length) { mx = ex.reduce((s, e) => s + e.P.x, 0) / ex.length; my = ex.reduce((s, e) => s + e.P.y, 0) / ex.length }
+      if (ex.length) { mx = ex.reduce((s, e) => s + e.P.x, 0) / ex.length; my = ex.reduce((s, e) => s + e.P.y, 0) / ex.length; st.exit.x = mx; st.exit.y = my }
       const bloom = (c2, x, y, r, a) => {
         const gr = c2.createRadialGradient(x, y, 0, x, y, r)
         gr.addColorStop(0, `rgba(255,255,255,${Math.min(1, a * I)})`); gr.addColorStop(0.35, `rgba(255,255,255,${a * 0.28 * I})`); gr.addColorStop(1, 'rgba(255,255,255,0)')
@@ -334,44 +343,37 @@ export default function FooterPrism() {
     const stop = () => { cancelAnimationFrame(st.raf); st.raf = 0 }
     const still = () => { if (calm) render(performance.now()) } // reduced motion: draw on input only
 
-    const toDrawY = clientY => {
-      const r = stage.getBoundingClientRect()
-      // Mapped onto the range in which the prism makes a full spectrum (a prism is
-      // a physical thing: aim past it and the light would leave the wrong way).
-      const u = Math.max(0, Math.min(1, (clientY - r.top) / r.height))
-      return 0.7 + u * 0.32
-    }
     const mark = () => { st.lastInput = performance.now(); stage.classList.add('is-used') }
-    const down = e => {
-      st.dragging = true; st.lastX = e.clientX; st.pointer = true; st.aimTarget = toDrawY(e.clientY); st.flash = 1; mark()
-      stage.classList.add('is-drag')
-      try { stage.setPointerCapture(e.pointerId) } catch { /* fine */ }
+    const aimAt = e => {
+      const r = stage.getBoundingClientRect()
+      st.px = (e.clientX - r.left - st.ox) / st.s
+      st.py = (e.clientY - r.top - st.oy) / st.s
+      st.pointer = true; st.touch = e.pointerType === 'touch'; mark()
       still()
     }
-    const move = e => {
-      if (e.pointerType === 'touch' && !st.dragging) return
-      st.pointer = true; st.aimTarget = toDrawY(e.clientY); mark()
-      if (st.dragging) { st.userRot += (e.clientX - st.lastX) * 0.006; st.userRot = Math.max(-0.9, Math.min(0.9, st.userRot)); st.lastX = e.clientX }
-      still()
+    const down = e => { aimAt(e); st.flash = 1 }
+    const leave = () => { st.pointer = false }
+
+    // The direction the spectrum leaves in when the prism is not turned (measured once).
+    {
+      const rest = trace(geometry(0), 0.86).exits
+      if (rest.length) st.nominal = rest.reduce((a, e) => a + e.theta, 0) / rest.length
     }
-    const up = () => { st.dragging = false; stage.classList.remove('is-drag') }
-    const leave = () => { if (!st.dragging) { st.pointer = false; st.t0 = performance.now() - 1000 * Math.asin(Math.max(-1, Math.min(1, (st.aimY - 0.86) / 0.09))) / 0.5 } }
 
     size(); render(performance.now())
     const ro = new ResizeObserver(() => { size(); render(performance.now()) })
     ro.observe(stage)
+    const zone = stage.parentElement // the whole footer scene: pointer events over its text count too
     const io = new IntersectionObserver(([e]) => { st.visible = e.isIntersecting; if (st.visible) start(); else stop() }, { threshold: 0.05 })
     io.observe(stage)
-    stage.addEventListener('pointerdown', down)
-    stage.addEventListener('pointermove', move)
-    stage.addEventListener('pointerup', up)
-    stage.addEventListener('pointercancel', up)
-    stage.addEventListener('pointerleave', leave)
-    void fine
+    zone.addEventListener('pointerdown', down)
+    zone.addEventListener('pointermove', aimAt)
+    zone.addEventListener('pointerleave', leave)
+    zone.addEventListener('pointercancel', leave)
     return () => {
       stop(); ro.disconnect(); io.disconnect()
-      stage.removeEventListener('pointerdown', down); stage.removeEventListener('pointermove', move)
-      stage.removeEventListener('pointerup', up); stage.removeEventListener('pointercancel', up); stage.removeEventListener('pointerleave', leave)
+      zone.removeEventListener('pointerdown', down); zone.removeEventListener('pointermove', aimAt)
+      zone.removeEventListener('pointerleave', leave); zone.removeEventListener('pointercancel', leave)
     }
   }, [])
 
@@ -382,8 +384,8 @@ export default function FooterPrism() {
         <canvas className="fp-canvas" ref={mainRef} />
         <span className="fp-grain" />
         <span className="fp-hint">
-          <span className="fp-hint-fine">Move to aim the light &middot; drag to turn the prism</span>
-          <span className="fp-hint-touch">Drag to turn the prism</span>
+          <span className="fp-hint-fine">Move your cursor &middot; the light follows</span>
+          <span className="fp-hint-touch">Tap to point the light</span>
         </span>
       </div>
 

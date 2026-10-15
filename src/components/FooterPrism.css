@@ -11,10 +11,8 @@
   position: absolute;
   inset: 0;
   z-index: 0;
-  touch-action: pan-y; /* a finger can turn the prism sideways; the page still scrolls up and down */
-  cursor: grab;
+  touch-action: pan-y; /* a finger can point the light; vertical swipes still scroll the page */
 }
-.fp .fp-stage.is-drag { cursor: grabbing; }
 .fp .fp-stage { background: radial-gradient(70% 90% at 55% 50%, rgba(255, 255, 255, .035), rgba(255, 255, 255, 0) 70%); }
 .fp .fp-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
 /* The glow layer: drawn small, scaled up and blurred by the GPU, added to the dark. */
@@ -45,6 +43,17 @@
   mix-blend-mode: overlay;
   pointer-events: none;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* A soft dark fade behind the words: the light can reach the left of the scene
+   (the spectrum follows the pointer anywhere) without washing out the headline. */
+.fp .fp-stage::after {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: min(62%, 780px);
+  background: linear-gradient(90deg, rgba(11, 11, 12, .82) 0%, rgba(11, 11, 12, .55) 45%, rgba(11, 11, 12, 0) 100%);
+  pointer-events: none;
 }
 
 /* The words sit bottom-left, on the dark side of the scene. */
