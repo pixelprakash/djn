@@ -29,45 +29,34 @@ function settle(done) {
   else lift()
 }
 
-/* Switch themes. Where the browser can do a View Transition, the new theme is
-   revealed by a circle growing from the switch (a single GPU-composited move: no
-   element changes colour at a different moment from another, so nothing
-   flickers). Elsewhere, or when the visitor prefers reduced motion, it switches
-   at once. `origin` is the element the circle grows from. */
-function apply(theme, origin, update) {
+/* Switch themes. Where the browser can do a View Transition, the page cross-fades
+   from the old theme to the new one (opacity only, which the GPU runs on its own
+   without repainting anything, so it stays smooth even on large screens). The whole
+   page changes in one move, so no element lags behind another. Elsewhere, or when
+   the visitor prefers reduced motion, it switches at once. */
+function apply(theme, update) {
   const calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-  if (!origin || calm || typeof document.startViewTransition !== 'function') {
+  if (calm || typeof document.startViewTransition !== 'function') {
     paint(theme)
     if (update) update()
     settle(null)
     return
   }
-  const r = origin.getBoundingClientRect()
-  const x = r.left + r.width / 2
-  const y = r.top + r.height / 2
-  const radius = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y))
   const t = document.startViewTransition(() => {
     paint(theme)
     if (update) flushSync(update) // the switch's own icon changes inside the new picture
   })
   settle(t.finished)
-  t.ready.then(() => {
-    document.documentElement.animate(
-      { clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${radius}px at ${x}px ${y}px)`] },
-      { duration: 650, easing: 'cubic-bezier(.22, 1, .36, 1)', pseudoElement: '::view-transition-new(root)' },
-    )
-  }).catch(() => {})
 }
 
 export default function useTheme() {
   const [theme, setTheme] = useState(current)
 
-  const choose = useCallback((next, origin) => {
-    apply(next, origin, () => setTheme(next))
+  const choose = useCallback(next => {
+    apply(next, () => setTheme(next))
     try { localStorage.setItem(KEY, next) } catch { /* private mode: lasts for this visit */ }
   }, [])
-  // `origin`: the element the reveal grows from (the switch that was pressed).
-  const toggle = useCallback(origin => choose(current() === 'dark' ? 'light' : 'dark', origin), [choose])
+  const toggle = useCallback(() => choose(current() === 'dark' ? 'light' : 'dark'), [choose])
 
   // Another tab changed it.
   useEffect(() => {

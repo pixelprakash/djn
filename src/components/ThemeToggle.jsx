@@ -14,7 +14,7 @@ export default function ThemeToggle({ showLabel = false, className = '' }) {
       aria-checked={isDark}
       aria-label="Dark theme"
       className={`tt${showLabel ? ' tt--label' : ''} ${className}`}
-      onClick={e => toggle(e.currentTarget)}
+      onClick={toggle}
     >
       <span className="tt-icon" aria-hidden="true">
         {isDark ? (
