@@ -1,6 +1,6 @@
 import { NavLink } from 'react-router-dom'
 import { SOCIALS } from '../data/socials'
-import FooterPrism from './FooterPrism'
+// import FooterPrism from './FooterPrism' // the "Photography is writing with light." scene (switched off)
 import './Footer.css'
 
 const LINKS = [
@@ -23,8 +23,10 @@ export default function Footer() {
     <footer className="ft">
       <span className="ft-edge" aria-hidden="true" />
 
-      {/* The closing scene: light through a prism (it reacts to the pointer). */}
+      {/* The closing scene ("Photography is writing with light.": light through a prism)
+          is switched off. To bring it back, uncomment the import above and this line.
       <FooterPrism />
+      */}
 
       <div className="ft-inner">
         <div className="ft-brand">

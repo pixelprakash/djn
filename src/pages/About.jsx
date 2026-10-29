@@ -2,15 +2,18 @@ import { Link } from 'react-router-dom'
 import { PROJECTS } from './projectData'
 import { SOCIALS } from '../data/socials'
 import NewsSection from '../components/NewsSection'
-import WorkIndex from '../components/WorkIndex'
+// import WorkIndex from '../components/WorkIndex' // Option 1 only (switched off)
 import AtWork from '../components/AtWork'
 import HeroSlider from '../components/HeroSlider'
 import LatestNotice from '../components/LatestNotice'
-import HomeLayoutSwitch from '../components/HomeLayoutSwitch'
-import useHomeLayout from '../hooks/useHomeLayout'
-import hero640 from '../assets/djteaching-640.webp'
-import hero960 from '../assets/djteaching-960.webp'
-import hero1280 from '../assets/djteaching-1280.webp'
+// Option 1 (photo first) and the on-page layout switch are switched off: the home page is
+// Option 2 only. To bring the choice back, uncomment these, the Intro component, the
+// Option 1 block and the switch at the bottom of About().
+// import HomeLayoutSwitch from '../components/HomeLayoutSwitch'
+// import useHomeLayout from '../hooks/useHomeLayout'
+// import hero640 from '../assets/djteaching-640.webp'
+// import hero960 from '../assets/djteaching-960.webp'
+// import hero1280 from '../assets/djteaching-1280.webp'
 import usePageTitle from '../hooks/usePageTitle'
 import { homeMeta } from '../seo/routes'
 import './About.css'
@@ -57,8 +60,8 @@ function RoleText() {
   )
 }
 
-/* The intro's lines, without the heading: used by Option 1's hero and by Option 2's
-   About band (which leaves the role line out: Option 2 shows it in the hero). */
+/* The intro's lines, without the heading, for the About band (which leaves the role
+   line out: the hero shows it). */
 function AboutLines({ withRole = true }) {
   return (
     <>
@@ -82,7 +85,7 @@ function AboutLines({ withRole = true }) {
   )
 }
 
-/* Option 1's intro: heading plus the lines. */
+/* Option 1's intro: heading plus the lines. (Switched off with Option 1.)
 function Intro() {
   return (
     <div className="hp-hero-text">
@@ -91,66 +94,63 @@ function Intro() {
     </div>
   )
 }
+*/
 
 export default function About() {
   usePageTitle(homeMeta())
-  const [layout, setLayout] = useHomeLayout()
+  // const [layout, setLayout] = useHomeLayout() // Option 1 / 2 choice (switched off: Option 2 only)
 
   return (
-    <div className={`hp${layout === 2 ? ' hp--work' : ''}`}>
-      {layout === 2 ? (
-        <>
-          {/* OPTION 2 -- work first. A slim notice for anything open or new, the
-              selected works as a slideshow hero, then the news. */}
-          <LatestNotice />
+    <div className="hp hp--work">
+      {/* Work first. A slim notice for anything open or new, the selected works as a
+          slideshow hero, then the news. */}
+      <LatestNotice />
 
-          {/* First screen: one quiet line of identity, then the work -- nothing else. */}
-          <header className="hp-hero hp-hero--stage">
-            <div className="hp-id">
-              <h1 className="hp-id-name">Prof. Deepak John Mathew</h1>
-              <p className="hp-id-role"><RoleText /></p>
-            </div>
-            <HeroSlider projects={PROJECTS} wide />
-          </header>
+      {/* First screen: one quiet line of identity, then the work -- nothing else. */}
+      <header className="hp-hero hp-hero--stage">
+        <div className="hp-id">
+          <h1 className="hp-id-name">Prof. Deepak John Mathew</h1>
+          <p className="hp-id-role"><RoleText /></p>
+        </div>
+        <HeroSlider projects={PROJECTS} wide />
+      </header>
 
-          <NewsSection />
+      <NewsSection />
 
-          {/* The personal information, for those who look for it. */}
-          <section className="hp-about" aria-labelledby="hp-about-h">
-            <h2 className="hp-about-h" id="hp-about-h">About</h2>
-            <div className="hp-about-body"><AboutLines withRole={false} /></div>
-          </section>
+      {/* The personal information, for those who look for it. */}
+      <section className="hp-about" aria-labelledby="hp-about-h">
+        <h2 className="hp-about-h" id="hp-about-h">About</h2>
+        <div className="hp-about-body"><AboutLines withRole={false} /></div>
+      </section>
 
-          <AtWork withPhoto />
-        </>
-      ) : (
-        <>
-          {/* OPTION 1 -- photo first (the layout as originally built). */}
-          <header className="hp-hero">
-            <figure className="hp-art">
-              <img
-                className="hp-art-img"
-                src={hero960}
-                srcSet={`${hero640} 640w, ${hero960} 960w, ${hero1280} 1280w`}
-                sizes="(max-width: 860px) 92vw, 62vw"
-                width="1280"
-                height="923"
-                alt="Prof. Deepak John Mathew teaching a photography workshop, seated on the floor with students around a low table of camera lenses."
-                loading="eager"
-                decoding="async"
-                fetchPriority="high"
-              />
-            </figure>
-            <Intro />
-          </header>
+      <AtWork withPhoto />
 
-          <AtWork />
-          <WorkIndex projects={PROJECTS} />
-          <NewsSection />
-        </>
-      )}
+      {/* OPTION 1 -- photo first (the layout as originally built). Switched off; to bring
+          it back, restore `layout` above and render this instead of the block above when
+          layout === 1.
+      <header className="hp-hero">
+        <figure className="hp-art">
+          <img
+            className="hp-art-img"
+            src={hero960}
+            srcSet={`${hero640} 640w, ${hero960} 960w, ${hero1280} 1280w`}
+            sizes="(max-width: 860px) 92vw, 62vw"
+            width="1280"
+            height="923"
+            alt="Prof. Deepak John Mathew teaching a photography workshop, seated on the floor with students around a low table of camera lenses."
+            loading="eager"
+            decoding="async"
+            fetchPriority="high"
+          />
+        </figure>
+        <Intro />
+      </header>
+      <AtWork />
+      <WorkIndex projects={PROJECTS} />
+      <NewsSection />
+      */}
 
-      <HomeLayoutSwitch value={layout} onChange={setLayout} />
+      {/* <HomeLayoutSwitch value={layout} onChange={setLayout} /> */}
     </div>
   )
 }
