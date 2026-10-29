@@ -18,19 +18,22 @@ import { applyShutter, makeShutterRefs, shutterRegistrar } from "./utils/shutter
 
 import "./App.css"
 
-// The intro (and the animation library behind it) is only downloaded when it
-// is going to play: the first visit of a browsing session, and not for people
-// who asked for reduced motion. Everyone else skips ~70 KB of script.
-const IntroLoader = lazy(() => import("./components/IntroLoader"))
-const INTRO_KEY = "djm-intro-seen"
-const SHOW_INTRO = (() => {
-  try {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return false
-    if (sessionStorage.getItem(INTRO_KEY)) return false
-    sessionStorage.setItem(INTRO_KEY, "1")
-    return true
-  } catch { return true }
-})()
+// The website's opening animation (the camera-viewfinder intro, IntroLoader) is
+// switched off for now: the site opens straight onto the page. To bring it back,
+// uncomment this block and the <IntroLoader> mount in App() below.
+// // The intro (and the animation library behind it) is only downloaded when it
+// // is going to play: the first visit of a browsing session, and not for people
+// // who asked for reduced motion. Everyone else skips ~70 KB of script.
+// const IntroLoader = lazy(() => import("./components/IntroLoader"))
+// const INTRO_KEY = "djm-intro-seen"
+// const SHOW_INTRO = (() => {
+//   try {
+//     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return false
+//     if (sessionStorage.getItem(INTRO_KEY)) return false
+//     sessionStorage.setItem(INTRO_KEY, "1")
+//     return true
+//   } catch { return true }
+// })()
 
 // GSAP drives the page transitions. It loads in the background right after the
 // first paint; until it is there a navigation simply swaps the page.
@@ -101,6 +104,21 @@ function RouteSwitch({ location }) {
 function projectFor(pathname) {
   const [seg, slug] = pathname.split('/').filter(Boolean)
   return seg === 'work' && slug ? PROJECTS.find(p => p.slug === slug) || null : null
+}
+
+// Everything a destination needs before the cover can lift: its code, and for a project
+// its cover photograph (decoded), so the page appears whole instead of as an empty
+// frame that fills in. Never waits longer than `max` ms (a very slow connection just
+// gets the page as it is).
+function warm(pathname, max = 3500) {
+  const jobs = [Promise.resolve(preloadForPath(pathname)).catch(() => {})]
+  const project = projectFor(pathname)
+  if (project && project.cover) {
+    const im = new Image()
+    im.src = project.cover
+    jobs.push((im.decode ? im.decode() : Promise.resolve()).catch(() => {}))
+  }
+  return Promise.race([Promise.all(jobs), new Promise(r => setTimeout(r, max))])
 }
 
 // A blog article opens with the quietest transition on the site: no cover, no
@@ -198,11 +216,13 @@ function PageTransition() {
   // close over a stale commit/latest.
   playRef.current = () => {
     if (!gsap) {
-      // Animation library not here yet (very fast click): swap without ceremony.
-      // (Deferred a tick: flushSync must not run inside the effect that got us here.)
+      // Animation library not here yet (very fast click): swap without ceremony, and as a
+      // React transition so the old page stays up until the new one is ready (no blank
+      // loading placeholder in between).
+      // (Deferred a tick: the commit must not run inside the effect that got us here.)
       loadGsap()
       busy.current = true
-      queueMicrotask(() => { commit(latest.current); busy.current = false })
+      warm(latest.current.pathname, 2500).then(() => { commitQuiet(latest.current); busy.current = false })
       return
     }
     busy.current = true
@@ -277,6 +297,11 @@ function PageTransition() {
       const drive = () => applyShutter(shutterRefs.current, sh.o)
       drive() // start fully open (see-through)
 
+      // Fetch the project's code and cover while the shutter closes and the label sets; if
+      // either is late (slow connection) the shutter simply stays closed on the label until
+      // they are here, instead of opening onto an empty page.
+      const ready = warm(latest.current.pathname)
+
       tl.to(sh, { o: 0, duration: 0.55, ease: 'power3.inOut', onUpdate: drive }, 0)
         .to(page.current, { opacity: 0.5, duration: 0.55, ease: 'power2.in' }, 0)
 
@@ -286,7 +311,11 @@ function PageTransition() {
         .fromTo(rule.current, { scaleX: 0 }, { scaleX: 1, duration: 0.45, ease: 'power3.out' }, 0.62)
         .fromTo(venue.current, { yPercent: 115 }, { yPercent: 0, duration: 0.45, ease: 'power3.out' }, 0.7)
 
-        .call(() => { swap(); hold('.pd-hero-tag, .pd-hero-title, .pd-hero-venue, .pd-hero-cta') }, null, 0.62)
+        // Swap once the label has fully set (and the project is ready), still behind the shutter.
+        .call(() => {
+          tl.pause()
+          ready.then(() => { swap(); hold('.pd-hero-tag, .pd-hero-title, .pd-hero-venue, .pd-hero-cta'); tl.resume() })
+        }, null, 1.15)
 
         // Label clears, the blades part, the project rises into view.
         .to(textEls, { opacity: 0, duration: 0.25, ease: 'power2.in' }, 1.2)
@@ -321,7 +350,7 @@ function PageTransition() {
       const ENTER = '.ph-title, .ph-sub, .hp-id, .hs-frame, .hp-title, .cvp-back, .cvp-title, .bp-title, .np-back'
       // Fetch the new page's code while the old page leaves; if it isn't here when
       // the swap is due (slow connection) the sheets simply hold until it is.
-      const ready = Promise.resolve(preloadForPath(latest.current.pathname)).catch(() => {})
+      const ready = warm(latest.current.pathname)
       gsap.set(page.current, { transformOrigin: '50% 0' })
       tl.set([trail.current, panel.current], { yPercent: 100 })
 
@@ -336,7 +365,7 @@ function PageTransition() {
 
         .call(() => {
           tl.pause()
-          Promise.race([ready, new Promise(r => setTimeout(r, 2500))]).then(() => {
+          ready.then(() => {
             commit(latest.current)
             gsap.set(page.current, { opacity: 1, scale: 1, y: 56, overflow: 'clip' })
             // Hold the arrivals back until the cover is lifting (the page's own CSS entrance
@@ -460,11 +489,13 @@ function IdlePreload() {
 function App() {
   return (
     <BrowserRouter>
+      {/* The opening animation is switched off (see the note at the top of this file).
       {SHOW_INTRO && (
         <Suspense fallback={<div className="il-boot" aria-hidden="true" />}>
           <IntroLoader />
         </Suspense>
       )}
+      */}
       <a href="#main-content" className="skip-link">Skip to main content</a>
 
       <IdlePreload />
