@@ -19,3 +19,8 @@ export function srcSetFor(url, widths = COVER_WIDTHS) {
   }
   return undefined
 }
+
+// WordPress keeps the original upload next to the resized copies ("name-1024x681.jpg" ->
+// "name.jpg", 1200-1600 px wide). The home slideshow is large, so it uses the original.
+// Shared with the build step, which preloads the first slide.
+export const originalUpload = url => url.replace(/-\d{2,5}x\d{2,5}(\.\w+)$/, '$1')

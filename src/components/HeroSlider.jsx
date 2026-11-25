@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { preloadForPath } from '../routePreload'
+import { originalUpload } from '../utils/imageSizes'
 import './HeroSlider.css'
 
 /* The home hero as a slideshow of the selected works (home Option 2).
@@ -17,10 +18,6 @@ import './HeroSlider.css'
      exposed to assistive tech; the caption announces changes only while paused,
      never while it rotates by itself. */
 const SLIDE_MS = 6000
-
-// WordPress keeps the original upload next to the resized copies ("name-1024x681.jpg" ->
-// "name.jpg", 1200-1600 px wide). The hero is large, so it uses the original.
-const original = url => url.replace(/-\d{2,5}x\d{2,5}(\.\w+)$/, '$1')
 
 export default function HeroSlider({ projects, wide = false }) {
   const n = projects.length
@@ -105,18 +102,18 @@ export default function HeroSlider({ projects, wide = false }) {
             className={`hs-slide${k === i ? ' is-active' : ''}`}
             role="group"
             aria-roledescription="slide"
-            aria-label={`${k + 1} of ${n}: ${q.title}, ${q.year}`}
+            aria-label={`View project: ${q.title}, ${q.year} (${k + 1} of ${n})`}
             aria-hidden={k !== i}
             tabIndex={k === i ? 0 : -1}
             onMouseEnter={() => preloadForPath(`/work/${q.slug}`)}
           >
             <img
-              src={original(q.cover)}
+              src={originalUpload(q.cover)}
               alt=""
               width="1280"
               height="720"
               loading={k === 0 ? 'eager' : 'lazy'}
-              fetchPriority={k === 0 ? 'high' : undefined}
+              fetchPriority={k === 0 ? 'high' : 'low'}
               decoding="async"
             />
             {/* The cue: appears on hover / focus (always on touch screens). The link
@@ -144,7 +141,7 @@ export default function HeroSlider({ projects, wide = false }) {
               <button
                 type="button"
                 className={`hs-seg${k === i ? ' is-active' : ''}`}
-                aria-label={`Show ${q.title}`}
+                aria-label={`${String(k + 1).padStart(2, '0')}, show ${q.title}`}
                 aria-current={k === i ? 'true' : undefined}
                 onClick={() => go(k)}
               >

@@ -31,11 +31,11 @@ export default function BlogPost() {
   const { slug } = useParams()
   const [slideshow, setSlideshow] = useState(null)
   const [copied, setCopied] = useState(false)
-  const { data: posts, loading } = useCms('posts', POSTS_QUERY, mapPosts, BLOG_POSTS)
+  const { data: posts, loading, fresh } = useCms('posts', POSTS_QUERY, mapPosts, BLOG_POSTS)
 
   const idx  = posts.findIndex(p => p.slug === slug)
   const post = posts[idx]
-  usePageTitle(post ? postMeta(post) : loading ? blogsMeta() : notFoundMeta())
+  usePageTitle(post ? postMeta(post) : fresh ? notFoundMeta() : blogsMeta())
   const prevP = idx > 0 ? posts[idx - 1] : null
   const nextP = idx >= 0 && idx < posts.length - 1 ? posts[idx + 1] : null
 
@@ -54,7 +54,9 @@ export default function BlogPost() {
 
   // The live and built-in copies use different photo URLs, so the page waits
   // for the live answer rather than swapping the cover after it has painted.
-  if (loading) return <div className="bp" aria-busy="true" />
+  // A post missing from an older saved list may be newly published: wait for the
+  // fresh list before saying it doesn't exist.
+  if (loading || (!post && !fresh)) return <div className="bp" aria-busy="true" />
 
   if (!post) {
     return (
@@ -96,7 +98,7 @@ export default function BlogPost() {
             type="button"
             className="bp-cover"
             onClick={() => setSlideshow({ images: post.images, startIdx: 0 })}
-            aria-label={`Open photographs (${post.images.length})`}
+            aria-label={post.images.length > 1 ? `${post.images.length} photos: open the photographs` : 'Open the photograph'}
           >
             <img
               className="bp-cover-img"

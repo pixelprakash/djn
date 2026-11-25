@@ -5,10 +5,10 @@
 // a copy of index.html per page with that page's own <head> filled in, plus a
 // short <noscript> summary, and regenerates sitemap.xml from the same list.
 //
-// Vercel serves dist/about.html at /about (cleanUrls) before falling back to
-// the single-page app, so these are what a crawler receives. The app still
-// takes over in the browser exactly as before.
-import { readFileSync, writeFileSync, mkdirSync, readdirSync } from 'node:fs'
+// Vercel serves dist/about.html at /about (cleanUrls), so these are what a
+// crawler receives; the app then takes over in the browser. Addresses without a
+// file of their own use app.html or 404.html, written at the end of this script.
+import { readFileSync, writeFileSync, mkdirSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import {
@@ -17,7 +17,7 @@ import {
 } from '../src/seo/routes.js'
 import { PROJECTS } from '../src/pages/projectData.js'
 import { BLOG_POSTS } from '../src/pages/blogData.js'
-import { srcSetFor, COVER_SIZES } from '../src/utils/imageSizes.js'
+import { srcSetFor, COVER_SIZES, originalUpload } from '../src/utils/imageSizes.js'
 
 const DIST = join(dirname(fileURLToPath(import.meta.url)), '..', 'dist')
 const template = readFileSync(join(DIST, 'index.html'), 'utf8')
@@ -94,17 +94,9 @@ function swap(html, re, value, label) {
 const PORTRAIT_PAGES = new Set(['/resume'])
 const portraitPreload = `    <link rel="preload" as="image" href="/profliepicnobg-900.webp" imagesrcset="/profliepicnobg-560.webp 560w, /profliepicnobg-900.webp 900w, /profliepicnobg.webp 1380w" imagesizes="(max-width: 860px) 300px, 560px" fetchpriority="high" />\n`
 
-// The home page's hero photograph (src/assets/djteaching-<w>.webp) is the largest
-// thing above the fold. Its hashed file names are only known after the build, so
-// look them up and preload the same responsive set the page uses.
-const heroSet = (() => {
-  const files = readdirSync(join(DIST, 'assets')).filter(f => /^djteaching-(\d+)-.*\.webp$/.test(f))
-  const byWidth = files.map(f => [Number(f.match(/^djteaching-(\d+)-/)[1]), f]).sort((a, b) => a[0] - b[0])
-  if (!byWidth.length) return ''
-  const set = byWidth.map(([w, f]) => `/assets/${f} ${w}w`).join(', ')
-  const mid = (byWidth.find(([w]) => w === 960) || byWidth[byWidth.length - 1])[1]
-  return `    <link rel="preload" as="image" href="/assets/${mid}" imagesrcset="${set}" imagesizes="(max-width: 860px) 92vw, 62vw" fetchpriority="high" />\n`
-})()
+// The largest thing on the home page's first screen is the first slide of the
+// slideshow (components/HeroSlider.jsx). Name exactly the same file.
+const slidePreload = `    <link rel="preload" as="image" href="${esc(originalUpload(PROJECTS[0].cover))}" fetchpriority="high" />\n`
 
 function render(meta) {
   const title = meta.title ? `${meta.title} — ${NAME}` : HOME_TITLE
@@ -132,7 +124,7 @@ function render(meta) {
   }
 
   if (PORTRAIT_PAGES.has(meta.path)) h = h.replace('</head>', () => portraitPreload + '  </head>')
-  if (meta.path === '/about' && heroSet) h = h.replace('</head>', () => heroSet + '  </head>')
+  if (meta.path === '/about') h = h.replace('</head>', () => slidePreload + '  </head>')
 
   if (meta.ld && meta.ld.length) {
     const json = JSON.stringify(meta.ld.length === 1 ? meta.ld[0] : meta.ld).replace(/</g, '\\u003c')
@@ -156,6 +148,18 @@ for (const meta of pages) {
   writeFileSync(file, html)
   written++
 }
+
+// Two plain copies of the app for addresses that have no page of their own (see
+// vercel.json). Neither claims to be the home page: no canonical address; the app
+// writes the right tags once it knows what it is showing.
+//  - app.html: news and blog addresses published after this build (served as 200).
+//  - 404.html: everything else unknown (Vercel serves it with a 404 status; the
+//    app then shows its own "Page not found" screen).
+const bare = template.replace(/\s*<link rel="canonical"[^>]*>/, '').replace(/\s*<meta property="og:url"[^>]*>/, '')
+writeFileSync(join(DIST, 'app.html'), bare)
+writeFileSync(join(DIST, '404.html'), bare
+  .replace(/<title>[\s\S]*?<\/title>/, `<title>Page not found — ${NAME}</title>`)
+  .replace(/<meta name="robots"[^>]*>/, '<meta name="robots" content="noindex, follow" />'))
 
 const today = new Date().toISOString().slice(0, 10)
 const urls = pages.map(m => `  <url><loc>${SITE}${m.path}</loc><lastmod>${today}</lastmod></url>`).join('\n')

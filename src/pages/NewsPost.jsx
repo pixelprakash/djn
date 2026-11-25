@@ -25,12 +25,12 @@ export default function NewsPost() {
   useStackedLayers(pageRef)
   const [slideshow, setSlideshow] = useState(null)
   const [copied, setCopied] = useState(false)
-  const { data: feed, loading } = useCms('feed', FEED_QUERY, mapFeed, [])
+  const { data: feed, fresh } = useCms('feed', FEED_QUERY, mapFeed, [])
   const post = feed.find(p => p.slug === slug)
 
   usePageTitle(post ? newsPostMeta(post) : newsMeta())
 
-  if (!post) return loading ? <div className="nw" aria-busy="true" /> : <NotFound />
+  if (!post) return fresh ? <NotFound /> : <div className="nw" aria-busy="true" />
 
   const heading = post.title || post.text.split('\n')[0]
   const more = feed.filter(p => p.id !== post.id).slice(0, 3)

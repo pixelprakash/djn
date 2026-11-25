@@ -116,7 +116,7 @@ const SLIDER_IMAGES = Array.from({ length: 10 }, function (_, i) {
 /* ── Image Slider ── */
 function ImageSlider() {
   return (
-    <div className="lab-slider-wrap">
+    <div className="lab-slider-wrap" role="region" aria-label="DIC Lab photographs" tabIndex={0}>
       <div className="lab-slider">
         {[...SLIDER_IMAGES, ...SLIDER_IMAGES].map(function (src, i) {
           return (

@@ -127,9 +127,15 @@
 /* =============================================
    IMAGE SLIDER
 ============================================= */
+/* Focusable, so a keyboard user can stop the strip and scroll it with the arrows. */
 .lab-slider-wrap {
-  overflow: hidden;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
 }
+.lab-slider-wrap::-webkit-scrollbar { display: none; }
+.lab-slider-wrap:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+.lab-slider-wrap:focus-within .lab-slider { animation-play-state: paused; }
 
 .lab-slider {
   display: flex;
@@ -633,6 +639,7 @@
 
 
 @media (prefers-reduced-motion: reduce) {
+  .lab-slider { animation: none; }
   .lab-video { transition: none; }
   .lab-video:hover { transform: none; }
 }

@@ -57,6 +57,7 @@ function load(key, groq, map) {
         if (!('data' in entry)) entry.data = null
         return entry.data
       })
+      .then(data => { entry.settled = true; return data })
     cache.set(key, entry)
   }
   return entry
@@ -65,24 +66,27 @@ function load(key, groq, map) {
 /* Live content if there is any, else `fallback`. `loading` is true until the
    first answer arrives (a page that must not show "not found" for a
    CMS-only item yet can wait on it) -- which is immediately, for anyone who
-   has been here before. */
+   has been here before. `fresh` is true once this visit's own request has
+   answered: a saved copy can be older than a newly published item, so only
+   then is "it doesn't exist" safe to say. */
 export function useCms(key, groq, map, fallback) {
   const known = load(key, groq, map)
   const [state, setState] = useState(() => ({
     data: 'data' in known ? known.data : undefined, // undefined = not answered yet
+    fresh: Boolean(known.settled),
   }))
 
   useEffect(() => {
     let alive = true
     // Always via the promise, so state is only ever set from a callback.
-    known.promise.then(data => { if (alive) setState(s => (s.data === data ? s : { data })) })
+    known.promise.then(data => { if (alive) setState(s => (s.data === data && s.fresh ? s : { data, fresh: true })) })
     return () => { alive = false }
     // key identifies the query; groq/map are module constants at call sites.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [key])
 
   const answered = state.data !== undefined
-  return { data: state.data || fallback, loading: !answered, live: Boolean(state.data) }
+  return { data: state.data || fallback, loading: !answered, fresh: state.fresh, live: Boolean(state.data) }
 }
 
 /* ── Shaping what Sanity returns into what the pages already expect ── */

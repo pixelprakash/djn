@@ -7,8 +7,12 @@
   ],
   "rewrites": [
     {
-      "source": "/(.*)",
-      "destination": "/index.html"
+      "source": "/news/:slug",
+      "destination": "/app"
+    },
+    {
+      "source": "/blogs/:slug",
+      "destination": "/app"
     }
   ],
   "redirects": [

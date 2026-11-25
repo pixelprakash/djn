@@ -257,7 +257,10 @@ Conventions every page and component follows -- keep them when adding to the sit
 - Share image: `public/og-image.jpg` (1200x630).
 
 **How to measure:** `npx lighthouse <url> --form-factor=mobile --only-categories=performance,seo` (needs Chrome).
-
+- **Routing on Vercel (`vercel.json`):** with `cleanUrls` on, a rewrite destination must not end in `.html`. Only `/news/:slug` and `/blogs/:slug` are rewritten (to `/app`), because they can be published after a deploy; every other unknown address gets `404.html` with a real 404 status. A new client-only route needs either a prerendered page (add it to `scripts/prerender.mjs`) or its own rewrite, or it will 404 when opened directly.
+- A post page may say "not found" only after this visit's own content request has answered (`fresh` from `useCms`), never from the saved copy.
+- Spoken names (`aria-label`) must contain the words visible on the control (WCAG 2.5.3).
+- The home page preloads the slideshow's first image (`originalUpload()` in `src/utils/imageSizes.js`, shared by the slider and the prerender step).
 
 ## Home page redesign (Oct 2026): work first
 
