@@ -24,7 +24,7 @@ import './TopNav.css'
 // own dropdown, grouped, so the nav now says what's actually true: Resume
 // is the CV, and everything under it is that CV's detail.
 const NAV_ITEMS = [
-  { label: 'About Me', path: '/about' },
+  { label: 'About', path: '/about' },
   { label: 'Work',      path: '/work' },
   {
     label: 'Resume',

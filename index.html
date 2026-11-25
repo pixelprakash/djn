@@ -9,7 +9,9 @@
     <meta name="robots" content="index, follow" />
     <meta name="author" content="Deepak John Mathew" />
     <meta name="theme-color" content="#f7f7f7" />
-    <meta name="color-scheme" content="light" />
+    <!-- "only light" tells a phone browser's forced dark mode to leave the page alone:
+         the site is light unless the visitor presses the theme switch. -->
+    <meta name="color-scheme" content="only light" />
     <script>
       /* Choose the colour theme before the first paint, so a visitor who picked the
          dark theme never sees a flash of light. Light is the default for everyone
@@ -21,6 +23,8 @@
           document.documentElement.setAttribute('data-theme', t);
           var m = document.querySelector('meta[name="theme-color"]');
           if (m) m.setAttribute('content', t === 'dark' ? '#0f0f11' : '#f7f7f7');
+          var s = document.querySelector('meta[name="color-scheme"]');
+          if (s) s.setAttribute('content', t === 'dark' ? 'dark' : 'only light');
         } catch (e) {}
       })();
     </script>

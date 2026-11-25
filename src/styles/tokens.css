@@ -42,7 +42,8 @@
   --wash-a:      rgba(250, 204, 192, .55); /* the page-top washes (heroes, blog band) */
   --wash-b:      rgba(205, 203, 245, .55);
   --wash-base:   #f1eff8;
-  color-scheme: light;
+  /* `only` also stops a phone browser's forced dark mode from repainting the page. */
+  color-scheme: only light;
 
   /* Signature gradient: soft lavender -> peach -> cream -> salmon, sampled from the
      design reference. Used as a quiet plate behind the home hero photo and as the

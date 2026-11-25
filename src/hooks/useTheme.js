@@ -19,6 +19,8 @@ function paint(theme) {
   document.documentElement.setAttribute('data-theme', theme)
   const m = document.querySelector('meta[name="theme-color"]')
   if (m) m.setAttribute('content', theme === 'dark' ? '#0f0f11' : '#f7f7f7')
+  const s = document.querySelector('meta[name="color-scheme"]')
+  if (s) s.setAttribute('content', theme === 'dark' ? 'dark' : 'only light')
 }
 
 /* Lift the no-transition flag once the change (and its reveal) is over, after two
