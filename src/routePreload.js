@@ -5,6 +5,7 @@
 // same import twice does not trigger a second network request.
 export const routeImports = {
   about:         () => import('./pages/About'),
+  aboutMe:       () => import('./pages/AboutMe'),
   work:          () => import('./pages/Work'),
   projectDetail: () => import('./pages/ProjectDetail'),
   resume:        () => import('./pages/Resume'),
@@ -25,6 +26,7 @@ export function preloadForPath(path) {
   if (path.startsWith('/news/')) return routeImports.newsPost()
   switch (path) {
     case '/about':   return routeImports.about()
+    case '/about/me': return routeImports.aboutMe()
     case '/work':    return routeImports.work()
     case '/resume':  return routeImports.resume()
     case '/lab':     return routeImports.lab()

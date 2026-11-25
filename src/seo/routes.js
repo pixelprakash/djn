@@ -65,6 +65,18 @@ export const homeMeta = () => ({
   ld: [],
 })
 
+export const aboutMeMeta = () => ({
+  title: 'About Me',
+  description:
+    'About Professor Deepak John Mathew: design education, photography, AR/VR, digital heritage and autonomous drone research at IIT Hyderabad.',
+  path: '/about/me',
+  type: 'profile',
+  ld: [
+    crumbs([['About Me', '/about/me']]),
+    { '@context': 'https://schema.org', '@type': 'ProfilePage', mainEntity: { '@type': 'Person', name: NAME, url: SITE + '/' } },
+  ],
+})
+
 export const workMeta = () => ({
   title: 'Work',
   description:

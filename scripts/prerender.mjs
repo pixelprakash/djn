@@ -13,7 +13,7 @@ import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import {
   SITE, NAME, HOME_TITLE, DEFAULT_IMAGE, CV_TITLES,
-  homeMeta, workMeta, resumeMeta, blogsMeta, newsMeta, newsPostMeta, contactMeta, labMeta, cvMeta, projectMeta, postMeta,
+  homeMeta, aboutMeMeta, workMeta, resumeMeta, blogsMeta, newsMeta, newsPostMeta, contactMeta, labMeta, cvMeta, projectMeta, postMeta,
 } from '../src/seo/routes.js'
 import { PROJECTS } from '../src/pages/projectData.js'
 import { BLOG_POSTS } from '../src/pages/blogData.js'
@@ -76,7 +76,7 @@ const news = await cmsNews()
 const posts = [...live, ...BLOG_POSTS.filter(p => !live.some(l => l.slug === p.slug))]
 
 const pages = [
-  homeMeta(), workMeta(), resumeMeta(), blogsMeta(), newsMeta(), contactMeta(), labMeta(),
+  homeMeta(), aboutMeMeta(), workMeta(), resumeMeta(), blogsMeta(), newsMeta(), contactMeta(), labMeta(),
   ...Object.keys(CV_TITLES).map(cvMeta),
   ...PROJECTS.map(projectMeta),
   ...posts.map(p => ({ ...postMeta(p), cover: p.cover || (p.images && p.images[0]) })),

@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { PROJECTS } from './projectData'
 import { SOCIALS } from '../data/socials'
+import { preloadForPath } from '../routePreload'
 import NewsSection from '../components/NewsSection'
 // import WorkIndex from '../components/WorkIndex' // Option 1 only (switched off)
 import AtWork from '../components/AtWork'
@@ -72,6 +73,12 @@ function AboutLines({ withRole = true }) {
       </p>
       <p className="hp-line hp-line--small">
         <span className="hp-line-label">Interests</span> {INTERESTS.join(', ')}.
+      </p>
+
+      <p className="hp-more">
+        <Link to="/about/me" className="hp-more-link" onMouseEnter={() => preloadForPath('/about/me')} onFocus={() => preloadForPath('/about/me')}>
+          More about me <span aria-hidden="true">&rarr;</span>
+        </Link>
       </p>
 
       <nav className="hp-links" aria-label="Profiles">

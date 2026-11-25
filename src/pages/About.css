@@ -143,6 +143,27 @@
 .hp-line--small { font-size: clamp(1rem, 1.2vw, 1.1rem); line-height: 1.5; letter-spacing: 0; }
 .hp-line-label { color: var(--ink); font-weight: 500; margin-right: 0.35em; }
 
+/* The way on to the full biography. */
+.hp-more { margin-top: clamp(24px, 3vw, 36px); }
+.hp-more-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 0 20px;
+  font-family: var(--body);
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--ink);
+  text-decoration: none;
+  border: 1px solid rgba(var(--ink-rgb), .3);
+  border-radius: 4px;
+  transition: background-color .2s, color .2s, border-color .2s;
+}
+.hp-more-link:hover { background: var(--ink); color: var(--on-ink); border-color: var(--ink); }
+.hp-more-link:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+@media (prefers-reduced-motion: reduce) { .hp-more-link { transition: none; } }
+
 /* Profile links as plain text, like the rest of the intro. */
 .hp-links {
   display: flex;

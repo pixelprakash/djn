@@ -41,6 +41,7 @@ let gsap = null
 let gsapLoading = null
 const loadGsap = () => gsapLoading || (gsapLoading = import("gsap").then(m => (gsap = m.default)))
 
+const AboutMe      = lazy(routeImports.aboutMe)
 const Work         = lazy(routeImports.work)
 const ProjectDetail = lazy(routeImports.projectDetail)
 const Resume       = lazy(routeImports.resume)
@@ -74,6 +75,7 @@ function RouteSwitch({ location }) {
         {/* Default page → About */}
         <Route path="/"        element={<Navigate to="/about" replace />} />
         <Route path="/about"   element={<About />} />
+        <Route path="/about/me" element={<AboutMe />} />
         <Route path="/work"    element={<Work />} />
         <Route path="/work/:slug" element={<ProjectDetail />} />
         <Route path="/resume"  element={<Resume />} />
@@ -146,7 +148,7 @@ function labelFor(pathname) {
     case 'news':    return 'News & Updates'
     case 'contact': return 'Get in Touch'
     case 'cv':      return CV_TITLES[slug] || 'Resume'
-    default:        return 'About'
+    default:        return slug === 'me' ? 'About Me' : 'About'
   }
 }
 

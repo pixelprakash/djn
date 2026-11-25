@@ -1,0 +1,76 @@
+/* The full biography (AboutMe.jsx). Shared tokens live in src/styles/tokens.css. */
+.am {
+  min-height: 100vh;
+  background: var(--bg);
+  font-family: var(--body);
+  color: var(--ink);
+  padding-bottom: var(--nav-safe);
+  width: 100%;
+  overflow-x: clip;
+  isolation: isolate;
+}
+.am-body { padding: clamp(32px, 4.5vw, 64px) var(--g) clamp(48px, 6vw, 88px); }
+
+/* One part per row: a short heading left, the text right at a comfortable
+   reading width (the same split as the About band on the home page). */
+.am-part {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.9fr);
+  gap: clamp(20px, 5vw, 88px);
+  padding: clamp(32px, 4.5vw, 60px) 0;
+  border-top: 1px solid var(--rule);
+}
+.am-part:first-child { border-top: 0; padding-top: 0; }
+.am-h {
+  margin: 0;
+  font-family: var(--display);
+  font-size: clamp(1.5rem, 2.4vw, 2.1rem);
+  font-weight: 400;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  text-wrap: balance;
+}
+.am-text {
+  margin: 0;
+  max-width: 62ch;
+  font-size: clamp(1.1rem, 1.4vw, 1.25rem);
+  line-height: 1.75;
+  color: var(--sub);
+  text-wrap: pretty;
+}
+
+/* Where to go next, lined up with the text column. */
+.am-more {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding-top: clamp(32px, 4.5vw, 60px);
+  border-top: 1px solid var(--rule);
+}
+.am-next { display: flex; flex-wrap: wrap; gap: 12px; }
+.am-next-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 0 20px;
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--ink);
+  text-decoration: none;
+  border: 1px solid rgba(var(--ink-rgb), .3);
+  border-radius: 4px;
+  transition: background-color .2s, color .2s, border-color .2s;
+}
+.am-next-link:hover { background: var(--ink); color: var(--on-ink); border-color: var(--ink); }
+.am-profiles { display: flex; flex-wrap: wrap; gap: 4px 24px; }
+.am-profiles a { display: inline-block; padding: 8px 0; font-size: 1rem; color: var(--sub); text-decoration: none; }
+.am-profiles a:hover { color: var(--accent); }
+.am-next-link:focus-visible,
+.am-profiles a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+@media (max-width: 860px) {
+  .am-part { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+}
+@media (prefers-reduced-motion: reduce) { .am-next-link { transition: none; } }
